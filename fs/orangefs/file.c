@@ -80,6 +80,8 @@ static int postcopy_buffers(struct pvfs2_bufmap *bufmap,
 			    int to_user)
 {
 	int ret = 0;
+pr_info("p_b: vec->iov_len:%lu: total_size:%lu: to_user:%d:\n",
+vec->iov_len, total_size, to_user);
 
 	/*
 	 * copy data to application/kernel by pushing it out to
