@@ -751,6 +751,26 @@ int pvfs_bufmap_copy_iovec_from_kernel(struct pvfs2_bufmap *bufmap,
 	return 0;
 }
 
+int pvfs_bufmap_copy_to_user_iovec2(struct pvfs2_bufmap *bufmap,
+				    struct iov_iter *iter,
+				    size_t total_size,
+				    int buffer_index)
+{
+	struct pvfs_bufmap_desc *from;
+	int ret = 0;
+	void *from_kaddr = NULL;
+
+	from = &bufmap->desc_array[buffer_index];
+
+	from_kaddr = pvfs2_kmap(from->page_array[0]);
+
+pr_info("from_kaddr:%s:\n", (char *) from_kaddr);
+
+	ret = copy_to_iter(from_kaddr, total_size, iter);	
+
+	return ret;
+}
+
 /*
  * pvfs_bufmap_copy_to_user_iovec()
  *
