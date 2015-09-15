@@ -751,143 +751,27 @@ int pvfs_bufmap_copy_iovec_from_kernel(struct pvfs2_bufmap *bufmap,
 	return 0;
 }
 
-int pvfs_bufmap_copy_to_user_iovec2(struct pvfs2_bufmap *bufmap,
+/*
+ * Iterate through the array of pages containing the bytes from
+ * a file being read.
+ *
+ */
+int pvfs_bufmap_copy_to_user_iovec(struct pvfs2_bufmap *bufmap,
 				    struct iov_iter *iter,
-				    size_t total_size,
 				    int buffer_index)
 {
 	struct pvfs_bufmap_desc *from;
-	int ret = 0;
-	void *from_kaddr = NULL;
+	struct page *page;
+	int i;
 
-	from = &bufmap->desc_array[buffer_index];
+        from = &bufmap->desc_array[buffer_index];
 
-	from_kaddr = pvfs2_kmap(from->page_array[0]);
-
-pr_info("from_kaddr:%s:\n", (char *) from_kaddr);
-
-	ret = copy_to_iter(from_kaddr, total_size, iter);	
-
-	return ret;
-}
-
-/*
- * pvfs_bufmap_copy_to_user_iovec()
- *
- * copies data to several user space address's in an iovec
- * from a mapped buffer
- *
- * returns 0 on success, -errno on failure
- */
-int pvfs_bufmap_copy_to_user_iovec(struct pvfs2_bufmap *bufmap,
-		int buffer_index, const struct iovec *iov,
-		unsigned long nr_segs, size_t size)
-{
-	size_t ret = 0;
-	size_t amt_copied = 0;
-	size_t cur_copy_size = 0;
-	int from_page_index = 0;
-	void *from_kaddr = NULL;
-	void __user *to_addr = NULL;
-	struct iovec *copied_iovec = NULL;
-	struct pvfs_bufmap_desc *from;
-	unsigned int seg;
-	unsigned from_page_offset = 0;
-	char *tmp_printer = NULL;
-	int tmp_int = 0;
-
-	gossip_debug(GOSSIP_BUFMAP_DEBUG,
-		     "pvfs_bufmap_copy_to_user_iovec: index %d, size %zd\n",
-		     buffer_index,
-		     size);
-
-	from = &bufmap->desc_array[buffer_index];
-	/*
-	 * copy the passed in iovec so that we can change some of its fields
-	 */
-	copied_iovec = kmalloc_array(nr_segs,
-				     sizeof(*copied_iovec),
-				     PVFS2_BUFMAP_GFP_FLAGS);
-	if (copied_iovec == NULL)
-		return -ENOMEM;
-
-	memcpy(copied_iovec, iov, nr_segs * sizeof(*copied_iovec));
-	/*
-	 * Go through each segment in the iovec and make sure that
-	 * the summation of iov_len is greater than the given size.
-	 */
-	for (seg = 0, amt_copied = 0; seg < nr_segs; seg++)
-		amt_copied += copied_iovec[seg].iov_len;
-	if (amt_copied < size) {
-		gossip_err("pvfs2_bufmap_copy_to_user_iovec: computed total (%zd) is less than (%zd)\n",
-			   amt_copied,
-			   size);
-		kfree(copied_iovec);
-		return -EINVAL;
+	for (i = 0; iov_iter_count(iter); i++) {
+		page = from->page_array[i];
+		copy_page_to_iter(page, 0, PAGE_SIZE, iter);
 	}
 
-	from_page_index = 0;
-	amt_copied = 0;
-	seg = 0;
-	from_page_offset = 0;
-	/*
-	 * Go through each segment in the iovec and copy from the mapper buffer,
-	 * but make sure that we do so one page at a time.
-	 */
-	while (amt_copied < size) {
-		struct iovec *iv = &copied_iovec[seg];
-		int inc_from_page_index;
-
-		if (iv->iov_len < (PAGE_SIZE - from_page_offset)) {
-			cur_copy_size =
-			    PVFS_util_min(iv->iov_len, size - amt_copied);
-			seg++;
-			to_addr = iv->iov_base;
-			inc_from_page_index = 0;
-		} else if (iv->iov_len == (PAGE_SIZE - from_page_offset)) {
-			cur_copy_size =
-			    PVFS_util_min(iv->iov_len, size - amt_copied);
-			seg++;
-			to_addr = iv->iov_base;
-			inc_from_page_index = 1;
-		} else {
-			cur_copy_size =
-			    PVFS_util_min(PAGE_SIZE - from_page_offset,
-					  size - amt_copied);
-			to_addr = iv->iov_base;
-			iv->iov_base += cur_copy_size;
-			iv->iov_len -= cur_copy_size;
-			inc_from_page_index = 1;
-		}
-		from_kaddr = pvfs2_kmap(from->page_array[from_page_index]);
-		if (!tmp_printer) {
-			tmp_printer = (char *)(from_kaddr + from_page_offset);
-			tmp_int += tmp_printer[0];
-			gossip_debug(GOSSIP_BUFMAP_DEBUG,
-				     "First character (integer value) in pvfs_bufmap_copy_to_user_iovec: %d\n",
-				     tmp_int);
-		}
-		ret =
-		    copy_to_user(to_addr,
-				 from_kaddr + from_page_offset,
-				 cur_copy_size);
-		pvfs2_kunmap(from->page_array[from_page_index]);
-		if (ret) {
-			gossip_err("Failed to copy data to user space\n");
-			kfree(copied_iovec);
-			return -EFAULT;
-		}
-
-		amt_copied += cur_copy_size;
-		if (inc_from_page_index) {
-			from_page_offset = 0;
-			from_page_index++;
-		} else {
-			from_page_offset += cur_copy_size;
-		}
-	}
-	kfree(copied_iovec);
-	return 0;
+        return iov_iter_count(iter) ? -EFAULT : 0;
 }
 
 /*

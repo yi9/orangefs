@@ -83,9 +83,6 @@ static int postcopy_buffers(struct pvfs2_bufmap *bufmap,
 
 	struct iov_iter iter;
 
-pr_info("p_b: vec->iov_len:%lu: total_size:%lu: to_user:%d: buffer_index:%d:\n",
-vec->iov_len, total_size, to_user, buffer_index);
-
 	/*
 	 * copy data to application/kernel by pushing it out to
 	 * the iovec. NOTE; target buffers can be addresses or
@@ -93,45 +90,21 @@ vec->iov_len, total_size, to_user, buffer_index);
 	 */
 	if (total_size) {
 		/* Are we copying to User Virtual Addresses? */
-/*
 		if (to_user) {
 			iov_iter_init(&iter, READ, vec, nr_segs, total_size);
-			from = &bufmap->desc_array[buffer_index];
-			ret = copy_to_iter(from->page_array[0],
-					   total_size,
-					   &iter);
-			pr_info("p_b: ret:%d:\n", ret);
-			ret = 0;
-		}
-*/
-
-		if (to_user) {
-			iov_iter_init(&iter, READ, vec, nr_segs, total_size);
-			ret = pvfs_bufmap_copy_to_user_iovec2(bufmap,
+			ret = pvfs_bufmap_copy_to_user_iovec(bufmap,
 							      &iter,
-							      total_size,
 							      buffer_index);
-			pr_info("p_b: ret:%d:\n", ret);
-			ret = 0;
-		}
-
-/*
-		if (to_user)
-			ret = pvfs_bufmap_copy_to_user_iovec(
-				bufmap,
-				buffer_index,
-				vec,
-				nr_segs,
-				total_size);
-*/
+		} else {
 		/* Are we copying to Kern Virtual Addresses? */
-		else
 			ret = pvfs_bufmap_copy_to_kernel_iovec(
 				bufmap,
 				buffer_index,
 				vec,
 				nr_segs,
 				total_size);
+		}
+
 		if (ret < 0)
 			gossip_err("%s: Failed to copy-out buffers.  Please make sure that the pvfs2-client is running (%ld)\n",
 				__func__,
