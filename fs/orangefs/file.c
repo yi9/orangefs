@@ -89,24 +89,12 @@ static int postcopy_buffers(struct pvfs2_bufmap *bufmap,
 	 * struct page pointers.
 	 */
 	if (total_size) {
-		/* Are we copying to User Virtual Addresses? */
-		if (to_user) {
-			iov_iter_init(&iter, READ, vec, nr_segs, total_size);
-			ret = pvfs_bufmap_copy_to_user_iovec(bufmap,
-							      &iter,
-							      buffer_index);
-		} else {
-		/* Are we copying to Kern Virtual Addresses? */
-			ret = pvfs_bufmap_copy_to_kernel_iovec(
-				bufmap,
-				buffer_index,
-				vec,
-				nr_segs,
-				total_size);
-		}
-
+		iov_iter_init(&iter, READ, vec, nr_segs, total_size);
+		ret = pvfs_bufmap_copy_to_iovec(bufmap,
+						&iter,
+						buffer_index);
 		if (ret < 0)
-			gossip_err("%s: Failed to copy-out buffers.  Please make sure that the pvfs2-client is running (%ld)\n",
+			gossip_err("%s: Failed to copy-out buffers. Please make sure that the pvfs2-client is running (%ld)\n",
 				__func__,
 				(long)ret);
 	}
