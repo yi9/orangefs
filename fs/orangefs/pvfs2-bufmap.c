@@ -763,6 +763,7 @@ int pvfs_bufmap_copy_to_iovec(struct pvfs2_bufmap *bufmap,
 	struct pvfs_bufmap_desc *from;
 	struct page *page;
 	int i;
+	size_t written;
 
 	gossip_debug(GOSSIP_BUFMAP_DEBUG,
 		     "%s: buffer_index:%d: iov_iter_count(iter):%lu:\n",
@@ -772,7 +773,9 @@ int pvfs_bufmap_copy_to_iovec(struct pvfs2_bufmap *bufmap,
 
 	for (i = 0; iov_iter_count(iter); i++) {
 		page = from->page_array[i];
-		copy_page_to_iter(page, 0, PAGE_SIZE, iter);
+		written = copy_page_to_iter(page, 0, PAGE_SIZE, iter);
+		if ((written == 0) && (iov_iter_count(iter)))
+			break;
 	}
 
         return iov_iter_count(iter) ? -EFAULT : 0;
