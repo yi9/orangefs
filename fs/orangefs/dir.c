@@ -145,7 +145,7 @@ static int pvfs2_readdir(struct file *file, struct dir_context *ctx)
 	}
 
 	gossip_debug(GOSSIP_DIR_DEBUG,
-		     "pvfs2_readdir called on %s (pos=%llu)\n",
+		     "orangefs_readdir called on %s (pos=%llu)\n",
 		     dentry->d_name.name, llu(pos));
 
 	rhandle.buffer_index = -1;
@@ -180,7 +180,7 @@ static int pvfs2_readdir(struct file *file, struct dir_context *ctx)
 get_new_buffer_index:
 	ret = readdir_index_get(&bufmap, &buffer_index);
 	if (ret < 0) {
-		gossip_lerr("pvfs2_readdir: readdir_index_get() failure (%d)\n",
+		gossip_lerr("orangefs_readdir: readdir_index_get() failure (%d)\n",
 			    ret);
 		goto out_free_op;
 	}
@@ -230,7 +230,7 @@ get_new_buffer_index:
 				    new_op->downcall.trailer_buf,
 				    buffer_index);
 	if (bytes_decoded < 0) {
-		gossip_err("pvfs2_readdir: Could not decode trailer buffer into a readdir response %d\n",
+		gossip_err("orangefs_readdir: Could not decode trailer buffer into a readdir response %d\n",
 			ret);
 		ret = bytes_decoded;
 		readdir_index_put(bufmap, buffer_index);
@@ -238,7 +238,7 @@ get_new_buffer_index:
 	}
 
 	if (bytes_decoded != new_op->downcall.trailer_size) {
-		gossip_err("pvfs2_readdir: # bytes decoded (%ld) != trailer size (%ld)\n",
+		gossip_err("orangefs_readdir: # bytes decoded (%ld) != trailer size (%ld)\n",
 			bytes_decoded,
 			(long)new_op->downcall.trailer_size);
 		ret = -EINVAL;
@@ -345,7 +345,7 @@ out_destroy_handle:
 	readdir_handle_dtor(bufmap, &rhandle);
 out_free_op:
 	op_release(new_op);
-	gossip_debug(GOSSIP_DIR_DEBUG, "pvfs2_readdir returning %d\n", ret);
+	gossip_debug(GOSSIP_DIR_DEBUG, "orangefs_readdir returning %d\n", ret);
 	return ret;
 }
 
