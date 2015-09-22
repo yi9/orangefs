@@ -187,7 +187,7 @@ get_new_buffer_index:
 	new_op->upcall.req.readdir.buf_index = buffer_index;
 
 	ret = service_operation(new_op,
-				"pvfs2_readdir",
+				"orangefs_readdir",
 				get_interruptible_flag(dentry->d_inode));
 
 	gossip_debug(GOSSIP_DIR_DEBUG,
