@@ -355,7 +355,7 @@ struct pvfs2_inode_s {
 
 /* per superblock private pvfs2 info */
 struct pvfs2_sb_info_s {
-	struct pvfs2_khandle root_khandle;
+	struct orangefs_khandle root_khandle;
 	__s32 fs_id;
 	int id;
 	int flags;
@@ -374,7 +374,7 @@ struct pvfs2_sb_info_s {
 */
 struct pvfs2_mount_sb_info_s {
 	void *data;
-	struct pvfs2_khandle root_khandle;
+	struct orangefs_khandle root_khandle;
 	__s32 fs_id;
 	int id;
 };
@@ -442,7 +442,7 @@ static inline struct pvfs2_sb_info_s *PVFS2_SB(struct super_block *sb)
 }
 
 /* ino_t descends from "unsigned long", 8 bytes, 64 bits. */
-static inline ino_t orangefs_khandle_to_ino(struct pvfs2_khandle *khandle)
+static inline ino_t orangefs_khandle_to_ino(struct orangefs_khandle *khandle)
 {
 	union {
 		unsigned char u[8];
@@ -461,7 +461,7 @@ static inline ino_t orangefs_khandle_to_ino(struct pvfs2_khandle *khandle)
 	return ihandle.ino;
 }
 
-static inline struct pvfs2_khandle *get_khandle_from_ino(struct inode *inode)
+static inline struct orangefs_khandle *get_khandle_from_ino(struct inode *inode)
 {
 	return &(PVFS2_I(inode)->refn.khandle);
 }
@@ -473,7 +473,7 @@ static inline __s32 get_fsid_from_ino(struct inode *inode)
 
 static inline ino_t get_ino_from_khandle(struct inode *inode)
 {
-	struct pvfs2_khandle *khandle;
+	struct orangefs_khandle *khandle;
 	ino_t ino;
 
 	khandle = get_khandle_from_ino(inode);
@@ -501,7 +501,7 @@ static inline int is_root_handle(struct inode *inode)
 		return 1;
 }
 
-static inline int match_handle(struct pvfs2_khandle resp_handle,
+static inline int match_handle(struct orangefs_khandle resp_handle,
 			       struct inode *inode)
 {
 	gossip_debug(GOSSIP_DCACHE_DEBUG,

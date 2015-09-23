@@ -106,7 +106,7 @@ static ssize_t wait_for_direct_io(enum PVFS_io_type type, struct inode *inode,
 		size_t total_size, loff_t readahead_size)
 {
 	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
-	struct pvfs2_khandle *handle = &pvfs2_inode->refn.khandle;
+	struct orangefs_khandle *handle = &pvfs2_inode->refn.khandle;
 	struct pvfs2_bufmap *bufmap = NULL;
 	struct pvfs2_kernel_op_s *new_op = NULL;
 	int buffer_index = -1;
@@ -441,7 +441,7 @@ static ssize_t do_readv_writev(enum PVFS_io_type type, struct file *file,
 {
 	struct inode *inode = file->f_mapping->host;
 	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
-	struct pvfs2_khandle *handle = &pvfs2_inode->refn.khandle;
+	struct orangefs_khandle *handle = &pvfs2_inode->refn.khandle;
 	ssize_t ret;
 	ssize_t total_count;
 	unsigned int to_free;

@@ -37,7 +37,7 @@ static long decode_dirents(char *ptr, struct orangefs_readdir_response_s *readdi
 		dec_string(pptr, &readdir->dirent_array[i].d_name,
 			   &readdir->dirent_array[i].d_length);
 		readdir->dirent_array[i].khandle =
-			*(struct pvfs2_khandle *) *pptr;
+			*(struct orangefs_khandle *) *pptr;
 		*pptr += 16;
 	}
 	return (unsigned long)*pptr - (unsigned long)ptr;
