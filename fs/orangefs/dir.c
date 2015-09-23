@@ -349,7 +349,7 @@ out_free_op:
 	return ret;
 }
 
-static int pvfs2_dir_open(struct inode *inode, struct file *file)
+static int orangefs_dir_open(struct inode *inode, struct file *file)
 {
 	__u64 *ptoken;
 
@@ -373,6 +373,6 @@ static int orangefs_dir_release(struct inode *inode, struct file *file)
 const struct file_operations orangefs_dir_operations = {
 	.read = generic_read_dir,
 	.iterate = pvfs2_readdir,
-	.open = pvfs2_dir_open,
+	.open = orangefs_dir_open,
 	.release = orangefs_dir_release,
 };
