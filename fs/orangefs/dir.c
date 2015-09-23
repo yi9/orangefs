@@ -110,7 +110,7 @@ static int pvfs2_readdir(struct file *file, struct dir_context *ctx)
 	ino_t ino = 0;
 	struct dentry *dentry = file->f_path.dentry;
 	struct pvfs2_kernel_op_s *new_op = NULL;
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(dentry->d_inode);
+	struct pvfs2_inode_s *orangefs_inode = PVFS2_I(dentry->d_inode);
 	int buffer_full = 0;
 	struct readdir_handle_s rhandle;
 	int i = 0;
@@ -147,7 +147,7 @@ static int pvfs2_readdir(struct file *file, struct dir_context *ctx)
 		return -ENOMEM;
 
 	new_op->uses_shared_memory = 1;
-	new_op->upcall.req.readdir.refn = pvfs2_inode->refn;
+	new_op->upcall.req.readdir.refn = orangefs_inode->refn;
 	new_op->upcall.req.readdir.max_dirent_count = MAX_DIRENT_COUNT_READDIR;
 
 	gossip_debug(GOSSIP_DIR_DEBUG,
