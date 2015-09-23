@@ -263,7 +263,7 @@ get_new_buffer_index:
 	     i++) {
 		len = rhandle.readdir_response.dirent_array[i].d_length;
 		current_entry = rhandle.readdir_response.dirent_array[i].d_name;
-		current_ino = pvfs2_khandle_to_ino(
+		current_ino = orangefs_khandle_to_ino(
 			&(rhandle.readdir_response.dirent_array[i].khandle));
 
 		gossip_debug(GOSSIP_DIR_DEBUG,
