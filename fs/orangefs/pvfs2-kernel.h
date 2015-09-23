@@ -681,7 +681,7 @@ extern struct inode_operations pvfs2_file_inode_operations;
 extern const struct file_operations pvfs2_file_operations;
 extern struct inode_operations pvfs2_symlink_inode_operations;
 extern struct inode_operations pvfs2_dir_inode_operations;
-extern const struct file_operations pvfs2_dir_operations;
+extern const struct file_operations orangefs_dir_operations;
 extern const struct dentry_operations pvfs2_dentry_operations;
 extern const struct file_operations pvfs2_devreq_file_operations;
 
