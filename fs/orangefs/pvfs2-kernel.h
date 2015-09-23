@@ -445,7 +445,7 @@ static inline struct pvfs2_sb_info_s *PVFS2_SB(struct super_block *sb)
 }
 
 /* ino_t descends from "unsigned long", 8 bytes, 64 bits. */
-static inline ino_t pvfs2_khandle_to_ino(struct pvfs2_khandle *khandle)
+static inline ino_t orangefs_khandle_to_ino(struct pvfs2_khandle *khandle)
 {
 	union {
 		unsigned char u[8];
@@ -480,7 +480,7 @@ static inline ino_t get_ino_from_khandle(struct inode *inode)
 	ino_t ino;
 
 	khandle = get_khandle_from_ino(inode);
-	ino = pvfs2_khandle_to_ino(khandle);
+	ino = orangefs_khandle_to_ino(khandle);
 	return ino;
 }
 

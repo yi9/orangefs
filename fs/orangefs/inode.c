@@ -342,7 +342,7 @@ static inline ino_t pvfs2_handle_hash(struct pvfs2_object_kref *ref)
 {
 	if (!ref)
 		return 0;
-	return pvfs2_khandle_to_ino(&(ref->khandle));
+	return orangefs_khandle_to_ino(&(ref->khandle));
 }
 
 /*
