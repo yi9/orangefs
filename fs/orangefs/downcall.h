@@ -127,7 +127,7 @@ struct pvfs2_downcall_s {
 	} resp;
 };
 
-struct pvfs2_readdir_response_s {
+struct orangefs_readdir_response_s {
 	__u64 token;
 	__u64 directory_version;
 	__u32 __pad2;
