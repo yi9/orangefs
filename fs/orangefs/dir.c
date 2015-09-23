@@ -362,7 +362,7 @@ static int pvfs2_dir_open(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static int pvfs2_dir_release(struct inode *inode, struct file *file)
+static int orangefs_dir_release(struct inode *inode, struct file *file)
 {
 	pvfs2_flush_inode(inode);
 	kfree(file->private_data);
@@ -374,5 +374,5 @@ const struct file_operations orangefs_dir_operations = {
 	.read = generic_read_dir,
 	.iterate = pvfs2_readdir,
 	.open = pvfs2_dir_open,
-	.release = pvfs2_dir_release,
+	.release = orangefs_dir_release,
 };
