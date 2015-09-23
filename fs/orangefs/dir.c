@@ -96,7 +96,7 @@ static void readdir_handle_dtor(struct pvfs2_bufmap *bufmap,
 /*
  * Read directory entries from an instance of an open directory.
  */
-static int pvfs2_readdir(struct file *file, struct dir_context *ctx)
+static int orangefs_readdir(struct file *file, struct dir_context *ctx)
 {
 	struct pvfs2_bufmap *bufmap = NULL;
 	int ret = 0;
@@ -339,7 +339,7 @@ static int orangefs_dir_release(struct inode *inode, struct file *file)
 /** PVFS2 implementation of VFS directory operations */
 const struct file_operations orangefs_dir_operations = {
 	.read = generic_read_dir,
-	.iterate = pvfs2_readdir,
+	.iterate = orangefs_readdir,
 	.open = orangefs_dir_open,
 	.release = orangefs_dir_release,
 };
