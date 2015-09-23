@@ -321,7 +321,7 @@ static int pvfs2_init_iops(struct inode *inode)
 		break;
 	case S_IFDIR:
 		inode->i_op = &pvfs2_dir_inode_operations;
-		inode->i_fop = &pvfs2_dir_operations;
+		inode->i_fop = &orangefs_dir_operations;
 		break;
 	default:
 		gossip_debug(GOSSIP_INODE_DEBUG,

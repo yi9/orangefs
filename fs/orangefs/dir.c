@@ -337,7 +337,7 @@ static int pvfs2_dir_release(struct inode *inode, struct file *file)
 }
 
 /** PVFS2 implementation of VFS directory operations */
-const struct file_operations pvfs2_dir_operations = {
+const struct file_operations orangefs_dir_operations = {
 	.read = generic_read_dir,
 	.iterate = pvfs2_readdir,
 	.open = pvfs2_dir_open,
