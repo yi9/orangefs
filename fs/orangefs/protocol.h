@@ -38,7 +38,7 @@ extern int cdm_element_count;
  * The kernel module will always use the first four bytes and
  * the last four bytes as an inum.
  */
-struct pvfs2_khandle {
+struct orangefs_khandle {
 	unsigned char u[16];
 }  __aligned(8);
 
@@ -46,7 +46,7 @@ struct pvfs2_khandle {
  * kernel version of an object ref.
  */
 struct pvfs2_object_kref {
-	struct pvfs2_khandle khandle;
+	struct orangefs_khandle khandle;
 	__s32 fs_id;
 	__s32 __pad1;
 };
@@ -55,8 +55,8 @@ struct pvfs2_object_kref {
  * compare 2 khandles assumes little endian thus from large address to
  * small address
  */
-static inline int PVFS_khandle_cmp(const struct pvfs2_khandle *kh1,
-				   const struct pvfs2_khandle *kh2)
+static inline int PVFS_khandle_cmp(const struct orangefs_khandle *kh1,
+				   const struct orangefs_khandle *kh2)
 {
 	int i;
 
@@ -71,7 +71,7 @@ static inline int PVFS_khandle_cmp(const struct pvfs2_khandle *kh1,
 }
 
 /* copy a khandle to a field of arbitrary size */
-static inline void PVFS_khandle_to(const struct pvfs2_khandle *kh,
+static inline void PVFS_khandle_to(const struct orangefs_khandle *kh,
 				   void *p, int size)
 {
 	int i;
@@ -84,7 +84,7 @@ static inline void PVFS_khandle_to(const struct pvfs2_khandle *kh,
 }
 
 /* copy a khandle from a field of arbitrary size */
-static inline void PVFS_khandle_from(struct pvfs2_khandle *kh,
+static inline void PVFS_khandle_from(struct orangefs_khandle *kh,
 				     void *p, int size)
 {
 	int i;

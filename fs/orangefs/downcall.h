@@ -51,7 +51,7 @@ struct pvfs2_mkdir_response {
 struct pvfs2_dirent {
 	char *d_name;
 	int d_length;
-	struct pvfs2_khandle khandle;
+	struct orangefs_khandle khandle;
 };
 
 struct pvfs2_statfs_response {
@@ -65,7 +65,7 @@ struct pvfs2_statfs_response {
 struct pvfs2_fs_mount_response {
 	__s32 fs_id;
 	__s32 id;
-	struct pvfs2_khandle root_khandle;
+	struct orangefs_khandle root_khandle;
 };
 
 /* the getxattr response is the attribute value */
