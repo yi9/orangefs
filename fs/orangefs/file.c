@@ -29,7 +29,7 @@ do {							\
  *       can futher be kernel-space or user-space addresses.
  *       or it can pointers to struct page's
  */
-static int precopy_buffers(struct pvfs2_bufmap *bufmap,
+static int precopy_buffers(struct orangefs_bufmap *bufmap,
 			   int buffer_index,
 			   const struct iovec *vec,
 			   unsigned long nr_segs,
@@ -70,7 +70,7 @@ static int precopy_buffers(struct pvfs2_bufmap *bufmap,
  *       can futher be kernel-space or user-space addresses.
  *       or it can pointers to struct page's
  */
-static int postcopy_buffers(struct pvfs2_bufmap *bufmap,
+static int postcopy_buffers(struct orangefs_bufmap *bufmap,
 			    int buffer_index,
 			    const struct iovec *vec,
 			    int nr_segs,
@@ -107,7 +107,7 @@ static ssize_t wait_for_direct_io(enum PVFS_io_type type, struct inode *inode,
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct orangefs_khandle *handle = &pvfs2_inode->refn.khandle;
-	struct pvfs2_bufmap *bufmap = NULL;
+	struct orangefs_bufmap *bufmap = NULL;
 	struct orangefs_kernel_op_s *new_op = NULL;
 	int buffer_index = -1;
 	ssize_t ret;

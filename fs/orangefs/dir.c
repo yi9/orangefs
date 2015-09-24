@@ -71,7 +71,7 @@ static long readdir_handle_ctor(struct readdir_handle_s *rhandle, void *buf,
 	return ret;
 }
 
-static void readdir_handle_dtor(struct pvfs2_bufmap *bufmap,
+static void readdir_handle_dtor(struct orangefs_bufmap *bufmap,
 		struct readdir_handle_s *rhandle)
 {
 	if (rhandle == NULL)
@@ -98,7 +98,7 @@ static void readdir_handle_dtor(struct pvfs2_bufmap *bufmap,
  */
 static int orangefs_readdir(struct file *file, struct dir_context *ctx)
 {
-	struct pvfs2_bufmap *bufmap = NULL;
+	struct orangefs_bufmap *bufmap = NULL;
 	int ret = 0;
 	int buffer_index;
 	/*
