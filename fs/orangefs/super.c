@@ -80,7 +80,7 @@ fail:
 
 static void pvfs2_inode_cache_ctor(void *req)
 {
-	struct pvfs2_inode_s *pvfs2_inode = req;
+	struct orangefs_inode_s *pvfs2_inode = req;
 
 	inode_init_once(&pvfs2_inode->vfs_inode);
 	init_rwsem(&pvfs2_inode->xattr_sem);
@@ -90,7 +90,7 @@ static void pvfs2_inode_cache_ctor(void *req)
 
 static struct inode *pvfs2_alloc_inode(struct super_block *sb)
 {
-	struct pvfs2_inode_s *pvfs2_inode;
+	struct orangefs_inode_s *pvfs2_inode;
 
 	pvfs2_inode = kmem_cache_alloc(pvfs2_inode_cache,
 				       PVFS2_CACHE_ALLOC_FLAGS);
@@ -117,7 +117,7 @@ static struct inode *pvfs2_alloc_inode(struct super_block *sb)
 
 static void pvfs2_destroy_inode(struct inode *inode)
 {
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 			"%s: deallocated %p destroying inode %pU\n",
@@ -261,7 +261,7 @@ void fsid_key_table_finalize(void)
 /* Called whenever the VFS dirties the inode in response to atime updates */
 static void pvfs2_dirty_inode(struct inode *inode, int flags)
 {
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 		     "pvfs2_dirty_inode: %pU\n",
@@ -539,7 +539,7 @@ void pvfs2_kill_sb(struct super_block *sb)
 int pvfs2_inode_cache_initialize(void)
 {
 	pvfs2_inode_cache = kmem_cache_create("pvfs2_inode_cache",
-					      sizeof(struct pvfs2_inode_s),
+					      sizeof(struct orangefs_inode_s),
 					      0,
 					      PVFS2_CACHE_CREATE_FLAGS,
 					      pvfs2_inode_cache_ctor);

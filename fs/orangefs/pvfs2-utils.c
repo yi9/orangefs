@@ -105,7 +105,7 @@ static int copy_attributes_to_inode(struct inode *inode,
 {
 	int ret = -1;
 	int perm_mode = 0;
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	loff_t inode_size = 0;
 	loff_t rounded_up_size = 0;
 
@@ -355,7 +355,7 @@ static inline int copy_attributes_from_inode(struct inode *inode,
  */
 int pvfs2_inode_getattr(struct inode *inode, __u32 getattr_mask)
 {
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct pvfs2_kernel_op_s *new_op;
 	int ret = -EINVAL;
 
@@ -417,7 +417,7 @@ out:
  */
 int pvfs2_inode_setattr(struct inode *inode, struct iattr *iattr)
 {
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct pvfs2_kernel_op_s *new_op;
 	int ret;
 
@@ -472,7 +472,7 @@ int orangefs_flush_inode(struct inode *inode)
 	int ctime_flag;
 	int atime_flag;
 	int mode_flag;
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 
 	memset(&wbattr, 0, sizeof(wbattr));
 

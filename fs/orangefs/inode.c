@@ -158,7 +158,7 @@ const struct address_space_operations pvfs2_address_operations = {
 
 static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
 {
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct pvfs2_kernel_op_s *new_op;
 	loff_t orig_size = i_size_read(inode);
 	int ret = -EINVAL;
@@ -265,7 +265,7 @@ int pvfs2_getattr(struct vfsmount *mnt,
 {
 	int ret = -ENOENT;
 	struct inode *inode = dentry->d_inode;
-	struct pvfs2_inode_s *pvfs2_inode = NULL;
+	struct orangefs_inode_s *pvfs2_inode = NULL;
 
 	gossip_debug(GOSSIP_INODE_DEBUG,
 		     "pvfs2_getattr: called on %s\n",
@@ -351,7 +351,7 @@ static inline ino_t pvfs2_handle_hash(struct pvfs2_object_kref *ref)
 static int pvfs2_set_inode(struct inode *inode, void *data)
 {
 	struct pvfs2_object_kref *ref = (struct pvfs2_object_kref *) data;
-	struct pvfs2_inode_s *pvfs2_inode = NULL;
+	struct orangefs_inode_s *pvfs2_inode = NULL;
 
 	/* Make sure that we have sane parameters */
 	if (!data || !inode)
@@ -370,7 +370,7 @@ static int pvfs2_set_inode(struct inode *inode, void *data)
 static int pvfs2_test_inode(struct inode *inode, void *data)
 {
 	struct pvfs2_object_kref *ref = (struct pvfs2_object_kref *) data;
-	struct pvfs2_inode_s *pvfs2_inode = NULL;
+	struct orangefs_inode_s *pvfs2_inode = NULL;
 
 	pvfs2_inode = PVFS2_I(inode);
 	return (!PVFS_khandle_cmp(&(pvfs2_inode->refn.khandle), &(ref->khandle))

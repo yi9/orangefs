@@ -19,7 +19,7 @@ static int pvfs2_create(struct inode *dir,
 			umode_t mode,
 			bool exclusive)
 {
-	struct pvfs2_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = PVFS2_I(dir);
 	struct pvfs2_kernel_op_s *new_op;
 	struct inode *inode;
 	int ret;
@@ -89,7 +89,7 @@ out:
 static struct dentry *pvfs2_lookup(struct inode *dir, struct dentry *dentry,
 				   unsigned int flags)
 {
-	struct pvfs2_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = PVFS2_I(dir);
 	struct pvfs2_kernel_op_s *new_op;
 	struct inode *inode;
 	struct dentry *res;
@@ -205,7 +205,7 @@ out:
 static int pvfs2_unlink(struct inode *dir, struct dentry *dentry)
 {
 	struct inode *inode = dentry->d_inode;
-	struct pvfs2_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = PVFS2_I(dir);
 	struct pvfs2_kernel_op_s *new_op;
 	int ret;
 
@@ -271,7 +271,7 @@ static int pvfs2_symlink(struct inode *dir,
 			 struct dentry *dentry,
 			 const char *symname)
 {
-	struct pvfs2_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = PVFS2_I(dir);
 	struct pvfs2_kernel_op_s *new_op;
 	struct inode *inode;
 	int mode = 755;
@@ -343,7 +343,7 @@ out:
 
 static int pvfs2_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 {
-	struct pvfs2_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = PVFS2_I(dir);
 	struct pvfs2_kernel_op_s *new_op;
 	struct inode *inode;
 	int ret;

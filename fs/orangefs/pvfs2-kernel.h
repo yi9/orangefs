@@ -312,7 +312,7 @@ struct pvfs2_kernel_op_s {
 };
 
 /* per inode private pvfs2 info */
-struct pvfs2_inode_s {
+struct orangefs_inode_s {
 	struct pvfs2_object_kref refn;
 	char link_target[PVFS_NAME_MAX];
 	__s64 blksize;
@@ -434,9 +434,9 @@ extern struct pvfs2_stats g_pvfs2_stats;
   NOTE: See Documentation/filesystems/porting for information
   on implementing FOO_I and properly accessing fs private data
 */
-static inline struct pvfs2_inode_s *PVFS2_I(struct inode *inode)
+static inline struct orangefs_inode_s *PVFS2_I(struct inode *inode)
 {
-	return container_of(inode, struct pvfs2_inode_s, vfs_inode);
+	return container_of(inode, struct orangefs_inode_s, vfs_inode);
 }
 
 static inline struct pvfs2_sb_info_s *PVFS2_SB(struct super_block *sb)

@@ -16,7 +16,7 @@ static int pvfs2_revalidate_lookup(struct dentry *dentry)
 {
 	struct dentry *parent_dentry = dget_parent(dentry);
 	struct inode *parent_inode = parent_dentry->d_inode;
-	struct pvfs2_inode_s *parent = PVFS2_I(parent_inode);
+	struct orangefs_inode_s *parent = PVFS2_I(parent_inode);
 	struct inode *inode = dentry->d_inode;
 	struct pvfs2_kernel_op_s *new_op;
 	int ret = 0;
