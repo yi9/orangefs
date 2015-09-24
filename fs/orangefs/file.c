@@ -105,7 +105,7 @@ static ssize_t wait_for_direct_io(enum PVFS_io_type type, struct inode *inode,
 		loff_t *offset, struct iovec *vec, unsigned long nr_segs,
 		size_t total_size, loff_t readahead_size)
 {
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct orangefs_khandle *handle = &pvfs2_inode->refn.khandle;
 	struct pvfs2_bufmap *bufmap = NULL;
 	struct pvfs2_kernel_op_s *new_op = NULL;
@@ -440,7 +440,7 @@ static ssize_t do_readv_writev(enum PVFS_io_type type, struct file *file,
 		loff_t *offset, const struct iovec *iov, unsigned long nr_segs)
 {
 	struct inode *inode = file->f_mapping->host;
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct orangefs_khandle *handle = &pvfs2_inode->refn.khandle;
 	ssize_t ret;
 	ssize_t total_count;
@@ -657,7 +657,7 @@ ssize_t pvfs2_inode_read(struct inode *inode,
 			 loff_t *offset,
 			 loff_t readahead_size)
 {
-	struct pvfs2_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	size_t bufmap_size;
 	struct iovec vec;
 	ssize_t ret = -EINVAL;
@@ -895,7 +895,7 @@ static int pvfs2_fsync(struct file *file,
 		       int datasync)
 {
 	int ret = -EINVAL;
-	struct pvfs2_inode_s *pvfs2_inode =
+	struct orangefs_inode_s *pvfs2_inode =
 		PVFS2_I(file->f_path.dentry->d_inode);
 	struct pvfs2_kernel_op_s *new_op = NULL;
 
