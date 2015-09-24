@@ -9,7 +9,7 @@
 
 DECLARE_WAIT_QUEUE_HEAD(pvfs2_bufmap_init_waitq);
 
-static struct pvfs2_bufmap {
+static struct orangefs_bufmap {
 	atomic_t refcnt;
 
 	int desc_size;
@@ -33,7 +33,7 @@ static struct pvfs2_bufmap {
 static DEFINE_SPINLOCK(pvfs2_bufmap_lock);
 
 static void
-pvfs2_bufmap_unmap(struct pvfs2_bufmap *bufmap)
+pvfs2_bufmap_unmap(struct orangefs_bufmap *bufmap)
 {
 	int i;
 
@@ -42,7 +42,7 @@ pvfs2_bufmap_unmap(struct pvfs2_bufmap *bufmap)
 }
 
 static void
-pvfs2_bufmap_free(struct pvfs2_bufmap *bufmap)
+pvfs2_bufmap_free(struct orangefs_bufmap *bufmap)
 {
 	kfree(bufmap->page_array);
 	kfree(bufmap->desc_array);
@@ -50,9 +50,9 @@ pvfs2_bufmap_free(struct pvfs2_bufmap *bufmap)
 	kfree(bufmap);
 }
 
-struct pvfs2_bufmap *pvfs2_bufmap_ref(void)
+struct orangefs_bufmap *pvfs2_bufmap_ref(void)
 {
-	struct pvfs2_bufmap *bufmap = NULL;
+	struct orangefs_bufmap *bufmap = NULL;
 
 	spin_lock(&pvfs2_bufmap_lock);
 	if (__pvfs2_bufmap) {
@@ -63,7 +63,7 @@ struct pvfs2_bufmap *pvfs2_bufmap_ref(void)
 	return bufmap;
 }
 
-void pvfs2_bufmap_unref(struct pvfs2_bufmap *bufmap)
+void pvfs2_bufmap_unref(struct orangefs_bufmap *bufmap)
 {
 	if (atomic_dec_and_lock(&bufmap->refcnt, &pvfs2_bufmap_lock)) {
 		__pvfs2_bufmap = NULL;
@@ -76,7 +76,7 @@ void pvfs2_bufmap_unref(struct pvfs2_bufmap *bufmap)
 
 inline int pvfs_bufmap_size_query(void)
 {
-	struct pvfs2_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
 	int size = bufmap ? bufmap->desc_size : 0;
 
 	pvfs2_bufmap_unref(bufmap);
@@ -85,7 +85,7 @@ inline int pvfs_bufmap_size_query(void)
 
 inline int pvfs_bufmap_shift_query(void)
 {
-	struct pvfs2_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
 	int shift = bufmap ? bufmap->desc_shift : 0;
 
 	pvfs2_bufmap_unref(bufmap);
@@ -109,10 +109,10 @@ int get_bufmap_init(void)
 }
 
 
-static struct pvfs2_bufmap *
+static struct orangefs_bufmap *
 pvfs2_bufmap_alloc(struct PVFS_dev_map_desc *user_desc)
 {
-	struct pvfs2_bufmap *bufmap;
+	struct orangefs_bufmap *bufmap;
 
 	bufmap = kzalloc(sizeof(*bufmap), GFP_KERNEL);
 	if (!bufmap)
@@ -164,7 +164,7 @@ out:
 }
 
 static int
-pvfs2_bufmap_map(struct pvfs2_bufmap *bufmap,
+pvfs2_bufmap_map(struct orangefs_bufmap *bufmap,
 		struct PVFS_dev_map_desc *user_desc)
 {
 	int pages_per_desc = bufmap->desc_size / PAGE_SIZE;
@@ -226,7 +226,7 @@ pvfs2_bufmap_map(struct pvfs2_bufmap *bufmap,
  */
 int pvfs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 {
-	struct pvfs2_bufmap *bufmap;
+	struct orangefs_bufmap *bufmap;
 	int ret = -EINVAL;
 
 	gossip_debug(GOSSIP_BUFMAP_DEBUG,
@@ -421,9 +421,9 @@ static void put_back_slot(struct slot_args *slargs, int buffer_index)
  *
  * returns 0 on success, -errno on failure
  */
-int pvfs_bufmap_get(struct pvfs2_bufmap **mapp, int *buffer_index)
+int pvfs_bufmap_get(struct orangefs_bufmap **mapp, int *buffer_index)
 {
-	struct pvfs2_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
 	struct slot_args slargs;
 	int ret;
 
@@ -450,7 +450,7 @@ int pvfs_bufmap_get(struct pvfs2_bufmap **mapp, int *buffer_index)
  *
  * no return value
  */
-void pvfs_bufmap_put(struct pvfs2_bufmap *bufmap, int buffer_index)
+void pvfs_bufmap_put(struct orangefs_bufmap *bufmap, int buffer_index)
 {
 	struct slot_args slargs;
 
@@ -473,9 +473,9 @@ void pvfs_bufmap_put(struct pvfs2_bufmap *bufmap, int buffer_index)
  *
  * returns 0 on success, -errno on failure
  */
-int readdir_index_get(struct pvfs2_bufmap **mapp, int *buffer_index)
+int readdir_index_get(struct orangefs_bufmap **mapp, int *buffer_index)
 {
-	struct pvfs2_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
 	struct slot_args slargs;
 	int ret;
 
@@ -495,7 +495,7 @@ int readdir_index_get(struct pvfs2_bufmap **mapp, int *buffer_index)
 	return ret;
 }
 
-void readdir_index_put(struct pvfs2_bufmap *bufmap, int buffer_index)
+void readdir_index_put(struct orangefs_bufmap *bufmap, int buffer_index)
 {
 	struct slot_args slargs;
 
@@ -507,7 +507,7 @@ void readdir_index_put(struct pvfs2_bufmap *bufmap, int buffer_index)
 	pvfs2_bufmap_unref(bufmap);
 }
 
-int pvfs_bufmap_copy_from_iovec(struct pvfs2_bufmap *bufmap,
+int pvfs_bufmap_copy_from_iovec(struct orangefs_bufmap *bufmap,
                                     struct iov_iter *iter,
                                     int buffer_index,
                                     size_t size)
@@ -540,7 +540,7 @@ int pvfs_bufmap_copy_from_iovec(struct pvfs2_bufmap *bufmap,
  * a file being read.
  *
  */
-int pvfs_bufmap_copy_to_iovec(struct pvfs2_bufmap *bufmap,
+int pvfs_bufmap_copy_to_iovec(struct orangefs_bufmap *bufmap,
 				    struct iov_iter *iter,
 				    int buffer_index)
 {
