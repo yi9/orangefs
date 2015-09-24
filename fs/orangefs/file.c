@@ -108,7 +108,7 @@ static ssize_t wait_for_direct_io(enum PVFS_io_type type, struct inode *inode,
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct orangefs_khandle *handle = &pvfs2_inode->refn.khandle;
 	struct pvfs2_bufmap *bufmap = NULL;
-	struct pvfs2_kernel_op_s *new_op = NULL;
+	struct orangefs_kernel_op_s *new_op = NULL;
 	int buffer_index = -1;
 	ssize_t ret;
 
@@ -897,7 +897,7 @@ static int pvfs2_fsync(struct file *file,
 	int ret = -EINVAL;
 	struct orangefs_inode_s *pvfs2_inode =
 		PVFS2_I(file->f_path.dentry->d_inode);
-	struct pvfs2_kernel_op_s *new_op = NULL;
+	struct orangefs_kernel_op_s *new_op = NULL;
 
 	/* required call */
 	filemap_write_and_wait_range(file->f_mapping, start, end);

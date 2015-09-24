@@ -752,7 +752,7 @@ out:
  */
 static int sysfs_service_op_show(char *kobj_id, char *buf, void *attr)
 {
-	struct pvfs2_kernel_op_s *new_op = NULL;
+	struct orangefs_kernel_op_s *new_op = NULL;
 	int rc = 0;
 	char *ser_op_type = NULL;
 	struct orangefs_attribute *orangefs_attr;
@@ -1025,7 +1025,7 @@ static ssize_t
  */
 static int sysfs_service_op_store(char *kobj_id, const char *buf, void *attr)
 {
-	struct pvfs2_kernel_op_s *new_op = NULL;
+	struct orangefs_kernel_op_s *new_op = NULL;
 	int val = 0;
 	int rc = 0;
 	struct orangefs_attribute *orangefs_attr;

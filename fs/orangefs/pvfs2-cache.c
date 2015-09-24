@@ -25,7 +25,7 @@ static struct kmem_cache *pvfs2_kiocb_cache;
 int op_cache_initialize(void)
 {
 	op_cache = kmem_cache_create("pvfs2_op_cache",
-				     sizeof(struct pvfs2_kernel_op_s),
+				     sizeof(struct orangefs_kernel_op_s),
 				     0,
 				     PVFS2_CACHE_CREATE_FLAGS,
 				     NULL);
@@ -48,7 +48,7 @@ int op_cache_finalize(void)
 	return 0;
 }
 
-char *get_opname_string(struct pvfs2_kernel_op_s *new_op)
+char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 {
 	if (new_op) {
 		__s32 type = new_op->upcall.type;
@@ -109,13 +109,13 @@ char *get_opname_string(struct pvfs2_kernel_op_s *new_op)
 	return "OP_UNKNOWN?";
 }
 
-static struct pvfs2_kernel_op_s *op_alloc_common(__s32 op_linger, __s32 type)
+static struct orangefs_kernel_op_s *op_alloc_common(__s32 op_linger, __s32 type)
 {
-	struct pvfs2_kernel_op_s *new_op = NULL;
+	struct orangefs_kernel_op_s *new_op = NULL;
 
 	new_op = kmem_cache_alloc(op_cache, PVFS2_CACHE_ALLOC_FLAGS);
 	if (new_op) {
-		memset(new_op, 0, sizeof(struct pvfs2_kernel_op_s));
+		memset(new_op, 0, sizeof(struct orangefs_kernel_op_s));
 
 		INIT_LIST_HEAD(&new_op->list);
 		spin_lock_init(&new_op->lock);
@@ -153,17 +153,17 @@ static struct pvfs2_kernel_op_s *op_alloc_common(__s32 op_linger, __s32 type)
 	return new_op;
 }
 
-struct pvfs2_kernel_op_s *op_alloc(__s32 type)
+struct orangefs_kernel_op_s *op_alloc(__s32 type)
 {
 	return op_alloc_common(1, type);
 }
 
-struct pvfs2_kernel_op_s *op_alloc_trailer(__s32 type)
+struct orangefs_kernel_op_s *op_alloc_trailer(__s32 type)
 {
 	return op_alloc_common(2, type);
 }
 
-void op_release(struct pvfs2_kernel_op_s *pvfs2_op)
+void op_release(struct orangefs_kernel_op_s *pvfs2_op)
 {
 	if (pvfs2_op) {
 		gossip_debug(GOSSIP_CACHE_DEBUG,

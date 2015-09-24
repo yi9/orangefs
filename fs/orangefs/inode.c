@@ -159,7 +159,7 @@ const struct address_space_operations pvfs2_address_operations = {
 static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
-	struct pvfs2_kernel_op_s *new_op;
+	struct orangefs_kernel_op_s *new_op;
 	loff_t orig_size = i_size_read(inode);
 	int ret = -EINVAL;
 
