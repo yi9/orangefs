@@ -178,7 +178,7 @@ get_new_buffer_index:
 	if (ret == -EAGAIN && op_state_purged(new_op)) {
 		/*
 		 * readdir shared memory aread has been wiped due to
-		 * pvfs2-client-core restarting, so we must get a new
+		 * orangefs-client-core restarting, so we must get a new
 		 * index into the shared memory.
 		 */
 		gossip_debug(GOSSIP_DIR_DEBUG,
@@ -227,7 +227,7 @@ get_new_buffer_index:
 	}
 
 	/*
-	 *  pvfs2 doesn't actually store dot and dot-dot, but
+	 *  orangefs doesn't actually store dot and dot-dot, but
 	 *  we need to have them represented.
 	 */
 	if (pos == 0) {
