@@ -168,7 +168,7 @@ int pvfs2_init_acl(struct inode *inode, struct inode *dir)
 	if (mode != inode->i_mode) {
 		SetModeFlag(pvfs2_inode);
 		inode->i_mode = mode;
-		pvfs2_flush_inode(inode);
+		orangefs_flush_inode(inode);
 	}
 
 	return error;

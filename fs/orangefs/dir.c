@@ -331,7 +331,7 @@ static int orangefs_dir_open(struct inode *inode, struct file *file)
 
 static int orangefs_dir_release(struct inode *inode, struct file *file)
 {
-	pvfs2_flush_inode(inode);
+	orangefs_flush_inode(inode);
 	kfree(file->private_data);
 	return 0;
 }

@@ -871,7 +871,7 @@ static int pvfs2_file_release(struct inode *inode, struct file *file)
 		     "pvfs2_file_release: called on %s\n",
 		     file->f_path.dentry->d_name.name);
 
-	pvfs2_flush_inode(inode);
+	orangefs_flush_inode(inode);
 
 	/*
 	 * remove all associated inode pages from the page cache and mmap
@@ -917,7 +917,7 @@ static int pvfs2_fsync(struct file *file,
 
 	op_release(new_op);
 
-	pvfs2_flush_inode(file->f_path.dentry->d_inode);
+	orangefs_flush_inode(file->f_path.dentry->d_inode);
 	return ret;
 }
 
