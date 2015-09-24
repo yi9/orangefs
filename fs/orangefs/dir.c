@@ -218,16 +218,9 @@ get_new_buffer_index:
 	}
 
 	if (bytes_decoded != new_op->downcall.trailer_size) {
-<<<<<<< HEAD
 		gossip_err("orangefs_readdir: # bytes decoded (%ld) != trailer size (%ld)\n",
 			bytes_decoded,
 			(long)new_op->downcall.trailer_size);
-=======
-		gossip_err("pvfs2_readdir: # bytes decoded (%ld) "
-			   "!= trailer size (%ld)\n",
-			   bytes_decoded,
-			   (long)new_op->downcall.trailer_size);
->>>>>>> iov_iter
 		ret = -EINVAL;
 		goto out_destroy_handle;
 	}
