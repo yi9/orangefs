@@ -8,7 +8,7 @@
 #include "pvfs2-dev-proto.h"
 #include "pvfs2-bufmap.h"
 
-__s32 fsid_of_op(struct pvfs2_kernel_op_s *op)
+__s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 {
 	__s32 fsid = PVFS_FS_ID_NULL;
 
@@ -356,7 +356,7 @@ static inline int copy_attributes_from_inode(struct inode *inode,
 int pvfs2_inode_getattr(struct inode *inode, __u32 getattr_mask)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
-	struct pvfs2_kernel_op_s *new_op;
+	struct orangefs_kernel_op_s *new_op;
 	int ret = -EINVAL;
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
@@ -418,7 +418,7 @@ out:
 int pvfs2_inode_setattr(struct inode *inode, struct iattr *iattr)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
-	struct pvfs2_kernel_op_s *new_op;
+	struct orangefs_kernel_op_s *new_op;
 	int ret;
 
 	new_op = op_alloc(PVFS2_VFS_OP_SETATTR);
@@ -533,7 +533,7 @@ int orangefs_flush_inode(struct inode *inode)
 int pvfs2_unmount_sb(struct super_block *sb)
 {
 	int ret = -EINVAL;
-	struct pvfs2_kernel_op_s *new_op = NULL;
+	struct orangefs_kernel_op_s *new_op = NULL;
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "pvfs2_unmount_sb called on sb %p\n",
@@ -572,7 +572,7 @@ int pvfs2_unmount_sb(struct super_block *sb)
 int pvfs2_cancel_op_in_progress(__u64 tag)
 {
 	int ret = -EINVAL;
-	struct pvfs2_kernel_op_s *new_op = NULL;
+	struct orangefs_kernel_op_s *new_op = NULL;
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "pvfs2_cancel_op_in_progress called on tag %llu\n",
@@ -597,7 +597,7 @@ int pvfs2_cancel_op_in_progress(__u64 tag)
 	return ret;
 }
 
-void pvfs2_op_initialize(struct pvfs2_kernel_op_s *op)
+void pvfs2_op_initialize(struct orangefs_kernel_op_s *op)
 {
 	if (op) {
 		spin_lock(&op->lock);

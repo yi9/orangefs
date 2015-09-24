@@ -39,7 +39,7 @@ static int hash_func(__u64 tag, int table_size)
 	return do_div(tag, (unsigned int)table_size);
 }
 
-static void pvfs2_devreq_add_op(struct pvfs2_kernel_op_s *op)
+static void pvfs2_devreq_add_op(struct orangefs_kernel_op_s *op)
 {
 	int index = hash_func(op->tag, hash_table_size);
 
@@ -48,9 +48,9 @@ static void pvfs2_devreq_add_op(struct pvfs2_kernel_op_s *op)
 	spin_unlock(&htable_ops_in_progress_lock);
 }
 
-static struct pvfs2_kernel_op_s *pvfs2_devreq_remove_op(__u64 tag)
+static struct orangefs_kernel_op_s *pvfs2_devreq_remove_op(__u64 tag)
 {
-	struct pvfs2_kernel_op_s *op, *next;
+	struct orangefs_kernel_op_s *op, *next;
 	int index;
 
 	index = hash_func(tag, hash_table_size);
@@ -106,7 +106,7 @@ static ssize_t pvfs2_devreq_read(struct file *file,
 {
 	int ret = 0;
 	ssize_t len = 0;
-	struct pvfs2_kernel_op_s *cur_op = NULL;
+	struct orangefs_kernel_op_s *cur_op = NULL;
 	static __s32 magic = PVFS2_DEVREQ_MAGIC;
 	__s32 proto_ver = PVFS_KERNEL_PROTO_VERSION;
 
@@ -115,7 +115,7 @@ static ssize_t pvfs2_devreq_read(struct file *file,
 		gossip_err("pvfs2: blocking reads are not supported! (pvfs2-client-core bug)\n");
 		return -EINVAL;
 	} else {
-		struct pvfs2_kernel_op_s *op = NULL, *temp = NULL;
+		struct orangefs_kernel_op_s *op = NULL, *temp = NULL;
 		/* get next op (if any) from top of list */
 		spin_lock(&pvfs2_request_list_lock);
 		list_for_each_entry_safe(op, temp, &pvfs2_request_list, list) {
@@ -264,7 +264,7 @@ static ssize_t pvfs2_devreq_writev(struct file *file,
 				   size_t count,
 				   loff_t *offset)
 {
-	struct pvfs2_kernel_op_s *op = NULL;
+	struct orangefs_kernel_op_s *op = NULL;
 	void *buffer = NULL;
 	void *ptr = NULL;
 	unsigned long i = 0;
