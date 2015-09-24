@@ -458,7 +458,7 @@ int pvfs2_inode_setattr(struct inode *inode, struct iattr *iattr)
 	return ret;
 }
 
-int pvfs2_flush_inode(struct inode *inode)
+int orangefs_flush_inode(struct inode *inode)
 {
 	/*
 	 * If it is a dirty inode, this function gets called.
@@ -510,18 +510,18 @@ int pvfs2_flush_inode(struct inode *inode)
 	}
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "*********** pvfs2_flush_inode: %pU "
+		     "*********** orangefs_flush_inode: %pU "
 		     "(ia_valid %d)\n",
 		     get_khandle_from_ino(inode),
 		     wbattr.ia_valid);
 	if (wbattr.ia_valid == 0) {
 		gossip_debug(GOSSIP_UTILS_DEBUG,
-			     "pvfs2_flush_inode skipping setattr()\n");
+			     "orangefs_flush_inode skipping setattr()\n");
 		return 0;
 	}
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "pvfs2_flush_inode (%pU) writing mode %o\n",
+		     "orangefs_flush_inode (%pU) writing mode %o\n",
 		     get_khandle_from_ino(inode),
 		     inode->i_mode);
 

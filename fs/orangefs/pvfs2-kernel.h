@@ -626,7 +626,7 @@ int fs_mount_pending(__s32 fsid);
  */
 __s32 fsid_of_op(struct pvfs2_kernel_op_s *op);
 
-int pvfs2_flush_inode(struct inode *inode);
+int orangefs_flush_inode(struct inode *inode);
 
 ssize_t pvfs2_inode_getxattr(struct inode *inode,
 			     const char *prefix,
