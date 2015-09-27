@@ -253,9 +253,9 @@ static int orangefs_link(struct dentry *old_dentry,
 }
 
 /*
- * PVFS2 does not support special files.
+ * ORANGEFS does not support special files.
  */
-static int pvfs2_mknod(struct inode *dir,
+static int orangefs_mknod(struct inode *dir,
 		       struct dentry *dentry,
 		       umode_t mode,
 		       dev_t rdev)
@@ -458,7 +458,7 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.symlink = pvfs2_symlink,
 	.mkdir = orangefs_mkdir,
 	.rmdir = orangefs_unlink,
-	.mknod = pvfs2_mknod,
+	.mknod = orangefs_mknod,
 	.rename = pvfs2_rename,
 	.setattr = pvfs2_setattr,
 	.getattr = pvfs2_getattr,
