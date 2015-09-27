@@ -14,7 +14,7 @@
 /*
  * Get a newly allocated inode to go with a negative dentry.
  */
-static int pvfs2_create(struct inode *dir,
+static int orangefs_create(struct inode *dir,
 			struct dentry *dentry,
 			umode_t mode,
 			bool exclusive)
@@ -315,7 +315,7 @@ static int pvfs2_symlink(struct inode *dir,
 				&new_op->downcall.resp.sym.refn);
 	if (IS_ERR(inode)) {
 		gossip_err
-		    ("*** Failed to allocate pvfs2 symlink inode\n");
+		    ("*** Failed to allocate orangefs symlink inode\n");
 		ret = PTR_ERR(inode);
 		goto out;
 	}
@@ -456,7 +456,7 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.lookup = pvfs2_lookup,
 	.get_acl = pvfs2_get_acl,
 	.set_acl = pvfs2_set_acl,
-	.create = pvfs2_create,
+	.create = orangefs_create,
 	.link = pvfs2_link,
 	.unlink = pvfs2_unlink,
 	.symlink = pvfs2_symlink,
