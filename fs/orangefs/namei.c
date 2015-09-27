@@ -86,7 +86,7 @@ out:
  * Attempt to resolve an object name (dentry->d_name), parent handle, and
  * fsid into a handle for the object.
  */
-static struct dentry *pvfs2_lookup(struct inode *dir, struct dentry *dentry,
+static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
 				   unsigned int flags)
 {
 	struct orangefs_inode_s *parent = PVFS2_I(dir);
@@ -449,7 +449,7 @@ static int pvfs2_rename(struct inode *old_dir,
 
 /* PVFS2 implementation of VFS inode operations for directories */
 struct inode_operations pvfs2_dir_inode_operations = {
-	.lookup = pvfs2_lookup,
+	.lookup = orangefs_lookup,
 	.get_acl = pvfs2_get_acl,
 	.set_acl = pvfs2_set_acl,
 	.create = orangefs_create,
