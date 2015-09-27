@@ -202,7 +202,7 @@ out:
 }
 
 /* return 0 on success; non-zero otherwise */
-static int pvfs2_unlink(struct inode *dir, struct dentry *dentry)
+static int orangefs_unlink(struct inode *dir, struct dentry *dentry)
 {
 	struct inode *inode = dentry->d_inode;
 	struct orangefs_inode_s *parent = PVFS2_I(dir);
@@ -458,10 +458,10 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.set_acl = pvfs2_set_acl,
 	.create = orangefs_create,
 	.link = pvfs2_link,
-	.unlink = pvfs2_unlink,
+	.unlink = orangefs_unlink,
 	.symlink = pvfs2_symlink,
 	.mkdir = pvfs2_mkdir,
-	.rmdir = pvfs2_unlink,
+	.rmdir = orangefs_unlink,
 	.mknod = pvfs2_mknod,
 	.rename = pvfs2_rename,
 	.setattr = pvfs2_setattr,
