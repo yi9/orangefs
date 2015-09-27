@@ -255,11 +255,11 @@ static int orangefs_link(struct dentry *old_dentry,
 }
 
 /*
- * pvfs2_mknod() is only implemented here to make sure that we return a
+ * orangefs_mknod() is only implemented here to make sure that we return a
  * reasonable error code (the kernel will return a misleading EPERM
- * otherwise).  PVFS2 does not support special files such as fifos or devices.
+ * otherwise).  ORANGEFS does not support special files such as fifos or devices.
  */
-static int pvfs2_mknod(struct inode *dir,
+static int orangefs_mknod(struct inode *dir,
 		       struct dentry *dentry,
 		       umode_t mode,
 		       dev_t rdev)
@@ -462,7 +462,7 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.symlink = pvfs2_symlink,
 	.mkdir = orangefs_mkdir,
 	.rmdir = orangefs_unlink,
-	.mknod = pvfs2_mknod,
+	.mknod = orangefs_mknod,
 	.rename = pvfs2_rename,
 	.setattr = pvfs2_setattr,
 	.getattr = pvfs2_getattr,
