@@ -243,11 +243,11 @@ static int orangefs_unlink(struct inode *dir, struct dentry *dentry)
 }
 
 /*
- * pvfs2_link() is only implemented here to make sure that we return a
+ * orangefs_link() is only implemented here to make sure that we return a
  * reasonable error code (the kernel will return a misleading EPERM
- * otherwise).  PVFS2 does not support hard links.
+ * otherwise).  ORANGEFS does not support hard links.
  */
-static int pvfs2_link(struct dentry *old_dentry,
+static int orangefs_link(struct dentry *old_dentry,
 		      struct inode *dir,
 		      struct dentry *dentry)
 {
@@ -457,7 +457,7 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.get_acl = pvfs2_get_acl,
 	.set_acl = pvfs2_set_acl,
 	.create = orangefs_create,
-	.link = pvfs2_link,
+	.link = orangefs_link,
 	.unlink = orangefs_unlink,
 	.symlink = pvfs2_symlink,
 	.mkdir = pvfs2_mkdir,
