@@ -263,7 +263,7 @@ static int orangefs_mknod(struct inode *dir,
 	return -EPERM;
 }
 
-static int pvfs2_symlink(struct inode *dir,
+static int orangefs_symlink(struct inode *dir,
 			 struct dentry *dentry,
 			 const char *symname)
 {
@@ -455,7 +455,7 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.create = orangefs_create,
 	.link = orangefs_link,
 	.unlink = orangefs_unlink,
-	.symlink = pvfs2_symlink,
+	.symlink = orangefs_symlink,
 	.mkdir = orangefs_mkdir,
 	.rmdir = orangefs_unlink,
 	.mknod = orangefs_mknod,
