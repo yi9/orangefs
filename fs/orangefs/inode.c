@@ -384,7 +384,7 @@ static int pvfs2_test_inode(struct inode *inode, void *data)
  * @sb: the file system super block instance.
  * @ref: The PVFS2 object for which we are trying to locate an inode structure.
  */
-struct inode *pvfs2_iget(struct super_block *sb, struct pvfs2_object_kref *ref)
+struct inode *orangefs_iget(struct super_block *sb, struct pvfs2_object_kref *ref)
 {
 	struct inode *inode = NULL;
 	unsigned long hash;

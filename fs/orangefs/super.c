@@ -296,7 +296,7 @@ static struct dentry *pvfs2_fh_to_dentry(struct super_block *sb,
 		     &refn.khandle,
 		     refn.fs_id);
 
-	return d_obtain_alias(pvfs2_iget(sb, &refn));
+	return d_obtain_alias(orangefs_iget(sb, &refn));
 }
 
 static int pvfs2_encode_fh(struct inode *inode,
@@ -392,7 +392,7 @@ static int pvfs2_fill_sb(struct super_block *sb, void *data, int silent)
 		     &root_object.khandle,
 		     root_object.fs_id);
 
-	root = pvfs2_iget(sb, &root_object);
+	root = orangefs_iget(sb, &root_object);
 	if (IS_ERR(root))
 		return PTR_ERR(root);
 

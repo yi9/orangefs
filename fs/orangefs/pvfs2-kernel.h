@@ -604,7 +604,7 @@ ssize_t pvfs2_listxattr(struct dentry *dentry, char *buffer, size_t size);
 /*
  * defined in namei.c
  */
-struct inode *pvfs2_iget(struct super_block *sb,
+struct inode *orangefs_iget(struct super_block *sb,
 			 struct pvfs2_object_kref *ref);
 
 ssize_t pvfs2_inode_read(struct inode *inode,

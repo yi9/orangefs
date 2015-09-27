@@ -173,7 +173,7 @@ static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
 		goto out;
 	}
 
-	inode = pvfs2_iget(dir->i_sb, &new_op->downcall.resp.lookup.refn);
+	inode = orangefs_iget(dir->i_sb, &new_op->downcall.resp.lookup.refn);
 	if (IS_ERR(inode)) {
 		gossip_debug(GOSSIP_NAME_DEBUG,
 			"error %ld from iget\n", PTR_ERR(inode));
