@@ -158,7 +158,7 @@ static struct dentry *pvfs2_lookup(struct inode *dir, struct dentry *dentry,
 			 */
 
 			gossip_debug(GOSSIP_NAME_DEBUG,
-				     "pvfs2_lookup: Adding *negative* dentry "
+				     "orangefs_lookup: Adding *negative* dentry "
 				     "%p for %s\n",
 				     dentry,
 				     dentry->d_name.name);
@@ -226,7 +226,7 @@ static int pvfs2_unlink(struct inode *dir, struct dentry *dentry)
 	strncpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
 		PVFS2_NAME_LEN);
 
-	ret = service_operation(new_op, "pvfs2_unlink",
+	ret = service_operation(new_op, "orangefs_unlink",
 				get_interruptible_flag(inode));
 
 	/* when request is serviced properly, free req op struct */
@@ -411,7 +411,7 @@ static int pvfs2_rename(struct inode *old_dir,
 	int ret;
 
 	gossip_debug(GOSSIP_NAME_DEBUG,
-		     "pvfs2_rename: called (%s/%s => %s/%s) ct=%d\n",
+		     "orangefs_rename: called (%s/%s => %s/%s) ct=%d\n",
 		     old_dentry->d_parent->d_name.name,
 		     old_dentry->d_name.name,
 		     new_dentry->d_parent->d_name.name,
@@ -433,11 +433,11 @@ static int pvfs2_rename(struct inode *old_dir,
 		PVFS2_NAME_LEN);
 
 	ret = service_operation(new_op,
-				"pvfs2_rename",
+				"orangefs_rename",
 				get_interruptible_flag(old_dentry->d_inode));
 
 	gossip_debug(GOSSIP_NAME_DEBUG,
-		     "pvfs2_rename: got downcall status %d\n",
+		     "orangefs_rename: got downcall status %d\n",
 		     ret);
 
 	if (new_dentry->d_inode)
