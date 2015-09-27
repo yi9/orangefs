@@ -341,7 +341,7 @@ out:
 	return ret;
 }
 
-static int pvfs2_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 {
 	struct orangefs_inode_s *parent = PVFS2_I(dir);
 	struct orangefs_kernel_op_s *new_op;
@@ -460,7 +460,7 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.link = orangefs_link,
 	.unlink = orangefs_unlink,
 	.symlink = pvfs2_symlink,
-	.mkdir = pvfs2_mkdir,
+	.mkdir = orangefs_mkdir,
 	.rmdir = orangefs_unlink,
 	.mknod = pvfs2_mknod,
 	.rename = pvfs2_rename,
