@@ -402,7 +402,7 @@ out:
 	return ret;
 }
 
-static int pvfs2_rename(struct inode *old_dir,
+static int orangefs_rename(struct inode *old_dir,
 			struct dentry *old_dentry,
 			struct inode *new_dir,
 			struct dentry *new_dentry)
@@ -459,7 +459,7 @@ struct inode_operations pvfs2_dir_inode_operations = {
 	.mkdir = orangefs_mkdir,
 	.rmdir = orangefs_unlink,
 	.mknod = orangefs_mknod,
-	.rename = pvfs2_rename,
+	.rename = orangefs_rename,
 	.setattr = pvfs2_setattr,
 	.getattr = pvfs2_getattr,
 	.setxattr = generic_setxattr,
