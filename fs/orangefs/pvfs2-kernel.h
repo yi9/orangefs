@@ -237,8 +237,8 @@ extern unsigned int kernel_mask_set_mod_init;
 extern int pvfs2_init_acl(struct inode *inode, struct inode *dir);
 extern const struct xattr_handler *pvfs2_xattr_handlers[];
 
-extern struct posix_acl *pvfs2_get_acl(struct inode *inode, int type);
-extern int pvfs2_set_acl(struct inode *inode, struct posix_acl *acl, int type);
+extern struct posix_acl *orangefs_get_acl(struct inode *inode, int type);
+extern int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
 
 int pvfs2_xattr_set_default(struct dentry *dentry,
 			    const char *name,

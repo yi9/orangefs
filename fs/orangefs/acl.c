@@ -10,7 +10,7 @@
 #include <linux/posix_acl_xattr.h>
 #include <linux/fs_struct.h>
 
-struct posix_acl *pvfs2_get_acl(struct inode *inode, int type)
+struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 {
 	struct posix_acl *acl;
 	int ret;
@@ -24,7 +24,7 @@ struct posix_acl *pvfs2_get_acl(struct inode *inode, int type)
 		key = PVFS2_XATTR_NAME_ACL_DEFAULT;
 		break;
 	default:
-		gossip_err("pvfs2_get_acl: bogus value of type %d\n", type);
+		gossip_err("orangefs_get_acl: bogus value of type %d\n", type);
 		return ERR_PTR(-EINVAL);
 	}
 	/*
@@ -64,7 +64,7 @@ struct posix_acl *pvfs2_get_acl(struct inode *inode, int type)
 	return acl;
 }
 
-int pvfs2_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	int error = 0;
@@ -154,13 +154,13 @@ int pvfs2_init_acl(struct inode *inode, struct inode *dir)
 		return error;
 
 	if (default_acl) {
-		error = pvfs2_set_acl(inode, default_acl, ACL_TYPE_DEFAULT);
+		error = orangefs_set_acl(inode, default_acl, ACL_TYPE_DEFAULT);
 		posix_acl_release(default_acl);
 	}
 
 	if (acl) {
 		if (!error)
-			error = pvfs2_set_acl(inode, acl, ACL_TYPE_ACCESS);
+			error = orangefs_set_acl(inode, acl, ACL_TYPE_ACCESS);
 		posix_acl_release(acl);
 	}
 

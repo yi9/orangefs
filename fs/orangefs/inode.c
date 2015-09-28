@@ -296,8 +296,8 @@ int orangefs_getattr(struct vfsmount *mnt,
 
 /* PVFS2 implementation of VFS inode operations for files */
 struct inode_operations pvfs2_file_inode_operations = {
-	.get_acl = pvfs2_get_acl,
-	.set_acl = pvfs2_set_acl,
+	.get_acl = orangefs_get_acl,
+	.set_acl = orangefs_set_acl,
 	.setattr = orangefs_setattr,
 	.getattr = orangefs_getattr,
 	.setxattr = generic_setxattr,
