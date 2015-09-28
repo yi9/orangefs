@@ -579,7 +579,7 @@ struct inode *pvfs2_new_inode(struct super_block *sb,
 			      dev_t dev,
 			      struct pvfs2_object_kref *ref);
 
-int pvfs2_setattr(struct dentry *dentry, struct iattr *iattr);
+int orangefs_setattr(struct dentry *dentry, struct iattr *iattr);
 
 int pvfs2_getattr(struct vfsmount *mnt,
 		  struct dentry *dentry,

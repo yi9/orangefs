@@ -219,13 +219,13 @@ static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
 /*
  * Change attributes of an object referenced by dentry.
  */
-int pvfs2_setattr(struct dentry *dentry, struct iattr *iattr)
+int orangefs_setattr(struct dentry *dentry, struct iattr *iattr)
 {
 	int ret = -EINVAL;
 	struct inode *inode = dentry->d_inode;
 
 	gossip_debug(GOSSIP_INODE_DEBUG,
-		     "pvfs2_setattr: called on %s\n",
+		     "orangefs_setattr: called on %s\n",
 		     dentry->d_name.name);
 
 	ret = inode_change_ok(inode, iattr);
@@ -244,7 +244,7 @@ int pvfs2_setattr(struct dentry *dentry, struct iattr *iattr)
 
 	ret = pvfs2_inode_setattr(inode, iattr);
 	gossip_debug(GOSSIP_INODE_DEBUG,
-		     "pvfs2_setattr: inode_setattr returned %d\n",
+		     "orangefs_setattr: inode_setattr returned %d\n",
 		     ret);
 
 	if (!ret && (iattr->ia_valid & ATTR_MODE))
@@ -252,7 +252,7 @@ int pvfs2_setattr(struct dentry *dentry, struct iattr *iattr)
 		ret = posix_acl_chmod(inode, inode->i_mode);
 
 out:
-	gossip_debug(GOSSIP_INODE_DEBUG, "pvfs2_setattr: returning %d\n", ret);
+	gossip_debug(GOSSIP_INODE_DEBUG, "orangefs_setattr: returning %d\n", ret);
 	return ret;
 }
 
@@ -298,7 +298,7 @@ int pvfs2_getattr(struct vfsmount *mnt,
 struct inode_operations pvfs2_file_inode_operations = {
 	.get_acl = pvfs2_get_acl,
 	.set_acl = pvfs2_set_acl,
-	.setattr = pvfs2_setattr,
+	.setattr = orangefs_setattr,
 	.getattr = pvfs2_getattr,
 	.setxattr = generic_setxattr,
 	.getxattr = generic_getxattr,
