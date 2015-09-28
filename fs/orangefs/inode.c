@@ -259,7 +259,7 @@ out:
 /*
  * Obtain attributes of an object given a dentry
  */
-int pvfs2_getattr(struct vfsmount *mnt,
+int orangefs_getattr(struct vfsmount *mnt,
 		  struct dentry *dentry,
 		  struct kstat *kstat)
 {
@@ -268,7 +268,7 @@ int pvfs2_getattr(struct vfsmount *mnt,
 	struct orangefs_inode_s *pvfs2_inode = NULL;
 
 	gossip_debug(GOSSIP_INODE_DEBUG,
-		     "pvfs2_getattr: called on %s\n",
+		     "orangefs_getattr: called on %s\n",
 		     dentry->d_name.name);
 
 	/*
@@ -299,7 +299,7 @@ struct inode_operations pvfs2_file_inode_operations = {
 	.get_acl = pvfs2_get_acl,
 	.set_acl = pvfs2_set_acl,
 	.setattr = orangefs_setattr,
-	.getattr = pvfs2_getattr,
+	.getattr = orangefs_getattr,
 	.setxattr = generic_setxattr,
 	.getxattr = generic_getxattr,
 	.listxattr = pvfs2_listxattr,
