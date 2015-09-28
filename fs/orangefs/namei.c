@@ -55,7 +55,7 @@ static int orangefs_create(struct inode *dir,
 	inode = orangefs_new_inode(dir->i_sb, dir, S_IFREG | mode, 0,
 				&new_op->downcall.resp.create.refn);
 	if (IS_ERR(inode)) {
-		gossip_err("*** Failed to allocate pvfs2 file inode\n");
+		gossip_err("*** Failed to allocate orangefs file inode\n");
 		ret = PTR_ERR(inode);
 		goto out;
 	}
@@ -377,7 +377,7 @@ static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 	inode = orangefs_new_inode(dir->i_sb, dir, S_IFDIR | mode, 0,
 				&new_op->downcall.resp.mkdir.refn);
 	if (IS_ERR(inode)) {
-		gossip_err("*** Failed to allocate pvfs2 dir inode\n");
+		gossip_err("*** Failed to allocate orangefs dir inode\n");
 		ret = PTR_ERR(inode);
 		goto out;
 	}
@@ -452,7 +452,7 @@ static int orangefs_rename(struct inode *old_dir,
 }
 
 /* PVFS2 implementation of VFS inode operations for directories */
-struct inode_operations pvfs2_dir_inode_operations = {
+struct inode_operations orangefs_dir_inode_operations = {
 	.lookup = orangefs_lookup,
 	.get_acl = orangefs_get_acl,
 	.set_acl = orangefs_set_acl,
