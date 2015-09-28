@@ -320,7 +320,7 @@ static int pvfs2_init_iops(struct inode *inode)
 		inode->i_op = &pvfs2_symlink_inode_operations;
 		break;
 	case S_IFDIR:
-		inode->i_op = &pvfs2_dir_inode_operations;
+		inode->i_op = &orangefs_dir_inode_operations;
 		inode->i_fop = &orangefs_dir_operations;
 		break;
 	default:
