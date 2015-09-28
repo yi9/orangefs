@@ -570,7 +570,7 @@ void fsid_key_table_finalize(void);
  * defined in inode.c
  */
 __u32 convert_to_pvfs2_mask(unsigned long lite_mask);
-struct inode *pvfs2_new_inode(struct super_block *sb,
+struct inode *orangefs_new_inode(struct super_block *sb,
 			      struct inode *dir,
 			      int mode,
 			      dev_t dev,
