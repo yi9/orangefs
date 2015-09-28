@@ -26,6 +26,6 @@ struct inode_operations pvfs2_symlink_inode_operations = {
 	.follow_link = pvfs2_follow_link,
 	.setattr = orangefs_setattr,
 	.getattr = orangefs_getattr,
-	.listxattr = pvfs2_listxattr,
+	.listxattr = orangefs_listxattr,
 	.setxattr = generic_setxattr,
 };
