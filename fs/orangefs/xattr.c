@@ -336,7 +336,7 @@ out_unlock:
  * subsequent memory allocations. Thus our return value is always the size of
  * all the keys unless there were errors in fetching the keys!
  */
-ssize_t pvfs2_listxattr(struct dentry *dentry, char *buffer, size_t size)
+ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 {
 	struct inode *inode = dentry->d_inode;
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);

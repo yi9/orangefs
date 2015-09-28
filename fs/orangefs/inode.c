@@ -302,7 +302,7 @@ struct inode_operations pvfs2_file_inode_operations = {
 	.getattr = orangefs_getattr,
 	.setxattr = generic_setxattr,
 	.getxattr = generic_getxattr,
-	.listxattr = pvfs2_listxattr,
+	.listxattr = orangefs_listxattr,
 	.removexattr = generic_removexattr,
 };
 

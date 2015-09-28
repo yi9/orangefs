@@ -596,7 +596,7 @@ ssize_t pvfs2_getxattr(struct dentry *dentry,
 		       void *buffer,
 		       size_t size);
 
-ssize_t pvfs2_listxattr(struct dentry *dentry, char *buffer, size_t size);
+ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size);
 
 /*
  * defined in namei.c
