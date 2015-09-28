@@ -418,7 +418,7 @@ struct inode *orangefs_iget(struct super_block *sb, struct pvfs2_object_kref *re
 /*
  * Allocate an inode for a newly created file and insert it into the inode hash.
  */
-struct inode *pvfs2_new_inode(struct super_block *sb, struct inode *dir,
+struct inode *orangefs_new_inode(struct super_block *sb, struct inode *dir,
 		int mode, dev_t dev, struct pvfs2_object_kref *ref)
 {
 	unsigned long hash = pvfs2_handle_hash(ref);

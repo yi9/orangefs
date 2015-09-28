@@ -52,7 +52,7 @@ static int orangefs_create(struct inode *dir,
 		goto out;
 	}
 
-	inode = pvfs2_new_inode(dir->i_sb, dir, S_IFREG | mode, 0,
+	inode = orangefs_new_inode(dir->i_sb, dir, S_IFREG | mode, 0,
 				&new_op->downcall.resp.create.refn);
 	if (IS_ERR(inode)) {
 		gossip_err("*** Failed to allocate pvfs2 file inode\n");
@@ -311,7 +311,7 @@ static int orangefs_symlink(struct inode *dir,
 		goto out;
 	}
 
-	inode = pvfs2_new_inode(dir->i_sb, dir, S_IFLNK | mode, 0,
+	inode = orangefs_new_inode(dir->i_sb, dir, S_IFLNK | mode, 0,
 				&new_op->downcall.resp.sym.refn);
 	if (IS_ERR(inode)) {
 		gossip_err
@@ -374,7 +374,7 @@ static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 		goto out;
 	}
 
-	inode = pvfs2_new_inode(dir->i_sb, dir, S_IFDIR | mode, 0,
+	inode = orangefs_new_inode(dir->i_sb, dir, S_IFDIR | mode, 0,
 				&new_op->downcall.resp.mkdir.refn);
 	if (IS_ERR(inode)) {
 		gossip_err("*** Failed to allocate pvfs2 dir inode\n");
