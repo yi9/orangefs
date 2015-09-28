@@ -450,8 +450,8 @@ static int orangefs_rename(struct inode *old_dir,
 /* PVFS2 implementation of VFS inode operations for directories */
 struct inode_operations pvfs2_dir_inode_operations = {
 	.lookup = orangefs_lookup,
-	.get_acl = pvfs2_get_acl,
-	.set_acl = pvfs2_set_acl,
+	.get_acl = orangefs_get_acl,
+	.set_acl = orangefs_set_acl,
 	.create = orangefs_create,
 	.link = orangefs_link,
 	.unlink = orangefs_unlink,
