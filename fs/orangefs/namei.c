@@ -251,20 +251,21 @@ static int orangefs_link(struct dentry *old_dentry,
 		      struct inode *dir,
 		      struct dentry *dentry)
 {
-	return -EOPNOTSUPP;
+	return -EPERM;
 }
 
 /*
  * orangefs_mknod() is only implemented here to make sure that we return a
  * reasonable error code (the kernel will return a misleading EPERM
  * otherwise).  ORANGEFS does not support special files such as fifos or devices.
+ * PVFS2 does not support special files.
  */
 static int orangefs_mknod(struct inode *dir,
 		       struct dentry *dentry,
 		       umode_t mode,
 		       dev_t rdev)
 {
-	return -EOPNOTSUPP;
+	return -EPERM;
 }
 
 static int orangefs_symlink(struct inode *dir,

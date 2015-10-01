@@ -74,26 +74,19 @@ static inline int PVFS_khandle_cmp(const struct orangefs_khandle *kh1,
 static inline void PVFS_khandle_to(const struct orangefs_khandle *kh,
 				   void *p, int size)
 {
-	int i;
-	unsigned char *c = p;
 
 	memset(p, 0, size);
+	memcpy(p, kh->u, 16);
 
-	for (i = 0; i < 16 && i < size; i++)
-		c[i] = kh->u[i];
 }
 
 /* copy a khandle from a field of arbitrary size */
 static inline void PVFS_khandle_from(struct orangefs_khandle *kh,
 				     void *p, int size)
 {
-	int i;
-	unsigned char *c = p;
-
 	memset(kh, 0, 16);
+	memcpy(kh->u, p, 16);
 
-	for (i = 0; i < 16 && i < size; i++)
-		kh->u[i] = c[i];
 }
 
 /* pvfs2-types.h ************************************************************/
@@ -572,7 +565,6 @@ struct dev_mask2_info_s {
 };
 
 /* pvfs2-util.h *************************************************************/
-#define PVFS_util_min(x1, x2) (((x1) > (x2)) ? (x2) : (x1))
 __s32 PVFS_util_translate_mode(int mode);
 
 /* pvfs2-debug.h ************************************************************/
