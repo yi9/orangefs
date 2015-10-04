@@ -59,7 +59,7 @@ static inline int convert_to_internal_xattr_flags(int setxattr_flags)
  * unless the key does not exist for the file and/or if
  * there were errors in fetching the attribute value.
  */
-ssize_t pvfs2_inode_getxattr(struct inode *inode, const char *prefix,
+ssize_t orangefs_inode_getxattr(struct inode *inode, const char *prefix,
 		const char *name, void *buffer, size_t size)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
@@ -74,7 +74,7 @@ ssize_t pvfs2_inode_getxattr(struct inode *inode, const char *prefix,
 		     __func__, prefix, name, size);
 
 	if (name == NULL || (size > 0 && buffer == NULL)) {
-		gossip_err("pvfs2_inode_getxattr: bogus NULL pointers\n");
+		gossip_err("orangefs_inode_getxattr: bogus NULL pointers\n");
 		return -EINVAL;
 	}
 	if ((strlen(name) + strlen(prefix)) >= PVFS_MAX_XATTR_NAMELEN) {
@@ -111,13 +111,13 @@ ssize_t pvfs2_inode_getxattr(struct inode *inode, const char *prefix,
 	 */
 	new_op->upcall.req.getxattr.key_sz = ret + 1;
 
-	ret = service_operation(new_op, "pvfs2_inode_getxattr",
+	ret = service_operation(new_op, "orangefs_inode_getxattr",
 				get_interruptible_flag(inode));
 	if (ret != 0) {
 		if (ret == -ENOENT) {
 			ret = -ENODATA;
 			gossip_debug(GOSSIP_XATTR_DEBUG,
-				     "pvfs2_inode_getxattr: inode %pU key %s"
+				     "orangefs_inode_getxattr: inode %pU key %s"
 				     " does not exist!\n",
 				     get_khandle_from_ino(inode),
 				     (char *)new_op->upcall.req.getxattr.key);
@@ -149,7 +149,7 @@ ssize_t pvfs2_inode_getxattr(struct inode *inode, const char *prefix,
 	memset(buffer, 0, size);
 	memcpy(buffer, new_op->downcall.resp.getxattr.val, length);
 	gossip_debug(GOSSIP_XATTR_DEBUG,
-	     "pvfs2_inode_getxattr: inode %pU "
+	     "orangefs_inode_getxattr: inode %pU "
 	     "key %s key_sz %d, val_len %d\n",
 	     get_khandle_from_ino(inode),
 	     (char *)new_op->
@@ -195,12 +195,12 @@ static int pvfs2_inode_removexattr(struct inode *inode,
 	new_op->upcall.req.removexattr.key_sz = ret + 1;
 
 	gossip_debug(GOSSIP_XATTR_DEBUG,
-		     "pvfs2_inode_removexattr: key %s, key_sz %d\n",
+		     "orangefs_inode_removexattr: key %s, key_sz %d\n",
 		     (char *)new_op->upcall.req.removexattr.key,
 		     (int)new_op->upcall.req.removexattr.key_sz);
 
 	ret = service_operation(new_op,
-				"pvfs2_inode_removexattr",
+				"orangefs_inode_removexattr",
 				get_interruptible_flag(inode));
 	if (ret == -ENOENT) {
 		/*
@@ -213,7 +213,7 @@ static int pvfs2_inode_removexattr(struct inode *inode,
 	}
 
 	gossip_debug(GOSSIP_XATTR_DEBUG,
-		     "pvfs2_inode_removexattr: returning %d\n", ret);
+		     "orangefs_inode_removexattr: returning %d\n", ret);
 
 	op_release(new_op);
 out_unlock:
@@ -242,7 +242,7 @@ int pvfs2_inode_setxattr(struct inode *inode, const char *prefix,
 	if (size < 0 ||
 	    size >= PVFS_MAX_XATTR_VALUELEN ||
 	    flags < 0) {
-		gossip_err("pvfs2_inode_setxattr: bogus values of size(%d), flags(%d)\n",
+		gossip_err("orangefs_inode_setxattr: bogus values of size(%d), flags(%d)\n",
 			   (int)size,
 			   flags);
 		return -EINVAL;
@@ -250,7 +250,7 @@ int pvfs2_inode_setxattr(struct inode *inode, const char *prefix,
 
 	if (name == NULL ||
 	    (size > 0 && value == NULL)) {
-		gossip_err("pvfs2_inode_setxattr: bogus NULL pointers!\n");
+		gossip_err("orangefs_inode_setxattr: bogus NULL pointers!\n");
 		return -EINVAL;
 	}
 
@@ -259,14 +259,14 @@ int pvfs2_inode_setxattr(struct inode *inode, const char *prefix,
 	if (prefix) {
 		if (strlen(name) + strlen(prefix) >= PVFS_MAX_XATTR_NAMELEN) {
 			gossip_err
-			    ("pvfs2_inode_setxattr: bogus key size (%d)\n",
+			    ("orangefs_inode_setxattr: bogus key size (%d)\n",
 			     (int)(strlen(name) + strlen(prefix)));
 			return -EINVAL;
 		}
 	} else {
 		if (strlen(name) >= PVFS_MAX_XATTR_NAMELEN) {
 			gossip_err
-			    ("pvfs2_inode_setxattr: bogus key size (%d)\n",
+			    ("orangefs_inode_setxattr: bogus key size (%d)\n",
 			     (int)(strlen(name)));
 			return -EINVAL;
 		}
@@ -308,18 +308,18 @@ int pvfs2_inode_setxattr(struct inode *inode, const char *prefix,
 	new_op->upcall.req.setxattr.keyval.val_sz = size;
 
 	gossip_debug(GOSSIP_XATTR_DEBUG,
-		     "pvfs2_inode_setxattr: key %s, key_sz %d "
+		     "orangefs_inode_setxattr: key %s, key_sz %d "
 		     " value size %zd\n",
 		     (char *)new_op->upcall.req.setxattr.keyval.key,
 		     (int)new_op->upcall.req.setxattr.keyval.key_sz,
 		     size);
 
 	ret = service_operation(new_op,
-				"pvfs2_inode_setxattr",
+				"orangefs_inode_setxattr",
 				get_interruptible_flag(inode));
 
 	gossip_debug(GOSSIP_XATTR_DEBUG,
-		     "pvfs2_inode_setxattr: returning %d\n",
+		     "orangefs_inode_setxattr: returning %d\n",
 		     ret);
 
 	/* when request is serviced properly, free req op struct */
@@ -468,7 +468,7 @@ int pvfs2_xattr_get_default(struct dentry *dentry,
 			    size_t size,
 			    int handler_flags)
 {
-	return pvfs2_inode_getxattr(dentry->d_inode,
+	return orangefs_inode_getxattr(dentry->d_inode,
 				    PVFS2_XATTR_NAME_DEFAULT_PREFIX,
 				    name,
 				    buffer,
@@ -497,7 +497,7 @@ static int pvfs2_xattr_get_trusted(struct dentry *dentry,
 			    size_t size,
 			    int handler_flags)
 {
-	return pvfs2_inode_getxattr(dentry->d_inode,
+	return orangefs_inode_getxattr(dentry->d_inode,
 				    PVFS2_XATTR_NAME_TRUSTED_PREFIX,
 				    name,
 				    buffer,
