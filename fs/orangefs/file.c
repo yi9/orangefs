@@ -954,7 +954,7 @@ static loff_t pvfs2_file_llseek(struct file *file, loff_t offset, int origin)
 				     __FILE__,
 				     __func__,
 				     __LINE__);
-			pvfs2_make_bad_inode(inode);
+			orangefs_make_bad_inode(inode);
 			return ret;
 		}
 	}
@@ -990,7 +990,7 @@ static int pvfs2_lock(struct file *filp, int cmd, struct file_lock *fl)
 }
 
 /** PVFS2 implementation of VFS file operations */
-const struct file_operations pvfs2_file_operations = {
+const struct file_operations orangefs_file_operations = {
 	.llseek		= pvfs2_file_llseek,
 	.read_iter	= pvfs2_file_read_iter,
 	.write_iter	= pvfs2_file_write_iter,

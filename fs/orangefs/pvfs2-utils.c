@@ -613,7 +613,7 @@ void pvfs2_op_initialize(struct orangefs_kernel_op_s *op)
 	}
 }
 
-void pvfs2_make_bad_inode(struct inode *inode)
+void orangefs_make_bad_inode(struct inode *inode)
 {
 	if (is_root_handle(inode)) {
 		/*

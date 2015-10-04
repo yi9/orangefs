@@ -18,7 +18,7 @@ struct pvfs2_io_request_s {
 	__s32 count;
 	__s32 __pad1;
 	__s64 offset;
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	enum PVFS_io_type io_type;
 	__s32 readahead_size;
 };
@@ -26,7 +26,7 @@ struct pvfs2_io_request_s {
 struct pvfs2_iox_request_s {
 	__s32 buf_index;
 	__s32 count;
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	enum PVFS_io_type io_type;
 	__s32 __pad1;
 };
@@ -34,54 +34,54 @@ struct pvfs2_iox_request_s {
 struct pvfs2_lookup_request_s {
 	__s32 sym_follow;
 	__s32 __pad1;
-	struct pvfs2_object_kref parent_refn;
+	struct orangefs_object_kref parent_refn;
 	char d_name[PVFS2_NAME_LEN];
 };
 
 struct pvfs2_create_request_s {
-	struct pvfs2_object_kref parent_refn;
+	struct orangefs_object_kref parent_refn;
 	struct PVFS_sys_attr_s attributes;
 	char d_name[PVFS2_NAME_LEN];
 };
 
 struct pvfs2_symlink_request_s {
-	struct pvfs2_object_kref parent_refn;
+	struct orangefs_object_kref parent_refn;
 	struct PVFS_sys_attr_s attributes;
 	char entry_name[PVFS2_NAME_LEN];
 	char target[PVFS2_NAME_LEN];
 };
 
 struct pvfs2_getattr_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	__u32 mask;
 	__u32 __pad1;
 };
 
 struct pvfs2_setattr_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	struct PVFS_sys_attr_s attributes;
 };
 
 struct pvfs2_remove_request_s {
-	struct pvfs2_object_kref parent_refn;
+	struct orangefs_object_kref parent_refn;
 	char d_name[PVFS2_NAME_LEN];
 };
 
 struct pvfs2_mkdir_request_s {
-	struct pvfs2_object_kref parent_refn;
+	struct orangefs_object_kref parent_refn;
 	struct PVFS_sys_attr_s attributes;
 	char d_name[PVFS2_NAME_LEN];
 };
 
 struct pvfs2_readdir_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	__u64 token;
 	__s32 max_dirent_count;
 	__s32 buf_index;
 };
 
 struct pvfs2_readdirplus_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	__u64 token;
 	__s32 max_dirent_count;
 	__u32 mask;
@@ -90,8 +90,8 @@ struct pvfs2_readdirplus_request_s {
 };
 
 struct pvfs2_rename_request_s {
-	struct pvfs2_object_kref old_parent_refn;
-	struct pvfs2_object_kref new_parent_refn;
+	struct orangefs_object_kref old_parent_refn;
+	struct orangefs_object_kref new_parent_refn;
 	char d_old_name[PVFS2_NAME_LEN];
 	char d_new_name[PVFS2_NAME_LEN];
 };
@@ -102,12 +102,12 @@ struct pvfs2_statfs_request_s {
 };
 
 struct pvfs2_truncate_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	__s64 size;
 };
 
 struct pvfs2_mmap_ra_cache_flush_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 };
 
 struct pvfs2_fs_mount_request_s {
@@ -121,28 +121,28 @@ struct pvfs2_fs_umount_request_s {
 };
 
 struct pvfs2_getxattr_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	__s32 key_sz;
 	__s32 __pad1;
 	char key[PVFS_MAX_XATTR_NAMELEN];
 };
 
 struct pvfs2_setxattr_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	struct PVFS_keyval_pair keyval;
 	__s32 flags;
 	__s32 __pad1;
 };
 
 struct pvfs2_listxattr_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	__s32 requested_count;
 	__s32 __pad1;
 	__u64 token;
 };
 
 struct pvfs2_removexattr_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	__s32 key_sz;
 	__s32 __pad1;
 	char key[PVFS_MAX_XATTR_NAMELEN];
@@ -153,7 +153,7 @@ struct pvfs2_op_cancel_s {
 };
 
 struct pvfs2_fsync_request_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 };
 
 enum pvfs2_param_request_type {

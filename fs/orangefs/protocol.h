@@ -45,7 +45,7 @@ struct orangefs_khandle {
 /*
  * kernel version of an object ref.
  */
-struct pvfs2_object_kref {
+struct orangefs_object_kref {
 	struct orangefs_khandle khandle;
 	__s32 fs_id;
 	__s32 __pad1;
