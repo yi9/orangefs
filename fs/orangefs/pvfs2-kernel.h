@@ -628,13 +628,13 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op);
 
 int orangefs_flush_inode(struct inode *inode);
 
-ssize_t pvfs2_inode_getxattr(struct inode *inode,
+ssize_t orangefs_inode_getxattr(struct inode *inode,
 			     const char *prefix,
 			     const char *name,
 			     void *buffer,
 			     size_t size);
 
-int pvfs2_inode_setxattr(struct inode *inode,
+int orangefs_inode_setxattr(struct inode *inode,
 			 const char *prefix,
 			 const char *name,
 			 const void *value,

@@ -31,7 +31,7 @@ struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 	 * Rather than incurring a network call just to determine the exact
 	 * length of the attribute, I just allocate a max length to save on
 	 * the network call. Conceivably, we could pass NULL to
-	 * pvfs2_inode_getxattr() to probe the length of the value, but
+	 * orangefs_inode_getxattr() to probe the length of the value, but
 	 * I don't do that for now.
 	 */
 	value = kmalloc(PVFS_MAX_XATTR_VALUELEN, GFP_KERNEL);
@@ -43,7 +43,7 @@ struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 		     get_khandle_from_ino(inode),
 		     key,
 		     type);
-	ret = pvfs2_inode_getxattr(inode,
+	ret = orangefs_inode_getxattr(inode,
 				   "",
 				   key,
 				   value,
@@ -131,7 +131,7 @@ int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 	 * will xlate to a removexattr. However, we don't want removexattr
 	 * complain if attributes does not exist.
 	 */
-	error = pvfs2_inode_setxattr(inode, "", name, value, size, 0);
+	error = orangefs_inode_setxattr(inode, "", name, value, size, 0);
 
 out:
 	kfree(value);

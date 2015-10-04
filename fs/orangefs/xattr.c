@@ -227,7 +227,7 @@ out_unlock:
  * Returns a -ve number on error and 0 on success.  Key is text, but value
  * can be binary!
  */
-int pvfs2_inode_setxattr(struct inode *inode, const char *prefix,
+int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 		const char *name, const void *value, size_t size, int flags)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
@@ -454,7 +454,7 @@ int pvfs2_xattr_set_default(struct dentry *dentry,
 			    int flags,
 			    int handler_flags)
 {
-	return pvfs2_inode_setxattr(dentry->d_inode,
+	return orangefs_inode_setxattr(dentry->d_inode,
 				    PVFS2_XATTR_NAME_DEFAULT_PREFIX,
 				    name,
 				    buffer,
@@ -483,7 +483,7 @@ static int pvfs2_xattr_set_trusted(struct dentry *dentry,
 			    int flags,
 			    int handler_flags)
 {
-	return pvfs2_inode_setxattr(dentry->d_inode,
+	return orangefs_inode_setxattr(dentry->d_inode,
 				    PVFS2_XATTR_NAME_TRUSTED_PREFIX,
 				    name,
 				    buffer,
