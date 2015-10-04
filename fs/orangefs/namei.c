@@ -19,7 +19,7 @@ static int orangefs_create(struct inode *dir,
 			umode_t mode,
 			bool exclusive)
 {
-	struct orangefs_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = ORANGEFS_I(dir);
 	struct orangefs_kernel_op_s *new_op;
 	struct inode *inode;
 	int ret;
@@ -41,7 +41,7 @@ static int orangefs_create(struct inode *dir,
 	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
 
 	gossip_debug(GOSSIP_NAME_DEBUG,
-		     "Create Got PVFS2 handle %pU on fsid %d (ret=%d)\n",
+		     "Create Got ORANGEFS handle %pU on fsid %d (ret=%d)\n",
 		     &new_op->downcall.resp.create.refn.khandle,
 		     new_op->downcall.resp.create.refn.fs_id, ret);
 
@@ -89,7 +89,7 @@ out:
 static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
 				   unsigned int flags)
 {
-	struct orangefs_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = ORANGEFS_I(dir);
 	struct orangefs_kernel_op_s *new_op;
 	struct inode *inode;
 	struct dentry *res;
@@ -205,7 +205,7 @@ out:
 static int orangefs_unlink(struct inode *dir, struct dentry *dentry)
 {
 	struct inode *inode = dentry->d_inode;
-	struct orangefs_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = ORANGEFS_I(dir);
 	struct orangefs_kernel_op_s *new_op;
 	int ret;
 
@@ -258,7 +258,7 @@ static int orangefs_link(struct dentry *old_dentry,
  * orangefs_mknod() is only implemented here to make sure that we return a
  * reasonable error code (the kernel will return a misleading EPERM
  * otherwise).  ORANGEFS does not support special files such as fifos or devices.
- * PVFS2 does not support special files.
+ * ORANGEFS does not support special files.
  */
 static int orangefs_mknod(struct inode *dir,
 		       struct dentry *dentry,
@@ -272,7 +272,7 @@ static int orangefs_symlink(struct inode *dir,
 			 struct dentry *dentry,
 			 const char *symname)
 {
-	struct orangefs_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = ORANGEFS_I(dir);
 	struct orangefs_kernel_op_s *new_op;
 	struct inode *inode;
 	int mode = 755;
@@ -301,7 +301,7 @@ static int orangefs_symlink(struct inode *dir,
 	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
 
 	gossip_debug(GOSSIP_NAME_DEBUG,
-		     "Symlink Got PVFS2 handle %pU on fsid %d (ret=%d)\n",
+		     "Symlink Got ORANGEFS handle %pU on fsid %d (ret=%d)\n",
 		     &new_op->downcall.resp.sym.refn.khandle,
 		     new_op->downcall.resp.sym.refn.fs_id, ret);
 
@@ -344,7 +344,7 @@ out:
 
 static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 {
-	struct orangefs_inode_s *parent = PVFS2_I(dir);
+	struct orangefs_inode_s *parent = ORANGEFS_I(dir);
 	struct orangefs_kernel_op_s *new_op;
 	struct inode *inode;
 	int ret;
@@ -364,7 +364,7 @@ static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
 
 	gossip_debug(GOSSIP_NAME_DEBUG,
-		     "Mkdir Got PVFS2 handle %pU on fsid %d\n",
+		     "Mkdir Got ORANGEFS handle %pU on fsid %d\n",
 		     &new_op->downcall.resp.mkdir.refn.khandle,
 		     new_op->downcall.resp.mkdir.refn.fs_id);
 
@@ -427,8 +427,8 @@ static int orangefs_rename(struct inode *old_dir,
 	if (!new_op)
 		return -EINVAL;
 
-	new_op->upcall.req.rename.old_parent_refn = PVFS2_I(old_dir)->refn;
-	new_op->upcall.req.rename.new_parent_refn = PVFS2_I(new_dir)->refn;
+	new_op->upcall.req.rename.old_parent_refn = ORANGEFS_I(old_dir)->refn;
+	new_op->upcall.req.rename.new_parent_refn = ORANGEFS_I(new_dir)->refn;
 
 	strncpy(new_op->upcall.req.rename.d_old_name,
 		old_dentry->d_name.name,
@@ -452,7 +452,7 @@ static int orangefs_rename(struct inode *old_dir,
 	return ret;
 }
 
-/* PVFS2 implementation of VFS inode operations for directories */
+/* ORANGEFS implementation of VFS inode operations for directories */
 struct inode_operations orangefs_dir_inode_operations = {
 	.lookup = orangefs_lookup,
 	.get_acl = orangefs_get_acl,

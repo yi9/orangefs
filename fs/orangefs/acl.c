@@ -66,7 +66,7 @@ struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 
 int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
 	int error = 0;
 	void *value = NULL;
 	size_t size = 0;
@@ -142,7 +142,7 @@ out:
 
 int orangefs_init_acl(struct inode *inode, struct inode *dir)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
 	struct posix_acl *default_acl, *acl;
 	umode_t mode = inode->i_mode;
 	int error = 0;

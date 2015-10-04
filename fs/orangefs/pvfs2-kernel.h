@@ -434,7 +434,7 @@ extern struct pvfs2_stats g_pvfs2_stats;
   NOTE: See Documentation/filesystems/porting for information
   on implementing FOO_I and properly accessing fs private data
 */
-static inline struct orangefs_inode_s *PVFS2_I(struct inode *inode)
+static inline struct orangefs_inode_s *ORANGEFS_I(struct inode *inode)
 {
 	return container_of(inode, struct orangefs_inode_s, vfs_inode);
 }
@@ -466,12 +466,12 @@ static inline ino_t orangefs_khandle_to_ino(struct orangefs_khandle *khandle)
 
 static inline struct orangefs_khandle *get_khandle_from_ino(struct inode *inode)
 {
-	return &(PVFS2_I(inode)->refn.khandle);
+	return &(ORANGEFS_I(inode)->refn.khandle);
 }
 
 static inline __s32 get_fsid_from_ino(struct inode *inode)
 {
-	return PVFS2_I(inode)->refn.fs_id;
+	return ORANGEFS_I(inode)->refn.fs_id;
 }
 
 static inline ino_t get_ino_from_khandle(struct inode *inode)

@@ -110,7 +110,7 @@ static int orangefs_readdir(struct file *file, struct dir_context *ctx)
 	ino_t ino = 0;
 	struct dentry *dentry = file->f_path.dentry;
 	struct orangefs_kernel_op_s *new_op = NULL;
-	struct orangefs_inode_s *orangefs_inode = PVFS2_I(dentry->d_inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(dentry->d_inode);
 	int buffer_full = 0;
 	struct readdir_handle_s rhandle;
 	int i = 0;
