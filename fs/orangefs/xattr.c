@@ -167,7 +167,7 @@ out_unlock:
 	return ret;
 }
 
-static int pvfs2_inode_removexattr(struct inode *inode,
+static int orangefs_inode_removexattr(struct inode *inode,
 			    const char *prefix,
 			    const char *name,
 			    int flags)
@@ -278,7 +278,7 @@ int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 			     "removing xattr (%s%s)\n",
 			     prefix,
 			     name);
-		return pvfs2_inode_removexattr(inode, prefix, name, flags);
+		return orangefs_inode_removexattr(inode, prefix, name, flags);
 	}
 
 	gossip_debug(GOSSIP_XATTR_DEBUG,
@@ -447,7 +447,7 @@ out_unlock:
 	return ret;
 }
 
-int pvfs2_xattr_set_default(struct dentry *dentry,
+int orangefs_xattr_set_default(struct dentry *dentry,
 			    const char *name,
 			    const void *buffer,
 			    size_t size,
@@ -462,7 +462,7 @@ int pvfs2_xattr_set_default(struct dentry *dentry,
 				    flags);
 }
 
-int pvfs2_xattr_get_default(struct dentry *dentry,
+int orangefs_xattr_get_default(struct dentry *dentry,
 			    const char *name,
 			    void *buffer,
 			    size_t size,
@@ -476,7 +476,7 @@ int pvfs2_xattr_get_default(struct dentry *dentry,
 
 }
 
-static int pvfs2_xattr_set_trusted(struct dentry *dentry,
+static int orangefs_xattr_set_trusted(struct dentry *dentry,
 			    const char *name,
 			    const void *buffer,
 			    size_t size,
@@ -491,7 +491,7 @@ static int pvfs2_xattr_set_trusted(struct dentry *dentry,
 				    flags);
 }
 
-static int pvfs2_xattr_get_trusted(struct dentry *dentry,
+static int orangefs_xattr_get_trusted(struct dentry *dentry,
 			    const char *name,
 			    void *buffer,
 			    size_t size,
@@ -504,27 +504,27 @@ static int pvfs2_xattr_get_trusted(struct dentry *dentry,
 				    size);
 }
 
-static struct xattr_handler pvfs2_xattr_trusted_handler = {
+static struct xattr_handler orangefs_xattr_trusted_handler = {
 	.prefix = PVFS2_XATTR_NAME_TRUSTED_PREFIX,
-	.get = pvfs2_xattr_get_trusted,
-	.set = pvfs2_xattr_set_trusted,
+	.get = orangefs_xattr_get_trusted,
+	.set = orangefs_xattr_set_trusted,
 };
 
-static struct xattr_handler pvfs2_xattr_default_handler = {
+static struct xattr_handler orangefs_xattr_default_handler = {
 	/*
 	 * NOTE: this is set to be the empty string.
 	 * so that all un-prefixed xattrs keys get caught
 	 * here!
 	 */
 	.prefix = PVFS2_XATTR_NAME_DEFAULT_PREFIX,
-	.get = pvfs2_xattr_get_default,
-	.set = pvfs2_xattr_set_default,
+	.get = orangefs_xattr_get_default,
+	.set = orangefs_xattr_set_default,
 };
 
-const struct xattr_handler *pvfs2_xattr_handlers[] = {
+const struct xattr_handler *orangefs_xattr_handlers[] = {
 	&posix_acl_access_xattr_handler,
 	&posix_acl_default_xattr_handler,
-	&pvfs2_xattr_trusted_handler,
-	&pvfs2_xattr_default_handler,
+	&orangefs_xattr_trusted_handler,
+	&orangefs_xattr_default_handler,
 	NULL
 };
