@@ -62,7 +62,7 @@ static inline int convert_to_internal_xattr_flags(int setxattr_flags)
 ssize_t orangefs_inode_getxattr(struct inode *inode, const char *prefix,
 		const char *name, void *buffer, size_t size)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *orangefs_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op = NULL;
 	ssize_t ret = -ENOMEM;
 	ssize_t length = 0;
@@ -94,13 +94,13 @@ ssize_t orangefs_inode_getxattr(struct inode *inode, const char *prefix,
 		     fsuid,
 		     fsgid);
 
-	down_read(&pvfs2_inode->xattr_sem);
+	down_read(&orangefs_inode->xattr_sem);
 
 	new_op = op_alloc(PVFS2_VFS_OP_GETXATTR);
 	if (!new_op)
 		goto out_unlock;
 
-	new_op->upcall.req.getxattr.refn = pvfs2_inode->refn;
+	new_op->upcall.req.getxattr.refn = orangefs_inode->refn;
 	ret = snprintf((char *)new_op->upcall.req.getxattr.key,
 		       PVFS_MAX_XATTR_NAMELEN, "%s%s", prefix, name);
 
@@ -163,7 +163,7 @@ ssize_t orangefs_inode_getxattr(struct inode *inode, const char *prefix,
 out_release_op:
 	op_release(new_op);
 out_unlock:
-	up_read(&pvfs2_inode->xattr_sem);
+	up_read(&orangefs_inode->xattr_sem);
 	return ret;
 }
 
@@ -172,16 +172,16 @@ static int pvfs2_inode_removexattr(struct inode *inode,
 			    const char *name,
 			    int flags)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *orangefs_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op = NULL;
 	int ret = -ENOMEM;
 
-	down_write(&pvfs2_inode->xattr_sem);
+	down_write(&orangefs_inode->xattr_sem);
 	new_op = op_alloc(PVFS2_VFS_OP_REMOVEXATTR);
 	if (!new_op)
 		goto out_unlock;
 
-	new_op->upcall.req.removexattr.refn = pvfs2_inode->refn;
+	new_op->upcall.req.removexattr.refn = orangefs_inode->refn;
 	/*
 	 * NOTE: Although keys are meant to be NULL terminated
 	 * textual strings, I am going to explicitly pass the
@@ -217,7 +217,7 @@ static int pvfs2_inode_removexattr(struct inode *inode,
 
 	op_release(new_op);
 out_unlock:
-	up_write(&pvfs2_inode->xattr_sem);
+	up_write(&orangefs_inode->xattr_sem);
 	return ret;
 }
 
@@ -230,7 +230,7 @@ out_unlock:
 int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 		const char *name, const void *value, size_t size, int flags)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *orangefs_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op;
 	int internal_flag = 0;
 	int ret = -ENOMEM;
@@ -286,13 +286,13 @@ int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 		     get_khandle_from_ino(inode),
 		     name);
 
-	down_write(&pvfs2_inode->xattr_sem);
+	down_write(&orangefs_inode->xattr_sem);
 	new_op = op_alloc(PVFS2_VFS_OP_SETXATTR);
 	if (!new_op)
 		goto out_unlock;
 
 
-	new_op->upcall.req.setxattr.refn = pvfs2_inode->refn;
+	new_op->upcall.req.setxattr.refn = orangefs_inode->refn;
 	new_op->upcall.req.setxattr.flags = internal_flag;
 	/*
 	 * NOTE: Although keys are meant to be NULL terminated textual
@@ -325,7 +325,7 @@ int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 	/* when request is serviced properly, free req op struct */
 	op_release(new_op);
 out_unlock:
-	up_write(&pvfs2_inode->xattr_sem);
+	up_write(&orangefs_inode->xattr_sem);
 	return ret;
 }
 
@@ -339,7 +339,7 @@ out_unlock:
 ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 {
 	struct inode *inode = dentry->d_inode;
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *orangefs_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op;
 	__u64 token = PVFS_ITERATE_START;
 	ssize_t ret = -ENOMEM;
@@ -358,7 +358,7 @@ ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 		return -EINVAL;
 	}
 
-	down_read(&pvfs2_inode->xattr_sem);
+	down_read(&orangefs_inode->xattr_sem);
 	new_op = op_alloc(PVFS2_VFS_OP_LISTXATTR);
 	if (!new_op)
 		goto out_unlock;
@@ -368,7 +368,7 @@ ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 
 try_again:
 	key_size = 0;
-	new_op->upcall.req.listxattr.refn = pvfs2_inode->refn;
+	new_op->upcall.req.listxattr.refn = orangefs_inode->refn;
 	new_op->upcall.req.listxattr.token = token;
 	new_op->upcall.req.listxattr.requested_count =
 	    (size == 0) ? 0 : PVFS_MAX_XATTR_LISTLEN;
@@ -443,7 +443,7 @@ done:
 	if (ret == 0)
 		ret = total;
 out_unlock:
-	up_read(&pvfs2_inode->xattr_sem);
+	up_read(&orangefs_inode->xattr_sem);
 	return ret;
 }
 
