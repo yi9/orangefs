@@ -15,8 +15,8 @@
 #include <linux/xattr.h>
 
 
-#define SYSTEM_PVFS2_KEY "system.pvfs2."
-#define SYSTEM_PVFS2_KEY_LEN 13
+#define SYSTEM_ORANGEFS_KEY "system.pvfs2."
+#define SYSTEM_ORANGEFS_KEY_LEN 13
 
 /*
  * this function returns
@@ -24,15 +24,15 @@
  *     of a listxattr.
  *   1 if the key corresponding to name is meant to be returned as part of
  *     a listxattr.
- * The ones that start SYSTEM_PVFS2_KEY are the ones to avoid printing.
+ * The ones that start SYSTEM_ORANGEFS_KEY are the ones to avoid printing.
  */
 static int is_reserved_key(const char *key, size_t size)
 {
 
-	if (size < SYSTEM_PVFS2_KEY_LEN)
+	if (size < SYSTEM_ORANGEFS_KEY_LEN)
 		return 1;
 
-	return strncmp(key, SYSTEM_PVFS2_KEY, SYSTEM_PVFS2_KEY_LEN) ?  1 : 0;
+	return strncmp(key, SYSTEM_ORANGEFS_KEY, SYSTEM_ORANGEFS_KEY_LEN) ?  1 : 0;
 }
 
 static inline int convert_to_internal_xattr_flags(int setxattr_flags)
