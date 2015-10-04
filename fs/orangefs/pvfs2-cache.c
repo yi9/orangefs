@@ -77,7 +77,7 @@ char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 			return "OP_RENAME";
 		else if (type == PVFS2_VFS_OP_STATFS)
 			return "OP_STATFS";
-		else if (type == PVFS2_VFS_OP_TRUNCATE)
+		else if (type == ORANGEFS_VFS_OP_TRUNCATE)
 			return "OP_TRUNCATE";
 		else if (type == PVFS2_VFS_OP_MMAP_RA_FLUSH)
 			return "OP_MMAP_RA_FLUSH";

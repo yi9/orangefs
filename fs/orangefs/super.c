@@ -117,7 +117,7 @@ static struct inode *pvfs2_alloc_inode(struct super_block *sb)
 
 static void pvfs2_destroy_inode(struct inode *inode)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 			"%s: deallocated %p destroying inode %pU\n",
@@ -261,7 +261,7 @@ void fsid_key_table_finalize(void)
 /* Called whenever the VFS dirties the inode in response to atime updates */
 static void pvfs2_dirty_inode(struct inode *inode, int flags)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 		     "pvfs2_dirty_inode: %pU\n",
@@ -315,7 +315,7 @@ static int pvfs2_encode_fh(struct inode *inode,
 		goto out;
 	}
 
-	refn = PVFS2_I(inode)->refn;
+	refn = ORANGEFS_I(inode)->refn;
 	PVFS_khandle_to(&refn.khandle, fh, 16);
 	fh[4] = refn.fs_id;
 
@@ -326,7 +326,7 @@ static int pvfs2_encode_fh(struct inode *inode,
 
 
 	if (parent) {
-		refn = PVFS2_I(parent)->refn;
+		refn = ORANGEFS_I(parent)->refn;
 		PVFS_khandle_to(&refn.khandle, (char *) fh + 20, 16);
 		fh[9] = refn.fs_id;
 

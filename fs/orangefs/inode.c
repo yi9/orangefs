@@ -158,7 +158,7 @@ const struct address_space_operations orangefs_address_operations = {
 
 static int orangefs_setattr_size(struct inode *inode, struct iattr *iattr)
 {
-	struct orangefs_inode_s *orangefs_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 	struct orangefs_kernel_op_s *new_op;
 	loff_t orig_size = i_size_read(inode);
 	int ret = -EINVAL;
@@ -173,7 +173,7 @@ static int orangefs_setattr_size(struct inode *inode, struct iattr *iattr)
 
 	truncate_setsize(inode, iattr->ia_size);
 
-	new_op = op_alloc(PVFS2_VFS_OP_TRUNCATE);
+	new_op = op_alloc(ORANGEFS_VFS_OP_TRUNCATE);
 	if (!new_op)
 		return -ENOMEM;
 
@@ -280,7 +280,7 @@ int orangefs_getattr(struct vfsmount *mnt,
 	if (ret == 0) {
 		generic_fillattr(inode, kstat);
 		/* override block size reported to stat */
-		orangefs_inode = PVFS2_I(inode);
+		orangefs_inode = ORANGEFS_I(inode);
 		kstat->blksize = orangefs_inode->blksize;
 	} else {
 		/* assume an I/O error and flag inode as bad */
@@ -356,7 +356,7 @@ static int orangefs_set_inode(struct inode *inode, void *data)
 	/* Make sure that we have sane parameters */
 	if (!data || !inode)
 		return 0;
-	orangefs_inode = PVFS2_I(inode);
+	orangefs_inode = ORANGEFS_I(inode);
 	if (!orangefs_inode)
 		return 0;
 	orangefs_inode->refn.fs_id = ref->fs_id;
@@ -372,17 +372,17 @@ static int orangefs_test_inode(struct inode *inode, void *data)
 	struct orangefs_object_kref *ref = (struct orangefs_object_kref *) data;
 	struct orangefs_inode_s *orangefs_inode = NULL;
 
-	orangefs_inode = PVFS2_I(inode);
+	orangefs_inode = ORANGEFS_I(inode);
 	return (!PVFS_khandle_cmp(&(orangefs_inode->refn.khandle), &(ref->khandle))
 		&& orangefs_inode->refn.fs_id == ref->fs_id);
 }
 
 /*
- * Front-end to lookup the inode-cache maintained by the VFS using the PVFS2
+ * Front-end to lookup the inode-cache maintained by the VFS using the ORANGEFS
  * file handle.
  *
  * @sb: the file system super block instance.
- * @ref: The PVFS2 object for which we are trying to locate an inode structure.
+ * @ref: The ORANGEFS object for which we are trying to locate an inode structure.
  */
 struct inode *orangefs_iget(struct super_block *sb, struct orangefs_object_kref *ref)
 {
