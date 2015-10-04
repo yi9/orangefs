@@ -415,7 +415,7 @@ out:
  * issues a pvfs2 setattr request to make sure the new attribute values
  * take effect if successful.  returns 0 on success; -errno otherwise
  */
-int pvfs2_inode_setattr(struct inode *inode, struct iattr *iattr)
+int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op;
@@ -438,7 +438,7 @@ int pvfs2_inode_setattr(struct inode *inode, struct iattr *iattr)
 				get_interruptible_flag(inode));
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "pvfs2_inode_setattr: returning %d\n",
+		     "orangefs_inode_setattr: returning %d\n",
 		     ret);
 
 	/* when request is serviced properly, free req op struct */
@@ -525,7 +525,7 @@ int orangefs_flush_inode(struct inode *inode)
 		     get_khandle_from_ino(inode),
 		     inode->i_mode);
 
-	ret = pvfs2_inode_setattr(inode, &wbattr);
+	ret = orangefs_inode_setattr(inode, &wbattr);
 
 	return ret;
 }

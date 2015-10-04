@@ -652,7 +652,7 @@ out:
  * Read data from a specified offset in a file (referenced by inode).
  * Data may be placed either in a user or kernel buffer.
  */
-ssize_t pvfs2_inode_read(struct inode *inode,
+ssize_t orangefs_inode_read(struct inode *inode,
 			 char __user *buf,
 			 size_t count,
 			 loff_t *offset,

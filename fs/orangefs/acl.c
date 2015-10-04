@@ -140,7 +140,7 @@ out:
 	return error;
 }
 
-int pvfs2_init_acl(struct inode *inode, struct inode *dir)
+int orangefs_init_acl(struct inode *inode, struct inode *dir)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct posix_acl *default_acl, *acl;

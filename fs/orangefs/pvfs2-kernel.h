@@ -234,7 +234,7 @@ extern struct client_debug_mask current_client_mask;
 */
 extern unsigned int kernel_mask_set_mod_init;
 
-extern int pvfs2_init_acl(struct inode *inode, struct inode *dir);
+extern int orangefs_init_acl(struct inode *inode, struct inode *dir);
 extern const struct xattr_handler *orangefs_xattr_handlers[];
 
 extern struct posix_acl *orangefs_get_acl(struct inode *inode, int type);
@@ -607,7 +607,7 @@ ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size);
 struct inode *orangefs_iget(struct super_block *sb,
 			 struct pvfs2_object_kref *ref);
 
-ssize_t pvfs2_inode_read(struct inode *inode,
+ssize_t orangefs_inode_read(struct inode *inode,
 			 char __user *buf,
 			 size_t count,
 			 loff_t *offset,
@@ -643,7 +643,7 @@ int orangefs_inode_setxattr(struct inode *inode,
 
 int orangefs_inode_getattr(struct inode *inode, __u32 mask);
 
-int pvfs2_inode_setattr(struct inode *inode, struct iattr *iattr);
+int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr);
 
 void pvfs2_op_initialize(struct orangefs_kernel_op_s *op);
 
