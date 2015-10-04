@@ -376,7 +376,7 @@ static int pvfs2_fill_sb(struct super_block *sb, void *data, int silent)
 	}
 
 	/* Hang the xattr handlers off the superblock */
-	sb->s_xattr = pvfs2_xattr_handlers;
+	sb->s_xattr = orangefs_xattr_handlers;
 	sb->s_magic = PVFS2_SUPER_MAGIC;
 	sb->s_op = &pvfs2_s_ops;
 	sb->s_d_op = &pvfs2_dentry_operations;

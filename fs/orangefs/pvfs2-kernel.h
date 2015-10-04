@@ -235,19 +235,19 @@ extern struct client_debug_mask current_client_mask;
 extern unsigned int kernel_mask_set_mod_init;
 
 extern int pvfs2_init_acl(struct inode *inode, struct inode *dir);
-extern const struct xattr_handler *pvfs2_xattr_handlers[];
+extern const struct xattr_handler *orangefs_xattr_handlers[];
 
 extern struct posix_acl *orangefs_get_acl(struct inode *inode, int type);
 extern int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
 
-int pvfs2_xattr_set_default(struct dentry *dentry,
+int orangefs_xattr_set_default(struct dentry *dentry,
 			    const char *name,
 			    const void *buffer,
 			    size_t size,
 			    int flags,
 			    int handler_flags);
 
-int pvfs2_xattr_get_default(struct dentry *dentry,
+int orangefs_xattr_get_default(struct dentry *dentry,
 			    const char *name,
 			    void *buffer,
 			    size_t size,
