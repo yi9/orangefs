@@ -119,7 +119,7 @@ static int pvfs2_d_revalidate(struct dentry *dentry, unsigned int flags)
 		     __func__,
 		     inode,
 		     get_khandle_from_ino(inode));
-	ret = pvfs2_inode_getattr(inode, PVFS_ATTR_SYS_ALL_NOHINT);
+	ret = orangefs_inode_getattr(inode, PVFS_ATTR_SYS_ALL_NOHINT);
 	gossip_debug(GOSSIP_DCACHE_DEBUG,
 		     "%s: getattr %s (ret = %d), returning %s for dentry i_count=%d\n",
 		     __func__,

@@ -353,7 +353,7 @@ static inline int copy_attributes_from_inode(struct inode *inode,
  * issues a pvfs2 getattr request and fills in the appropriate inode
  * attributes if successful.  returns 0 on success; -errno otherwise
  */
-int pvfs2_inode_getattr(struct inode *inode, __u32 getattr_mask)
+int orangefs_inode_getattr(struct inode *inode, __u32 getattr_mask)
 {
 	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op;
