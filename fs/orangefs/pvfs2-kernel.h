@@ -185,8 +185,8 @@ struct client_debug_mask {
 #define PVFS2_GFP_FLAGS (GFP_KERNEL)
 #define PVFS2_BUFMAP_GFP_FLAGS (GFP_KERNEL)
 
-#define pvfs2_kmap(page) kmap(page)
-#define pvfs2_kunmap(page) kunmap(page)
+#define orangefs_kmap(page) kmap(page)
+#define orangefs_kunmap(page) kunmap(page)
 
 /* pvfs2 xattr and acl related defines */
 #define PVFS2_XATTR_INDEX_POSIX_ACL_ACCESS  1
@@ -310,7 +310,7 @@ struct orangefs_kernel_op_s {
 
 /* per inode private pvfs2 info */
 struct orangefs_inode_s {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 	char link_target[PVFS_NAME_MAX];
 	__s64 blksize;
 	/*
@@ -574,7 +574,7 @@ struct inode *orangefs_new_inode(struct super_block *sb,
 			      struct inode *dir,
 			      int mode,
 			      dev_t dev,
-			      struct pvfs2_object_kref *ref);
+			      struct orangefs_object_kref *ref);
 
 int orangefs_setattr(struct dentry *dentry, struct iattr *iattr);
 
@@ -602,7 +602,7 @@ ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size);
  * defined in namei.c
  */
 struct inode *orangefs_iget(struct super_block *sb,
-			 struct pvfs2_object_kref *ref);
+			 struct orangefs_object_kref *ref);
 
 ssize_t orangefs_inode_read(struct inode *inode,
 			 char __user *buf,
@@ -644,7 +644,7 @@ int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr);
 
 void pvfs2_op_initialize(struct orangefs_kernel_op_s *op);
 
-void pvfs2_make_bad_inode(struct inode *inode);
+void orangefs_make_bad_inode(struct inode *inode);
 
 void block_signals(sigset_t *);
 
@@ -672,11 +672,11 @@ extern struct list_head *htable_ops_in_progress;
 extern spinlock_t htable_ops_in_progress_lock;
 extern int hash_table_size;
 
-extern const struct address_space_operations pvfs2_address_operations;
+extern const struct address_space_operations orangefs_address_operations;
 extern struct backing_dev_info pvfs2_backing_dev_info;
-extern struct inode_operations pvfs2_file_inode_operations;
-extern const struct file_operations pvfs2_file_operations;
-extern struct inode_operations pvfs2_symlink_inode_operations;
+extern struct inode_operations orangefs_file_inode_operations;
+extern const struct file_operations orangefs_file_operations;
+extern struct inode_operations orangefs_symlink_inode_operations;
 extern struct inode_operations orangefs_dir_inode_operations;
 extern const struct file_operations orangefs_dir_operations;
 extern const struct dentry_operations pvfs2_dentry_operations;

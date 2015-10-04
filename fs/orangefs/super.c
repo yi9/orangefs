@@ -284,7 +284,7 @@ static struct dentry *pvfs2_fh_to_dentry(struct super_block *sb,
 				  int fh_len,
 				  int fh_type)
 {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 
 	if (fh_len < 5 || fh_type > 2)
 		return NULL;
@@ -306,7 +306,7 @@ static int pvfs2_encode_fh(struct inode *inode,
 {
 	int len = parent ? 10 : 5;
 	int type = 1;
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 
 	if (*max_len < len) {
 		gossip_lerr("fh buffer is too small for encoding\n");
@@ -354,7 +354,7 @@ static int pvfs2_fill_sb(struct super_block *sb, void *data, int silent)
 	struct dentry *root_dentry = NULL;
 	struct pvfs2_mount_sb_info_s *mount_sb_info =
 		(struct pvfs2_mount_sb_info_s *) data;
-	struct pvfs2_object_kref root_object;
+	struct orangefs_object_kref root_object;
 
 	/* alloc and init our private pvfs2 sb info */
 	sb->s_fs_info =

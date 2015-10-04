@@ -24,15 +24,15 @@ struct pvfs2_iox_response {
 };
 
 struct pvfs2_lookup_response {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 };
 
 struct pvfs2_create_response {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 };
 
 struct pvfs2_symlink_response {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 };
 
 struct pvfs2_getattr_response {
@@ -41,7 +41,7 @@ struct pvfs2_getattr_response {
 };
 
 struct pvfs2_mkdir_response {
-	struct pvfs2_object_kref refn;
+	struct orangefs_object_kref refn;
 };
 
 /*

@@ -25,7 +25,7 @@ static int read_one_page(struct page *page)
 	gossip_debug(GOSSIP_INODE_DEBUG,
 		    "orangefs_readpage called with page %p\n",
 		     page);
-	page_data = pvfs2_kmap(page);
+	page_data = orangefs_kmap(page);
 
 	max_block = ((inode->i_size / blocksize) + 1);
 
@@ -54,7 +54,7 @@ static int read_one_page(struct page *page)
 			ClearPageError(page);
 		ret = 0;
 	}
-	pvfs2_kunmap(page);
+	orangefs_kunmap(page);
 	/* unlock the page after the ->readpage() routine completes */
 	unlock_page(page);
 	return ret;
@@ -147,8 +147,8 @@ struct backing_dev_info pvfs2_backing_dev_info = {
 	.capabilities = BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_WRITEBACK,
 };
 
-/** PVFS2 implementation of address space operations */
-const struct address_space_operations pvfs2_address_operations = {
+/** ORANGEFS2 implementation of address space operations */
+const struct address_space_operations orangefs_address_operations = {
 	.readpage = orangefs_readpage,
 	.readpages = orangefs_readpages,
 	.invalidatepage = orangefs_invalidatepage,
@@ -156,7 +156,7 @@ const struct address_space_operations pvfs2_address_operations = {
 /*	.direct_IO = pvfs2_direct_IO */
 };
 
-static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
+static int orangefs_setattr_size(struct inode *inode, struct iattr *iattr)
 {
 	struct orangefs_inode_s *orangefs_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op;
@@ -188,7 +188,7 @@ static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
 	 * the status value tells us if it went through ok or not
 	 */
 	gossip_debug(GOSSIP_INODE_DEBUG,
-		     "orangefs: pvfs2_truncate got return value of %d\n",
+		     "orangefs: orangefs_truncate got return value of %d\n",
 		     ret);
 
 	op_release(new_op);
@@ -234,7 +234,7 @@ int orangefs_setattr(struct dentry *dentry, struct iattr *iattr)
 
 	if ((iattr->ia_valid & ATTR_SIZE) &&
 	    iattr->ia_size != i_size_read(inode)) {
-		ret = pvfs2_setattr_size(inode, iattr);
+		ret = orangefs_setattr_size(inode, iattr);
 		if (ret)
 			goto out;
 	}
@@ -289,13 +289,13 @@ int orangefs_getattr(struct vfsmount *mnt,
 			     __FILE__,
 			     __func__,
 			     __LINE__);
-		pvfs2_make_bad_inode(inode);
+		orangefs_make_bad_inode(inode);
 	}
 	return ret;
 }
 
-/* PVFS2 implementation of VFS inode operations for files */
-struct inode_operations pvfs2_file_inode_operations = {
+/* ORANGEDS2 implementation of VFS inode operations for files */
+struct inode_operations orangefs_file_inode_operations = {
 	.get_acl = orangefs_get_acl,
 	.set_acl = orangefs_set_acl,
 	.setattr = orangefs_setattr,
@@ -308,16 +308,16 @@ struct inode_operations pvfs2_file_inode_operations = {
 
 static int orangefs_init_iops(struct inode *inode)
 {
-	inode->i_mapping->a_ops = &pvfs2_address_operations;
+	inode->i_mapping->a_ops = &orangefs_address_operations;
 
 	switch (inode->i_mode & S_IFMT) {
 	case S_IFREG:
-		inode->i_op = &pvfs2_file_inode_operations;
-		inode->i_fop = &pvfs2_file_operations;
+		inode->i_op = &orangefs_file_inode_operations;
+		inode->i_fop = &orangefs_file_operations;
 		inode->i_blkbits = PAGE_CACHE_SHIFT;
 		break;
 	case S_IFLNK:
-		inode->i_op = &pvfs2_symlink_inode_operations;
+		inode->i_op = &orangefs_symlink_inode_operations;
 		break;
 	case S_IFDIR:
 		inode->i_op = &orangefs_dir_inode_operations;
@@ -334,11 +334,11 @@ static int orangefs_init_iops(struct inode *inode)
 }
 
 /*
- * Given a PVFS2 object identifier (fsid, handle), convert it into a ino_t type
+ * Given a ORANGEFS object identifier (fsid, handle), convert it into a ino_t type
  * that will be used as a hash-index from where the handle will
  * be searched for in the VFS hash table of inodes.
  */
-static inline ino_t orangefs_handle_hash(struct pvfs2_object_kref *ref)
+static inline ino_t orangefs_handle_hash(struct orangefs_object_kref *ref)
 {
 	if (!ref)
 		return 0;
@@ -350,7 +350,7 @@ static inline ino_t orangefs_handle_hash(struct pvfs2_object_kref *ref)
  */
 static int orangefs_set_inode(struct inode *inode, void *data)
 {
-	struct pvfs2_object_kref *ref = (struct pvfs2_object_kref *) data;
+	struct orangefs_object_kref *ref = (struct orangefs_object_kref *) data;
 	struct orangefs_inode_s *orangefs_inode = NULL;
 
 	/* Make sure that we have sane parameters */
@@ -369,7 +369,7 @@ static int orangefs_set_inode(struct inode *inode, void *data)
  */
 static int orangefs_test_inode(struct inode *inode, void *data)
 {
-	struct pvfs2_object_kref *ref = (struct pvfs2_object_kref *) data;
+	struct orangefs_object_kref *ref = (struct orangefs_object_kref *) data;
 	struct orangefs_inode_s *orangefs_inode = NULL;
 
 	orangefs_inode = PVFS2_I(inode);
@@ -384,7 +384,7 @@ static int orangefs_test_inode(struct inode *inode, void *data)
  * @sb: the file system super block instance.
  * @ref: The PVFS2 object for which we are trying to locate an inode structure.
  */
-struct inode *orangefs_iget(struct super_block *sb, struct pvfs2_object_kref *ref)
+struct inode *orangefs_iget(struct super_block *sb, struct orangefs_object_kref *ref)
 {
 	struct inode *inode = NULL;
 	unsigned long hash;
@@ -419,7 +419,7 @@ struct inode *orangefs_iget(struct super_block *sb, struct pvfs2_object_kref *re
  * Allocate an inode for a newly created file and insert it into the inode hash.
  */
 struct inode *orangefs_new_inode(struct super_block *sb, struct inode *dir,
-		int mode, dev_t dev, struct pvfs2_object_kref *ref)
+		int mode, dev_t dev, struct orangefs_object_kref *ref)
 {
 	unsigned long hash = orangefs_handle_hash(ref);
 	struct inode *inode;
