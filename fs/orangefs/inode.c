@@ -32,7 +32,7 @@ static int read_one_page(struct page *page)
 	if (page->index < max_block) {
 		loff_t blockptr_offset = (((loff_t) page->index) << blockbits);
 
-		bytes_read = pvfs2_inode_read(inode,
+		bytes_read = orangefs_inode_read(inode,
 					      (char __user *) page_data,
 					      blocksize,
 					      &blockptr_offset,
@@ -60,12 +60,12 @@ static int read_one_page(struct page *page)
 	return ret;
 }
 
-static int pvfs2_readpage(struct file *file, struct page *page)
+static int orangefs_readpage(struct file *file, struct page *page)
 {
 	return read_one_page(page);
 }
 
-static int pvfs2_readpages(struct file *file,
+static int orangefs_readpages(struct file *file,
 			   struct address_space *mapping,
 			   struct list_head *pages,
 			   unsigned nr_pages)
@@ -96,7 +96,7 @@ static int pvfs2_readpages(struct file *file,
 	return 0;
 }
 
-static void pvfs2_invalidatepage(struct page *page,
+static void orangefs_invalidatepage(struct page *page,
 				 unsigned int offset,
 				 unsigned int length)
 {
@@ -112,7 +112,7 @@ static void pvfs2_invalidatepage(struct page *page,
 
 }
 
-static int pvfs2_releasepage(struct page *page, gfp_t foo)
+static int orangefs_releasepage(struct page *page, gfp_t foo)
 {
 	gossip_debug(GOSSIP_INODE_DEBUG,
 		     "orangefs_releasepage called on page %p\n",
@@ -149,16 +149,16 @@ struct backing_dev_info pvfs2_backing_dev_info = {
 
 /** PVFS2 implementation of address space operations */
 const struct address_space_operations pvfs2_address_operations = {
-	.readpage = pvfs2_readpage,
-	.readpages = pvfs2_readpages,
-	.invalidatepage = pvfs2_invalidatepage,
-	.releasepage = pvfs2_releasepage,
+	.readpage = orangefs_readpage,
+	.readpages = orangefs_readpages,
+	.invalidatepage = orangefs_invalidatepage,
+	.releasepage = orangefs_releasepage,
 /*	.direct_IO = pvfs2_direct_IO */
 };
 
 static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
 {
-	struct orangefs_inode_s *pvfs2_inode = PVFS2_I(inode);
+	struct orangefs_inode_s *orangefs_inode = PVFS2_I(inode);
 	struct orangefs_kernel_op_s *new_op;
 	loff_t orig_size = i_size_read(inode);
 	int ret = -EINVAL;
@@ -167,8 +167,8 @@ static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
 		     "%s: %pU: Handle is %pU | fs_id %d | size is %llu\n",
 		     __func__,
 		     get_khandle_from_ino(inode),
-		     &pvfs2_inode->refn.khandle,
-		     pvfs2_inode->refn.fs_id,
+		     &orangefs_inode->refn.khandle,
+		     orangefs_inode->refn.fs_id,
 		     iattr->ia_size);
 
 	truncate_setsize(inode, iattr->ia_size);
@@ -177,7 +177,7 @@ static int pvfs2_setattr_size(struct inode *inode, struct iattr *iattr)
 	if (!new_op)
 		return -ENOMEM;
 
-	new_op->upcall.req.truncate.refn = pvfs2_inode->refn;
+	new_op->upcall.req.truncate.refn = orangefs_inode->refn;
 	new_op->upcall.req.truncate.size = (__s64) iattr->ia_size;
 
 	ret = service_operation(new_op, __func__,
@@ -242,7 +242,7 @@ int orangefs_setattr(struct dentry *dentry, struct iattr *iattr)
 	setattr_copy(inode, iattr);
 	mark_inode_dirty(inode);
 
-	ret = pvfs2_inode_setattr(inode, iattr);
+	ret = orangefs_inode_setattr(inode, iattr);
 	gossip_debug(GOSSIP_INODE_DEBUG,
 		     "orangefs_setattr: inode_setattr returned %d\n",
 		     ret);
@@ -265,7 +265,7 @@ int orangefs_getattr(struct vfsmount *mnt,
 {
 	int ret = -ENOENT;
 	struct inode *inode = dentry->d_inode;
-	struct orangefs_inode_s *pvfs2_inode = NULL;
+	struct orangefs_inode_s *orangefs_inode = NULL;
 
 	gossip_debug(GOSSIP_INODE_DEBUG,
 		     "orangefs_getattr: called on %s\n",
@@ -280,8 +280,8 @@ int orangefs_getattr(struct vfsmount *mnt,
 	if (ret == 0) {
 		generic_fillattr(inode, kstat);
 		/* override block size reported to stat */
-		pvfs2_inode = PVFS2_I(inode);
-		kstat->blksize = pvfs2_inode->blksize;
+		orangefs_inode = PVFS2_I(inode);
+		kstat->blksize = orangefs_inode->blksize;
 	} else {
 		/* assume an I/O error and flag inode as bad */
 		gossip_debug(GOSSIP_INODE_DEBUG,
@@ -351,16 +351,16 @@ static inline ino_t orangefs_handle_hash(struct pvfs2_object_kref *ref)
 static int orangefs_set_inode(struct inode *inode, void *data)
 {
 	struct pvfs2_object_kref *ref = (struct pvfs2_object_kref *) data;
-	struct orangefs_inode_s *pvfs2_inode = NULL;
+	struct orangefs_inode_s *orangefs_inode = NULL;
 
 	/* Make sure that we have sane parameters */
 	if (!data || !inode)
 		return 0;
-	pvfs2_inode = PVFS2_I(inode);
-	if (!pvfs2_inode)
+	orangefs_inode = PVFS2_I(inode);
+	if (!orangefs_inode)
 		return 0;
-	pvfs2_inode->refn.fs_id = ref->fs_id;
-	pvfs2_inode->refn.khandle = ref->khandle;
+	orangefs_inode->refn.fs_id = ref->fs_id;
+	orangefs_inode->refn.khandle = ref->khandle;
 	return 0;
 }
 
@@ -370,11 +370,11 @@ static int orangefs_set_inode(struct inode *inode, void *data)
 static int orangefs_test_inode(struct inode *inode, void *data)
 {
 	struct pvfs2_object_kref *ref = (struct pvfs2_object_kref *) data;
-	struct orangefs_inode_s *pvfs2_inode = NULL;
+	struct orangefs_inode_s *orangefs_inode = NULL;
 
-	pvfs2_inode = PVFS2_I(inode);
-	return (!PVFS_khandle_cmp(&(pvfs2_inode->refn.khandle), &(ref->khandle))
-		&& pvfs2_inode->refn.fs_id == ref->fs_id);
+	orangefs_inode = PVFS2_I(inode);
+	return (!PVFS_khandle_cmp(&(orangefs_inode->refn.khandle), &(ref->khandle))
+		&& orangefs_inode->refn.fs_id == ref->fs_id);
 }
 
 /*
@@ -460,7 +460,7 @@ struct inode *orangefs_new_inode(struct super_block *sb, struct inode *dir,
 	gossip_debug(GOSSIP_INODE_DEBUG,
 		     "Initializing ACL's for inode %pU\n",
 		     get_khandle_from_ino(inode));
-	pvfs2_init_acl(inode, dir);
+	orangefs_init_acl(inode, dir);
 	return inode;
 
 out_iput:
