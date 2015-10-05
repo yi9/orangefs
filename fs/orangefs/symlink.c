@@ -8,7 +8,7 @@
 #include "pvfs2-kernel.h"
 #include "pvfs2-bufmap.h"
 
-static const char *pvfs2_follow_link(struct dentry *dentry, void **cookie)
+static const char *orangefs_follow_link(struct dentry *dentry, void **cookie)
 {
 	char *target =  ORANGEFS_I(dentry->d_inode)->link_target;
 
@@ -23,7 +23,7 @@ static const char *pvfs2_follow_link(struct dentry *dentry, void **cookie)
 
 struct inode_operations orangefs_symlink_inode_operations = {
 	.readlink = generic_readlink,
-	.follow_link = pvfs2_follow_link,
+	.follow_link = orangefs_follow_link,
 	.setattr = orangefs_setattr,
 	.getattr = orangefs_getattr,
 	.listxattr = orangefs_listxattr,
