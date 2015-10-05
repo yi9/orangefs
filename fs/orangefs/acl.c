@@ -18,10 +18,10 @@ struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 
 	switch (type) {
 	case ACL_TYPE_ACCESS:
-		key = PVFS2_XATTR_NAME_ACL_ACCESS;
+		key = ORANGEFS_XATTR_NAME_ACL_ACCESS;
 		break;
 	case ACL_TYPE_DEFAULT:
-		key = PVFS2_XATTR_NAME_ACL_DEFAULT;
+		key = ORANGEFS_XATTR_NAME_ACL_DEFAULT;
 		break;
 	default:
 		gossip_err("orangefs_get_acl: bogus value of type %d\n", type);
@@ -66,7 +66,7 @@ struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 
 int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 {
-	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 	int error = 0;
 	void *value = NULL;
 	size_t size = 0;
@@ -74,7 +74,7 @@ int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 
 	switch (type) {
 	case ACL_TYPE_ACCESS:
-		name = PVFS2_XATTR_NAME_ACL_ACCESS;
+		name = ORANGEFS_XATTR_NAME_ACL_ACCESS;
 		if (acl) {
 			umode_t mode = inode->i_mode;
 			/*
@@ -90,7 +90,7 @@ int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 			}
 
 			if (inode->i_mode != mode)
-				SetModeFlag(pvfs2_inode);
+				SetModeFlag(orangefs_inode);
 			inode->i_mode = mode;
 			mark_inode_dirty_sync(inode);
 			if (error == 0)
@@ -98,7 +98,7 @@ int orangefs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 		}
 		break;
 	case ACL_TYPE_DEFAULT:
-		name = PVFS2_XATTR_NAME_ACL_DEFAULT;
+		name = ORANGEFS_XATTR_NAME_ACL_DEFAULT;
 		break;
 	default:
 		gossip_err("%s: invalid type %d!\n", __func__, type);
@@ -142,12 +142,12 @@ out:
 
 int orangefs_init_acl(struct inode *inode, struct inode *dir)
 {
-	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 	struct posix_acl *default_acl, *acl;
 	umode_t mode = inode->i_mode;
 	int error = 0;
 
-	ClearModeFlag(pvfs2_inode);
+	ClearModeFlag(orangefs_inode);
 
 	error = posix_acl_create(dir, &mode, &default_acl, &acl);
 	if (error)
@@ -166,7 +166,7 @@ int orangefs_init_acl(struct inode *inode, struct inode *dir)
 
 	/* If mode of the inode was changed, then do a forcible ->setattr */
 	if (mode != inode->i_mode) {
-		SetModeFlag(pvfs2_inode);
+		SetModeFlag(orangefs_inode);
 		inode->i_mode = mode;
 		orangefs_flush_inode(inode);
 	}
