@@ -587,7 +587,7 @@ int pvfs2_cancel_op_in_progress(__u64 tag)
 		     "Attempting PVFS2 operation cancellation of tag %llu\n",
 		     llu(new_op->upcall.req.cancel.op_tag));
 
-	ret = service_operation(new_op, "pvfs2_cancel", PVFS2_OP_CANCELLATION);
+	ret = service_operation(new_op, "pvfs2_cancel", ORANGEFS_OP_CANCELLATION);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "pvfs2_cancel_op_in_progress: got return value of %d\n",
@@ -681,7 +681,7 @@ static int PINT_errno_mapping[] = {
 	EACCES, ECONNRESET, ERANGE
 };
 
-int pvfs2_normalize_to_errno(__s32 error_code)
+int orangefs_normalize_to_errno(__s32 error_code)
 {
 	__u32 i;
 
@@ -735,7 +735,7 @@ int pvfs2_normalize_to_errno(__s32 error_code)
 	 * there is a bug somewhere.
 	 */
 	} else {
-		gossip_err("pvfs2: pvfs2_normalize_to_errno: got error code which is not from PVFS2.\n");
+		gossip_err("orangefs: orangefs_normalize_to_errno: got error code which is not from PVFS2.\n");
 	}
 	return error_code;
 }

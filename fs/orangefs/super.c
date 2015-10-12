@@ -150,7 +150,7 @@ static int pvfs2_statfs(struct dentry *dentry, struct kstatfs *buf)
 	new_op->upcall.req.statfs.fs_id = PVFS2_SB(sb)->fs_id;
 
 	if (PVFS2_SB(sb)->flags & PVFS2_OPT_INTR)
-		flags = PVFS2_OP_INTERRUPTIBLE;
+		flags = ORANGEFS_OP_INTERRUPTIBLE;
 
 	ret = service_operation(new_op, "pvfs2_statfs", flags);
 
@@ -231,7 +231,7 @@ int pvfs2_remount(struct super_block *sb)
 	 * this one
 	 */
 	ret = service_operation(new_op, "pvfs2_remount",
-		PVFS2_OP_PRIORITY | PVFS2_OP_NO_SEMAPHORE);
+		ORANGEFS_OP_PRIORITY | ORANGEFS_OP_NO_SEMAPHORE);
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 		     "pvfs2_remount: mount got return value of %d\n",
 		     ret);

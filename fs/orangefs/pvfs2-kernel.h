@@ -61,7 +61,7 @@
 #define PVFS2_DEFAULT_OP_TIMEOUT_SECS       20
 #endif
 
-#define PVFS2_BUFMAP_WAIT_TIMEOUT_SECS      30
+#define ORANGEFS_BUFMAP_WAIT_TIMEOUT_SECS   30
 
 #define PVFS2_DEFAULT_SLOT_TIMEOUT_SECS     900	/* 15 minutes */
 
@@ -69,7 +69,7 @@
 
 #define PVFS2_DEVREQ_MAGIC             0x20030529
 #define PVFS2_LINK_MAX                 0x000000FF
-#define PVFS2_PURGE_RETRY_COUNT        0x00000005
+#define ORANGEFS_PURGE_RETRY_COUNT     0x00000005
 #define PVFS2_SEEK_END                 0x00000002
 #define PVFS2_MAX_NUM_OPTIONS          0x00000004
 #define PVFS2_MAX_MOUNT_OPT_LEN        0x00000080
@@ -549,7 +549,7 @@ void purge_inprogress_ops(void);
  */
 int wait_for_matching_downcall(struct orangefs_kernel_op_s *op);
 int wait_for_cancellation_downcall(struct orangefs_kernel_op_s *op);
-void pvfs2_clean_up_interrupted_operation(struct orangefs_kernel_op_s *op);
+void orangefs_clean_up_interrupted_operation(struct orangefs_kernel_op_s *op);
 void purge_waiting_ops(void);
 
 /*
@@ -656,7 +656,7 @@ int pvfs2_cancel_op_in_progress(__u64 tag);
 
 __u64 pvfs2_convert_time_field(void *time_ptr);
 
-int pvfs2_normalize_to_errno(__s32 error_code);
+int orangefs_normalize_to_errno(__s32 error_code);
 
 extern struct mutex devreq_mutex;
 extern struct mutex request_mutex;
@@ -682,7 +682,7 @@ extern const struct file_operations orangefs_dir_operations;
 extern const struct dentry_operations pvfs2_dentry_operations;
 extern const struct file_operations pvfs2_devreq_file_operations;
 
-extern wait_queue_head_t pvfs2_bufmap_init_waitq;
+extern wait_queue_head_t orangefs_bufmap_init_waitq;
 
 /*
  * misc convenience macros
@@ -729,11 +729,11 @@ do {								\
 		spin_unlock(&pvfs2_request_list_lock);			\
 	} while (0)
 
-#define PVFS2_OP_INTERRUPTIBLE 1   /* service_operation() is interruptible */
-#define PVFS2_OP_PRIORITY      2   /* service_operation() is high priority */
-#define PVFS2_OP_CANCELLATION  4   /* this is a cancellation */
-#define PVFS2_OP_NO_SEMAPHORE  8   /* don't acquire semaphore */
-#define PVFS2_OP_ASYNC         16  /* Queue it, but don't wait */
+#define ORANGEFS_OP_INTERRUPTIBLE 1   /* service_operation() is interruptible */
+#define ORANGEFS_OP_PRIORITY      2   /* service_operation() is high priority */
+#define ORANGEFS_OP_CANCELLATION  4   /* this is a cancellation */
+#define ORANGEFS_OP_NO_SEMAPHORE  8   /* don't acquire semaphore */
+#define ORANGEFS_OP_ASYNC         16  /* Queue it, but don't wait */
 
 int service_operation(struct orangefs_kernel_op_s *op,
 		      const char *op_name,
@@ -783,7 +783,7 @@ do {								\
 
 #define get_interruptible_flag(inode) \
 	((PVFS2_SB(inode->i_sb)->flags & PVFS2_OPT_INTR) ? \
-		PVFS2_OP_INTERRUPTIBLE : 0)
+		ORANGEFS_OP_INTERRUPTIBLE : 0)
 
 #define add_pvfs2_sb(sb)						\
 do {									\

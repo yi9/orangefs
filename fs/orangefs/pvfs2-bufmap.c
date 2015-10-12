@@ -7,7 +7,7 @@
 #include "pvfs2-kernel.h"
 #include "pvfs2-bufmap.h"
 
-DECLARE_WAIT_QUEUE_HEAD(pvfs2_bufmap_init_waitq);
+DECLARE_WAIT_QUEUE_HEAD(orangefs_bufmap_init_waitq);
 
 static struct orangefs_bufmap {
 	atomic_t refcnt;
@@ -290,7 +290,7 @@ int pvfs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 	spin_unlock(&pvfs2_bufmap_lock);
 
 	/*
-	 * If there are operations in pvfs2_bufmap_init_waitq, wake them up.
+	 * If there are operations in orangefs_bufmap_init_waitq, wake them up.
 	 * This scenario occurs when the client-core is restarted and I/O
 	 * requests in the in-progress or waiting tables are restarted.  I/O
 	 * requests cannot be restarted until the shared memory system is
@@ -299,7 +299,7 @@ int pvfs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 	 * are also on a timer, so they don't wait forever just in case the
 	 * client-core doesn't come back up.
 	 */
-	wake_up_interruptible(&pvfs2_bufmap_init_waitq);
+	wake_up_interruptible(&orangefs_bufmap_init_waitq);
 
 	gossip_debug(GOSSIP_BUFMAP_DEBUG,
 		     "pvfs_bufmap_initialize: exiting normally\n");

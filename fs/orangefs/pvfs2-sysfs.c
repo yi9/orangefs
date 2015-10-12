@@ -913,7 +913,7 @@ static int sysfs_service_op_show(char *kobj_id, char *buf, void *attr)
 	 * The service_operation will return an errno return code on
 	 * error, and zero on success.
 	 */
-	rc = service_operation(new_op, ser_op_type, PVFS2_OP_INTERRUPTIBLE);
+	rc = service_operation(new_op, ser_op_type, ORANGEFS_OP_INTERRUPTIBLE);
 
 out:
 	if (!rc) {
@@ -1258,7 +1258,7 @@ static int sysfs_service_op_store(char *kobj_id, const char *buf, void *attr)
 	 * The service_operation will return a errno return code on
 	 * error, and zero on success.
 	 */
-	rc = service_operation(new_op, "pvfs2_param", PVFS2_OP_INTERRUPTIBLE);
+	rc = service_operation(new_op, "pvfs2_param", ORANGEFS_OP_INTERRUPTIBLE);
 
 	if (rc < 0) {
 		gossip_err("sysfs_service_op_store: service op returned:%d:\n",
