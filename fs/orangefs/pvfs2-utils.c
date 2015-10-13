@@ -14,7 +14,7 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 
 	if (op) {
 		switch (op->upcall.type) {
-		case PVFS2_VFS_OP_FILE_IO:
+		case ORANGEFS_VFS_OP_FILE_IO:
 			fsid = op->upcall.req.io.refn.fs_id;
 			break;
 		case PVFS2_VFS_OP_LOOKUP:
@@ -68,7 +68,7 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 		case PVFS2_VFS_OP_REMOVEXATTR:
 			fsid = op->upcall.req.removexattr.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_FSYNC:
+		case ORANGEFS_VFS_OP_FSYNC:
 			fsid = op->upcall.req.fsync.refn.fs_id;
 			break;
 		default:
@@ -135,7 +135,7 @@ static int copy_attributes_to_inode(struct inode *inode,
 	switch (attrs->objtype) {
 	case PVFS_TYPE_METAFILE:
 		pvfs2_set_inode_flags(inode, attrs);
-		if (attrs->mask & PVFS_ATTR_SYS_SIZE) {
+		if (attrs->mask & ORANGEFS_ATTR_SYS_SIZE) {
 			inode_size = (loff_t) attrs->size;
 			rounded_up_size =
 			    (inode_size + (4096 - (inode_size % 4096)));
@@ -542,10 +542,10 @@ int pvfs2_unmount_sb(struct super_block *sb)
 	new_op = op_alloc(PVFS2_VFS_OP_FS_UMOUNT);
 	if (!new_op)
 		return -ENOMEM;
-	new_op->upcall.req.fs_umount.id = PVFS2_SB(sb)->id;
-	new_op->upcall.req.fs_umount.fs_id = PVFS2_SB(sb)->fs_id;
+	new_op->upcall.req.fs_umount.id = ORANGEFS_SB(sb)->id;
+	new_op->upcall.req.fs_umount.fs_id = ORANGEFS_SB(sb)->fs_id;
 	strncpy(new_op->upcall.req.fs_umount.pvfs2_config_server,
-		PVFS2_SB(sb)->devname,
+		ORANGEFS_SB(sb)->devname,
 		PVFS_MAX_SERVER_ADDR_LEN);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
@@ -559,7 +559,7 @@ int pvfs2_unmount_sb(struct super_block *sb)
 	if (ret)
 		sb = ERR_PTR(ret);
 	else
-		PVFS2_SB(sb)->mount_pending = 1;
+		ORANGEFS_SB(sb)->mount_pending = 1;
 
 	op_release(new_op);
 	return ret;

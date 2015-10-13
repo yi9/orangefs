@@ -37,7 +37,7 @@ static const match_table_t tokens = {
 static int parse_mount_options(struct super_block *sb, char *options,
 		int silent)
 {
-	struct pvfs2_sb_info_s *pvfs2_sb = PVFS2_SB(sb);
+	struct pvfs2_sb_info_s *pvfs2_sb = ORANGEFS_SB(sb);
 	substring_t args[MAX_OPT_ARGS];
 	char *p;
 
@@ -47,7 +47,7 @@ static int parse_mount_options(struct super_block *sb, char *options,
 	 */
 	sb->s_flags &= ~MS_POSIXACL;
 	pvfs2_sb->flags &= ~PVFS2_OPT_INTR;
-	pvfs2_sb->flags &= ~PVFS2_OPT_LOCAL_LOCK;
+	pvfs2_sb->flags &= ~ORANGEFS_OPT_LOCAL_LOCK;
 
 	while ((p = strsep(&options, ",")) != NULL) {
 		int token;
@@ -64,7 +64,7 @@ static int parse_mount_options(struct super_block *sb, char *options,
 			pvfs2_sb->flags |= PVFS2_OPT_INTR;
 			break;
 		case Opt_local_lock:
-			pvfs2_sb->flags |= PVFS2_OPT_LOCAL_LOCK;
+			pvfs2_sb->flags |= ORANGEFS_OPT_LOCAL_LOCK;
 			break;
 		default:
 			goto fail;
@@ -142,14 +142,14 @@ static int pvfs2_statfs(struct dentry *dentry, struct kstatfs *buf)
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 		     "pvfs2_statfs: called on sb %p (fs_id is %d)\n",
 		     sb,
-		     (int)(PVFS2_SB(sb)->fs_id));
+		     (int)(ORANGEFS_SB(sb)->fs_id));
 
 	new_op = op_alloc(PVFS2_VFS_OP_STATFS);
 	if (!new_op)
 		return ret;
-	new_op->upcall.req.statfs.fs_id = PVFS2_SB(sb)->fs_id;
+	new_op->upcall.req.statfs.fs_id = ORANGEFS_SB(sb)->fs_id;
 
-	if (PVFS2_SB(sb)->flags & PVFS2_OPT_INTR)
+	if (ORANGEFS_SB(sb)->flags & PVFS2_OPT_INTR)
 		flags = ORANGEFS_OP_INTERRUPTIBLE;
 
 	ret = service_operation(new_op, "pvfs2_statfs", flags);
@@ -165,7 +165,7 @@ static int pvfs2_statfs(struct dentry *dentry, struct kstatfs *buf)
 		     (long)new_op->downcall.resp.statfs.block_size);
 
 	buf->f_type = sb->s_magic;
-	memcpy(&buf->f_fsid, &PVFS2_SB(sb)->fs_id, sizeof(buf->f_fsid));
+	memcpy(&buf->f_fsid, &ORANGEFS_SB(sb)->fs_id, sizeof(buf->f_fsid));
 	buf->f_bsize = new_op->downcall.resp.statfs.block_size;
 	buf->f_namelen = PVFS2_NAME_LEN;
 
@@ -218,7 +218,7 @@ int pvfs2_remount(struct super_block *sb)
 	if (!new_op)
 		return -ENOMEM;
 	strncpy(new_op->upcall.req.fs_mount.pvfs2_config_server,
-		PVFS2_SB(sb)->devname,
+		ORANGEFS_SB(sb)->devname,
 		PVFS_MAX_SERVER_ADDR_LEN);
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
@@ -241,8 +241,8 @@ int pvfs2_remount(struct super_block *sb)
 		 * short-lived mapping that the system interface uses
 		 * to map this superblock to a particular mount entry
 		 */
-		PVFS2_SB(sb)->id = new_op->downcall.resp.fs_mount.id;
-		PVFS2_SB(sb)->mount_pending = 0;
+		ORANGEFS_SB(sb)->id = new_op->downcall.resp.fs_mount.id;
+		ORANGEFS_SB(sb)->mount_pending = 0;
 	}
 
 	op_release(new_op);
@@ -359,14 +359,14 @@ static int pvfs2_fill_sb(struct super_block *sb, void *data, int silent)
 	/* alloc and init our private pvfs2 sb info */
 	sb->s_fs_info =
 		kmalloc(sizeof(struct pvfs2_sb_info_s), PVFS2_GFP_FLAGS);
-	if (!PVFS2_SB(sb))
+	if (!ORANGEFS_SB(sb))
 		return -ENOMEM;
 	memset(sb->s_fs_info, 0, sizeof(struct pvfs2_sb_info_s));
-	PVFS2_SB(sb)->sb = sb;
+	ORANGEFS_SB(sb)->sb = sb;
 
-	PVFS2_SB(sb)->root_khandle = mount_sb_info->root_khandle;
-	PVFS2_SB(sb)->fs_id = mount_sb_info->fs_id;
-	PVFS2_SB(sb)->id = mount_sb_info->id;
+	ORANGEFS_SB(sb)->root_khandle = mount_sb_info->root_khandle;
+	ORANGEFS_SB(sb)->fs_id = mount_sb_info->fs_id;
+	ORANGEFS_SB(sb)->id = mount_sb_info->id;
 
 	if (mount_sb_info->data) {
 		ret = parse_mount_options(sb, mount_sb_info->data,
@@ -385,8 +385,8 @@ static int pvfs2_fill_sb(struct super_block *sb, void *data, int silent)
 	sb->s_blocksize_bits = pvfs_bufmap_shift_query();
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 
-	root_object.khandle = PVFS2_SB(sb)->root_khandle;
-	root_object.fs_id = PVFS2_SB(sb)->fs_id;
+	root_object.khandle = ORANGEFS_SB(sb)->root_khandle;
+	root_object.fs_id = ORANGEFS_SB(sb)->fs_id;
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 		     "get inode %pU, fsid %d\n",
 		     &root_object.khandle,
@@ -484,12 +484,12 @@ struct dentry *pvfs2_mount(struct file_system_type *fst,
 	 * on successful mount, store the devname and data
 	 * used
 	 */
-	strncpy(PVFS2_SB(sb)->devname,
+	strncpy(ORANGEFS_SB(sb)->devname,
 		devname,
 		PVFS_MAX_SERVER_ADDR_LEN);
 
 	/* mount_pending must be cleared */
-	PVFS2_SB(sb)->mount_pending = 0;
+	ORANGEFS_SB(sb)->mount_pending = 0;
 
 	/*
 	 * finally, add this sb to our list of known pvfs2
@@ -528,7 +528,7 @@ void pvfs2_kill_sb(struct super_block *sb)
 	kill_anon_super(sb);
 
 	/* free the pvfs2 superblock private data */
-	kfree(PVFS2_SB(sb));
+	kfree(ORANGEFS_SB(sb));
 }
 
 int pvfs2_inode_cache_initialize(void)

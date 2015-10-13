@@ -112,7 +112,7 @@ static ssize_t wait_for_direct_io(enum PVFS_io_type type, struct inode *inode,
 	int buffer_index = -1;
 	ssize_t ret;
 
-	new_op = op_alloc(PVFS2_VFS_OP_FILE_IO);
+	new_op = op_alloc(ORANGEFS_VFS_OP_FILE_IO);
 	if (!new_op) {
 		ret = -ENOMEM;
 		goto out;
@@ -270,7 +270,7 @@ out:
 /*
  * The reason we need to do this is to be able to support readv and writev
  * that are larger than (pvfs_bufmap_size_query()) Default is
- * PVFS2_BUFMAP_DEFAULT_DESC_SIZE MB. What that means is that we will
+ * ORANGEFS_BUFMAP_DEFAULT_DESC_SIZE MB. What that means is that we will
  * create a new io vec descriptor for those memory addresses that
  * go beyond the limit. Return value for this routine is negative in case
  * of errors and 0 in case of success.
@@ -316,7 +316,7 @@ static int split_iovecs(unsigned long max_new_nr_segs,		/* IN */
 	/* copy the passed in iovec descriptor to a temp structure */
 	orig_iovec = kmalloc_array(nr_segs,
 				   sizeof(*orig_iovec),
-				   PVFS2_BUFMAP_GFP_FLAGS);
+				   ORANGEFS_BUFMAP_GFP_FLAGS);
 	if (orig_iovec == NULL) {
 		gossip_err(
 		    "split_iovecs: Could not allocate memory for %lu bytes!\n",
@@ -325,7 +325,7 @@ static int split_iovecs(unsigned long max_new_nr_segs,		/* IN */
 	}
 	new_iovec = kcalloc(max_new_nr_segs,
 			    sizeof(*new_iovec),
-			    PVFS2_BUFMAP_GFP_FLAGS);
+			    ORANGEFS_BUFMAP_GFP_FLAGS);
 	if (new_iovec == NULL) {
 		kfree(orig_iovec);
 		gossip_err(
@@ -335,7 +335,7 @@ static int split_iovecs(unsigned long max_new_nr_segs,		/* IN */
 	}
 	sizes = kcalloc(max_new_nr_segs,
 			sizeof(*sizes),
-			PVFS2_BUFMAP_GFP_FLAGS);
+			ORANGEFS_BUFMAP_GFP_FLAGS);
 	if (sizes == NULL) {
 		kfree(new_iovec);
 		kfree(orig_iovec);
@@ -550,8 +550,8 @@ static ssize_t do_readv_writev(enum PVFS_io_type type, struct file *file,
 		     handle,
 		     new_nr_segs, seg_count);
 
-/* PVFS2_KERNEL_DEBUG is a CFLAGS define. */
-#ifdef PVFS2_KERNEL_DEBUG
+/* ORANGEFS_KERNEL_DEBUG is a CFLAGS define. */
+#ifdef ORANGEFS_KERNEL_DEBUG
 	for (seg = 0; seg < new_nr_segs; seg++)
 		gossip_debug(GOSSIP_FILE_DEBUG,
 			     "%s: %d) %p to %p [%d bytes]\n",
@@ -735,7 +735,7 @@ static ssize_t orangefs_file_write_iter(struct kiocb *iocb, struct iov_iter *ite
 	/* Make sure generic_write_checks sees an up to date inode size. */
 	if (file->f_flags & O_APPEND) {
 		rc = orangefs_inode_getattr(file->f_mapping->host,
-					 PVFS_ATTR_SYS_SIZE);
+					 ORANGEFS_ATTR_SYS_SIZE);
 		if (rc) {
 			gossip_err("%s: orangefs_inode_getattr failed, rc:%zd:.\n",
 				   __func__, rc);
@@ -744,7 +744,7 @@ static ssize_t orangefs_file_write_iter(struct kiocb *iocb, struct iov_iter *ite
 	}
 
 	if (file->f_pos > i_size_read(file->f_mapping->host))
-		pvfs2_i_size_write(file->f_mapping->host, file->f_pos);
+		orangefs_i_size_write(file->f_mapping->host, file->f_pos);
 
 	rc = generic_write_checks(iocb, iter);
 
@@ -812,13 +812,13 @@ static long orangefs_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 		if (get_user(uval, (int __user *)arg))
 			return -EFAULT;
 		/*
-		 * PVFS_MIRROR_FL is set internally when the mirroring mode
+		 * ORANGEFS_MIRROR_FL is set internally when the mirroring mode
 		 * is turned on for a file. The user is not allowed to turn
 		 * on this bit, but the bit is present if the user first gets
 		 * the flags and then updates the flags with some new
 		 * settings. So, we ignore it in the following edit. bligon.
 		 */
-		if ((uval & ~PVFS_MIRROR_FL) &
+		if ((uval & ~ORANGEFS_MIRROR_FL) &
 		    (~(FS_IMMUTABLE_FL | FS_APPEND_FL | FS_NOATIME_FL))) {
 			gossip_err("orangefs_ioctl: the FS_IOC_SETFLAGS only supports setting one of FS_IMMUTABLE_FL|FS_APPEND_FL|FS_NOATIME_FL\n");
 			return -EINVAL;
@@ -902,7 +902,7 @@ static int orangefs_fsync(struct file *file,
 	/* required call */
 	filemap_write_and_wait_range(file->f_mapping, start, end);
 
-	new_op = op_alloc(PVFS2_VFS_OP_FSYNC);
+	new_op = op_alloc(ORANGEFS_VFS_OP_FSYNC);
 	if (!new_op)
 		return -ENOMEM;
 	new_op->upcall.req.fsync.refn = orangefs_inode->refn;
@@ -940,13 +940,13 @@ static loff_t orangefs_file_llseek(struct file *file, loff_t offset, int origin)
 		return ret;
 	}
 
-	if (origin == PVFS2_SEEK_END) {
+	if (origin == ORANGEFS_SEEK_END) {
 		/*
 		 * revalidate the inode's file size.
 		 * NOTE: We are only interested in file size here,
 		 * so we set mask accordingly.
 		 */
-		ret = orangefs_inode_getattr(inode, PVFS_ATTR_SYS_SIZE);
+		ret = orangefs_inode_getattr(inode, ORANGEFS_ATTR_SYS_SIZE);
 		if (ret) {
 			gossip_debug(GOSSIP_FILE_DEBUG,
 				     "%s:%s:%d calling make bad inode\n",
@@ -976,7 +976,7 @@ static int orangefs_lock(struct file *filp, int cmd, struct file_lock *fl)
 {
 	int rc = -EINVAL;
 
-	if (PVFS2_SB(filp->f_inode->i_sb)->flags & PVFS2_OPT_LOCAL_LOCK) {
+	if (ORANGEFS_SB(filp->f_inode->i_sb)->flags & ORANGEFS_OPT_LOCAL_LOCK) {
 		if (cmd == F_GETLK) {
 			rc = 0;
 			posix_test_lock(filp, fl);

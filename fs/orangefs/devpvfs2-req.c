@@ -411,9 +411,9 @@ static ssize_t pvfs2_devreq_writev(struct file *file,
 		 * application reading/writing this device to return until
 		 * the buffers are done being used.
 		 */
-		if ((op->upcall.type == PVFS2_VFS_OP_FILE_IO &&
+		if ((op->upcall.type == ORANGEFS_VFS_OP_FILE_IO &&
 		     op->upcall.req.io.async_vfs_io == PVFS_VFS_SYNC_IO) ||
-		     op->upcall.type == PVFS2_VFS_OP_FILE_IOX) {
+		     op->upcall.type == ORANGEFS_VFS_OP_FILE_IOX) {
 			int timed_out = 0;
 			DECLARE_WAITQUEUE(wait_entry, current);
 

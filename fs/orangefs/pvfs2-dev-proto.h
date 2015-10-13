@@ -16,7 +16,7 @@
  * valid pvfs2 kernel operation types
  */
 #define PVFS2_VFS_OP_INVALID           0xFF000000
-#define PVFS2_VFS_OP_FILE_IO           0xFF000001
+#define ORANGEFS_VFS_OP_FILE_IO        0xFF000001
 #define PVFS2_VFS_OP_LOOKUP            0xFF000002
 #define PVFS2_VFS_OP_CREATE            0xFF000003
 #define PVFS2_VFS_OP_GETATTR           0xFF000004
@@ -27,7 +27,7 @@
 #define PVFS2_VFS_OP_SYMLINK           0xFF000009
 #define PVFS2_VFS_OP_RENAME            0xFF00000A
 #define PVFS2_VFS_OP_STATFS            0xFF00000B
-#define ORANGEFS_VFS_OP_TRUNCATE          0xFF00000C
+#define ORANGEFS_VFS_OP_TRUNCATE       0xFF00000C
 #define PVFS2_VFS_OP_MMAP_RA_FLUSH     0xFF00000D
 #define PVFS2_VFS_OP_FS_MOUNT          0xFF00000E
 #define PVFS2_VFS_OP_FS_UMOUNT         0xFF00000F
@@ -38,10 +38,10 @@
 #define PVFS2_VFS_OP_PARAM             0xFF000014
 #define PVFS2_VFS_OP_PERF_COUNT        0xFF000015
 #define PVFS2_VFS_OP_CANCEL            0xFF00EE00
-#define PVFS2_VFS_OP_FSYNC             0xFF00EE01
+#define ORANGEFS_VFS_OP_FSYNC          0xFF00EE01
 #define PVFS2_VFS_OP_FSKEY             0xFF00EE02
 #define PVFS2_VFS_OP_READDIRPLUS       0xFF00EE03
-#define PVFS2_VFS_OP_FILE_IOX          0xFF00EE04
+#define ORANGEFS_VFS_OP_FILE_IOX          0xFF00EE04
 
 /*
  * Misc constants. Please retain them as multiples of 8!

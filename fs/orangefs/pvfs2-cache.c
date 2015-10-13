@@ -53,7 +53,7 @@ char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 	if (new_op) {
 		__s32 type = new_op->upcall.type;
 
-		if (type == PVFS2_VFS_OP_FILE_IO)
+		if (type == ORANGEFS_VFS_OP_FILE_IO)
 			return "OP_FILE_IO";
 		else if (type == PVFS2_VFS_OP_LOOKUP)
 			return "OP_LOOKUP";
@@ -99,11 +99,11 @@ char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 			return "OP_PERF_COUNT";
 		else if (type == PVFS2_VFS_OP_CANCEL)
 			return "OP_CANCEL";
-		else if (type == PVFS2_VFS_OP_FSYNC)
+		else if (type == ORANGEFS_VFS_OP_FSYNC)
 			return "OP_FSYNC";
 		else if (type == PVFS2_VFS_OP_FSKEY)
 			return "OP_FSKEY";
-		else if (type == PVFS2_VFS_OP_FILE_IOX)
+		else if (type == ORANGEFS_VFS_OP_FILE_IOX)
 			return "OP_FILE_IOX";
 	}
 	return "OP_UNKNOWN?";

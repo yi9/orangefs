@@ -55,7 +55,7 @@
 
 #include "pvfs2-dev-proto.h"
 
-#ifdef PVFS2_KERNEL_DEBUG
+#ifdef ORANGEFS_KERNEL_DEBUG
 #define PVFS2_DEFAULT_OP_TIMEOUT_SECS       10
 #else
 #define PVFS2_DEFAULT_OP_TIMEOUT_SECS       20
@@ -70,7 +70,7 @@
 #define PVFS2_DEVREQ_MAGIC             0x20030529
 #define PVFS2_LINK_MAX                 0x000000FF
 #define ORANGEFS_PURGE_RETRY_COUNT     0x00000005
-#define PVFS2_SEEK_END                 0x00000002
+#define ORANGEFS_SEEK_END              0x00000002
 #define PVFS2_MAX_NUM_OPTIONS          0x00000004
 #define PVFS2_MAX_MOUNT_OPT_LEN        0x00000080
 #define PVFS2_MAX_FSKEY_LEN            64
@@ -175,15 +175,14 @@ struct client_debug_mask {
  * pvfs2 kernel memory related flags
  */
 
-#if ((defined PVFS2_KERNEL_DEBUG) && (defined CONFIG_DEBUG_SLAB))
+#if ((defined ORANGEFS_KERNEL_DEBUG) && (defined CONFIG_DEBUG_SLAB))
 #define PVFS2_CACHE_CREATE_FLAGS SLAB_RED_ZONE
 #else
 #define PVFS2_CACHE_CREATE_FLAGS 0
-#endif /* ((defined PVFS2_KERNEL_DEBUG) && (defined CONFIG_DEBUG_SLAB)) */
-
+#endif /* ((defined ORANGEFS_KERNEL_DEBUG) && (defined CONFIG_DEBUG_SLAB)) */
 #define PVFS2_CACHE_ALLOC_FLAGS (GFP_KERNEL)
 #define PVFS2_GFP_FLAGS (GFP_KERNEL)
-#define PVFS2_BUFMAP_GFP_FLAGS (GFP_KERNEL)
+#define ORANGEFS_BUFMAP_GFP_FLAGS (GFP_KERNEL)
 
 #define orangefs_kmap(page) kmap(page)
 #define orangefs_kunmap(page) kunmap(page)
@@ -360,7 +359,7 @@ struct pvfs2_sb_info_s {
 	int id;
 	int flags;
 #define PVFS2_OPT_INTR		0x01
-#define PVFS2_OPT_LOCAL_LOCK	0x02
+#define ORANGEFS_OPT_LOCAL_LOCK	0x02
 	char devname[PVFS_MAX_SERVER_ADDR_LEN];
 	struct super_block *sb;
 	int mount_pending;
@@ -436,7 +435,7 @@ static inline struct orangefs_inode_s *ORANGEFS_I(struct inode *inode)
 	return container_of(inode, struct orangefs_inode_s, vfs_inode);
 }
 
-static inline struct pvfs2_sb_info_s *PVFS2_SB(struct super_block *sb)
+static inline struct pvfs2_sb_info_s *ORANGEFS_SB(struct super_block *sb)
 {
 	return (struct pvfs2_sb_info_s *) sb->s_fs_info;
 }
@@ -491,10 +490,10 @@ static inline int is_root_handle(struct inode *inode)
 	gossip_debug(GOSSIP_DCACHE_DEBUG,
 		     "%s: root handle: %pU, this handle: %pU:\n",
 		     __func__,
-		     &PVFS2_SB(inode->i_sb)->root_khandle,
+		     &ORANGEFS_SB(inode->i_sb)->root_khandle,
 		     get_khandle_from_ino(inode));
 
-	if (PVFS_khandle_cmp(&(PVFS2_SB(inode->i_sb)->root_khandle),
+	if (PVFS_khandle_cmp(&(ORANGEFS_SB(inode->i_sb)->root_khandle),
 			     get_khandle_from_ino(inode)))
 		return 0;
 	else
@@ -782,16 +781,16 @@ do {								\
 } while (0)
 
 #define get_interruptible_flag(inode) \
-	((PVFS2_SB(inode->i_sb)->flags & PVFS2_OPT_INTR) ? \
+	((ORANGEFS_SB(inode->i_sb)->flags & PVFS2_OPT_INTR) ? \
 		ORANGEFS_OP_INTERRUPTIBLE : 0)
 
 #define add_pvfs2_sb(sb)						\
 do {									\
 	gossip_debug(GOSSIP_SUPER_DEBUG,				\
 		     "Adding SB %p to pvfs2 superblocks\n",		\
-		     PVFS2_SB(sb));					\
+		     ORANGEFS_SB(sb));					\
 	spin_lock(&pvfs2_superblocks_lock);				\
-	list_add_tail(&PVFS2_SB(sb)->list, &pvfs2_superblocks);		\
+	list_add_tail(&ORANGEFS_SB(sb)->list, &pvfs2_superblocks);		\
 	spin_unlock(&pvfs2_superblocks_lock); \
 } while (0)
 
@@ -834,7 +833,7 @@ do {									\
 
 #define pvfs2_inode_unlock(__i) mutex_unlock(&(__i)->i_mutex)
 
-static inline void pvfs2_i_size_write(struct inode *inode, loff_t i_size)
+static inline void orangefs_i_size_write(struct inode *inode, loff_t i_size)
 {
 #if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
 	pvfs2_inode_lock(inode);

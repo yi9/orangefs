@@ -167,7 +167,7 @@ typedef __s64 PVFS_offset;
 #define PVFS_IMMUTABLE_FL FS_IMMUTABLE_FL
 #define PVFS_APPEND_FL    FS_APPEND_FL
 #define PVFS_NOATIME_FL   FS_NOATIME_FL
-#define PVFS_MIRROR_FL    0x01000000ULL
+#define ORANGEFS_MIRROR_FL    0x01000000ULL
 #define PVFS_O_EXECUTE (1 << 0)
 #define PVFS_FS_ID_NULL       ((__s32)0)
 #define PVFS_ATTR_SYS_UID                   (1 << 0)
@@ -179,7 +179,7 @@ typedef __s64 PVFS_offset;
 #define PVFS_ATTR_SYS_TYPE                  (1 << 6)
 #define PVFS_ATTR_SYS_ATIME_SET             (1 << 7)
 #define PVFS_ATTR_SYS_MTIME_SET             (1 << 8)
-#define PVFS_ATTR_SYS_SIZE                  (1 << 20)
+#define ORANGEFS_ATTR_SYS_SIZE                  (1 << 20)
 #define PVFS_ATTR_SYS_LNK_TARGET            (1 << 24)
 #define PVFS_ATTR_SYS_DFILE_COUNT           (1 << 25)
 #define PVFS_ATTR_SYS_DIRENT_COUNT          (1 << 26)
@@ -199,7 +199,7 @@ typedef __s64 PVFS_offset;
 
 #define PVFS_ATTR_SYS_ALL_NOHINT			\
 	(PVFS_ATTR_SYS_COMMON_ALL		|	\
-	 PVFS_ATTR_SYS_SIZE			|	\
+	 ORANGEFS_ATTR_SYS_SIZE			|	\
 	 PVFS_ATTR_SYS_LNK_TARGET		|	\
 	 PVFS_ATTR_SYS_DFILE_COUNT		|	\
 	 PVFS_ATTR_SYS_MIRROR_COPIES_COUNT	|	\
