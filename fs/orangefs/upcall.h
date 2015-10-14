@@ -19,7 +19,7 @@ struct pvfs2_io_request_s {
 	__s32 __pad1;
 	__s64 offset;
 	struct orangefs_object_kref refn;
-	enum PVFS_io_type io_type;
+	enum ORANGEFS_io_type io_type;
 	__s32 readahead_size;
 };
 
@@ -27,7 +27,7 @@ struct pvfs2_iox_request_s {
 	__s32 buf_index;
 	__s32 count;
 	struct orangefs_object_kref refn;
-	enum PVFS_io_type io_type;
+	enum ORANGEFS_io_type io_type;
 	__s32 __pad1;
 };
 

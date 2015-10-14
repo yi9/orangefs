@@ -231,9 +231,9 @@ typedef __s64 PVFS_offset;
 /*
  * PVFS I/O operation types, used in both system and server interfaces.
  */
-enum PVFS_io_type {
-	PVFS_IO_READ = 1,
-	PVFS_IO_WRITE = 2
+enum ORANGEFS_io_type {
+	ORANGEFS_IO_READ = 1,
+	ORANGEFS_IO_WRITE = 2
 };
 
 /*

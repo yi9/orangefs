@@ -157,7 +157,7 @@ enum pvfs2_vfs_op_states {
  * Defines for controlling whether I/O upcalls are for async or sync operations
  */
 enum PVFS_async_io_type {
-	PVFS_VFS_SYNC_IO = 0,
+	ORANGEFS_VFS_SYNC_IO = 0,
 	PVFS_VFS_ASYNC_IO = 1,
 };
 

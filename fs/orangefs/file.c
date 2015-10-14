@@ -101,7 +101,7 @@ static int postcopy_buffers(struct orangefs_bufmap *bufmap,
 /*
  * Post and wait for the I/O upcall to finish
  */
-static ssize_t wait_for_direct_io(enum PVFS_io_type type, struct inode *inode,
+static ssize_t wait_for_direct_io(enum ORANGEFS_io_type type, struct inode *inode,
 		loff_t *offset, struct iovec *vec, unsigned long nr_segs,
 		size_t total_size, loff_t readahead_size)
 {
@@ -118,7 +118,7 @@ static ssize_t wait_for_direct_io(enum PVFS_io_type type, struct inode *inode,
 		goto out;
 	}
 	/* synchronous I/O */
-	new_op->upcall.req.io.async_vfs_io = PVFS_VFS_SYNC_IO;
+	new_op->upcall.req.io.async_vfs_io = ORANGEFS_VFS_SYNC_IO;
 	new_op->upcall.req.io.readahead_size = readahead_size;
 	new_op->upcall.req.io.io_type = type;
 	new_op->upcall.req.io.refn = orangefs_inode->refn;
@@ -155,7 +155,7 @@ populate_shared_memory:
 	 * Stage 1: copy the buffers into client-core's address space
 	 * precopy_buffers only pertains to writes.
 	 */
-	if (type == PVFS_IO_WRITE) {
+	if (type == ORANGEFS_IO_WRITE) {
 		ret = precopy_buffers(bufmap,
 				      buffer_index,
 				      vec,
@@ -173,7 +173,7 @@ populate_shared_memory:
 
 	/* Stage 2: Service the I/O operation */
 	ret = service_operation(new_op,
-				type == PVFS_IO_WRITE ?
+				type == ORANGEFS_IO_WRITE ?
 					"file_write" :
 					"file_read",
 				get_interruptible_flag(inode));
@@ -209,7 +209,7 @@ populate_shared_memory:
 		else
 			gossip_err("%s: error in %s handle %pU, returning %zd\n",
 				__func__,
-				type == PVFS_IO_READ ?
+				type == ORANGEFS_IO_READ ?
 					"read from" : "write to",
 				handle, ret);
 		goto out;
@@ -219,7 +219,7 @@ populate_shared_memory:
 	 * Stage 3: Post copy buffers from client-core's address space
 	 * postcopy_buffers only pertains to reads.
 	 */
-	if (type == PVFS_IO_READ) {
+	if (type == ORANGEFS_IO_READ) {
 		ret = postcopy_buffers(bufmap,
 				       buffer_index,
 				       vec,
@@ -436,7 +436,7 @@ static long bound_max_iovecs(const struct iovec *curr, unsigned long nr_segs,
  * augmented/extended metadata attached to the file.
  * Note: File extended attributes override any mount options.
  */
-static ssize_t do_readv_writev(enum PVFS_io_type type, struct file *file,
+static ssize_t do_readv_writev(enum ORANGEFS_io_type type, struct file *file,
 		loff_t *offset, const struct iovec *iov, unsigned long nr_segs)
 {
 	struct inode *inode = file->f_mapping->host;
@@ -468,7 +468,7 @@ static ssize_t do_readv_writev(enum PVFS_io_type type, struct file *file,
 		handle,
 		(int)count);
 
-	if (type == PVFS_IO_WRITE) {
+	if (type == ORANGEFS_IO_WRITE) {
 		gossip_debug(GOSSIP_FILE_DEBUG,
 			     "%s(%pU): proceeding with offset : %llu, "
 			     "size %d\n",
@@ -485,7 +485,7 @@ static ssize_t do_readv_writev(enum PVFS_io_type type, struct file *file,
 
 	/*
 	 * if the total size of data transfer requested is greater than
-	 * the kernel-set blocksize of PVFS2, then we split the iovecs
+	 * the kernel-set blocksize of ORANGEFS, then we split the iovecs
 	 * such that no iovec description straddles a block size limit
 	 */
 
@@ -629,7 +629,7 @@ out:
 		kfree(seg_array);
 	}
 	if (ret > 0) {
-		if (type == PVFS_IO_READ) {
+		if (type == ORANGEFS_IO_READ) {
 			file_accessed(file);
 		} else {
 			SetMtimeFlag(orangefs_inode);
@@ -682,7 +682,7 @@ ssize_t orangefs_inode_read(struct inode *inode,
 		     count,
 		     llu(*offset));
 
-	ret = wait_for_direct_io(PVFS_IO_READ, inode, offset, &vec, 1,
+	ret = wait_for_direct_io(ORANGEFS_IO_READ, inode, offset, &vec, 1,
 			count, readahead_size);
 	if (ret > 0)
 		*offset += ret;
@@ -709,7 +709,7 @@ static ssize_t orangefs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter
 
 	g_pvfs2_stats.reads++;
 
-	rc = do_readv_writev(PVFS_IO_READ,
+	rc = do_readv_writev(ORANGEFS_IO_READ,
 			     file,
 			     &pos,
 			     iter->iov,
@@ -754,7 +754,7 @@ static ssize_t orangefs_file_write_iter(struct kiocb *iocb, struct iov_iter *ite
 		goto out;
 	}
 
-	rc = do_readv_writev(PVFS_IO_WRITE,
+	rc = do_readv_writev(ORANGEFS_IO_WRITE,
 			     file,
 			     &pos,
 			     iter->iov,
