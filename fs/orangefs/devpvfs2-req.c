@@ -508,13 +508,13 @@ static int mark_all_pending_mounts(void)
 	int unmounted = 1;
 	struct pvfs2_sb_info_s *pvfs2_sb = NULL;
 
-	spin_lock(&pvfs2_superblocks_lock);
+	spin_lock(&orangefs_superblocks_lock);
 	list_for_each_entry(pvfs2_sb, &pvfs2_superblocks, list) {
 		/* All of these file system require a remount */
 		pvfs2_sb->mount_pending = 1;
 		unmounted = 0;
 	}
-	spin_unlock(&pvfs2_superblocks_lock);
+	spin_unlock(&orangefs_superblocks_lock);
 	return unmounted;
 }
 
@@ -529,14 +529,14 @@ int fs_mount_pending(__s32 fsid)
 	int mount_pending = -1;
 	struct pvfs2_sb_info_s *pvfs2_sb = NULL;
 
-	spin_lock(&pvfs2_superblocks_lock);
+	spin_lock(&orangefs_superblocks_lock);
 	list_for_each_entry(pvfs2_sb, &pvfs2_superblocks, list) {
 		if (pvfs2_sb->fs_id == fsid) {
 			mount_pending = pvfs2_sb->mount_pending;
 			break;
 		}
 	}
-	spin_unlock(&pvfs2_superblocks_lock);
+	spin_unlock(&orangefs_superblocks_lock);
 	return mount_pending;
 }
 
@@ -676,7 +676,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 					     "Remounting SB %p\n",
 					     pvfs2_sb);
 
-				ret = pvfs2_remount(pvfs2_sb->sb);
+				ret = orangefs_remount(pvfs2_sb->sb);
 				if (ret) {
 					gossip_debug(GOSSIP_DEV_DEBUG,
 						     "SB %p remount failed\n",

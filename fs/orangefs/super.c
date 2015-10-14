@@ -10,13 +10,13 @@
 
 #include <linux/parser.h>
 
-/* a cache for pvfs2-inode objects (i.e. pvfs2 inode private data) */
-static struct kmem_cache *pvfs2_inode_cache;
+/* a cache for orangefs-inode objects (i.e. orangefs inode private data) */
+static struct kmem_cache *orangefs_inode_cache;
 
 /* list for storing pvfs2 specific superblocks in use */
 LIST_HEAD(pvfs2_superblocks);
 
-DEFINE_SPINLOCK(pvfs2_superblocks_lock);
+DEFINE_SPINLOCK(orangefs_superblocks_lock);
 
 enum {
 	Opt_intr,
@@ -78,7 +78,7 @@ fail:
 	return -EINVAL;
 }
 
-static void pvfs2_inode_cache_ctor(void *req)
+static void orangefs_inode_cache_ctor(void *req)
 {
 	struct orangefs_inode_s *pvfs2_inode = req;
 
@@ -88,11 +88,11 @@ static void pvfs2_inode_cache_ctor(void *req)
 	pvfs2_inode->vfs_inode.i_version = 1;
 }
 
-static struct inode *pvfs2_alloc_inode(struct super_block *sb)
+static struct inode *orangefs_alloc_inode(struct super_block *sb)
 {
 	struct orangefs_inode_s *pvfs2_inode;
 
-	pvfs2_inode = kmem_cache_alloc(pvfs2_inode_cache,
+	pvfs2_inode = kmem_cache_alloc(orangefs_inode_cache,
 				       PVFS2_CACHE_ALLOC_FLAGS);
 	if (pvfs2_inode == NULL) {
 		gossip_err("Failed to allocate pvfs2_inode\n");
@@ -110,12 +110,12 @@ static struct inode *pvfs2_alloc_inode(struct super_block *sb)
 	pvfs2_inode->pinode_flags = 0;
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
-		     "pvfs2_alloc_inode: allocated %p\n",
+		     "orangefs_alloc_inode: allocated %p\n",
 		     &pvfs2_inode->vfs_inode);
 	return &pvfs2_inode->vfs_inode;
 }
 
-static void pvfs2_destroy_inode(struct inode *inode)
+static void orangefs_destroy_inode(struct inode *inode)
 {
 	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
 
@@ -123,7 +123,7 @@ static void pvfs2_destroy_inode(struct inode *inode)
 			"%s: deallocated %p destroying inode %pU\n",
 			__func__, pvfs2_inode, get_khandle_from_ino(inode));
 
-	kmem_cache_free(pvfs2_inode_cache, pvfs2_inode);
+	kmem_cache_free(orangefs_inode_cache, pvfs2_inode);
 }
 
 /*
@@ -186,9 +186,9 @@ out_op_release:
  * Remount as initiated by VFS layer.  We just need to reparse the mount
  * options, no need to signal pvfs2-client-core about it.
  */
-static int pvfs2_remount_fs(struct super_block *sb, int *flags, char *data)
+static int orangefs_remount_fs(struct super_block *sb, int *flags, char *data)
 {
-	gossip_debug(GOSSIP_SUPER_DEBUG, "pvfs2_remount_fs: called\n");
+	gossip_debug(GOSSIP_SUPER_DEBUG, "orangefs_remount_fs: called\n");
 	return parse_mount_options(sb, data, 1);
 }
 
@@ -207,12 +207,12 @@ static int pvfs2_remount_fs(struct super_block *sb, int *flags, char *data)
  * the client regains all of the mount information from us.
  * NOTE: this function assumes that the request_mutex is already acquired!
  */
-int pvfs2_remount(struct super_block *sb)
+int orangefs_remount(struct super_block *sb)
 {
 	struct orangefs_kernel_op_s *new_op;
 	int ret = -EINVAL;
 
-	gossip_debug(GOSSIP_SUPER_DEBUG, "pvfs2_remount: called\n");
+	gossip_debug(GOSSIP_SUPER_DEBUG, "orangefs_remount: called\n");
 
 	new_op = op_alloc(PVFS2_VFS_OP_FS_MOUNT);
 	if (!new_op)
@@ -230,10 +230,10 @@ int pvfs2_remount(struct super_block *sb)
 	 * request_mutex to prevent other operations from bypassing
 	 * this one
 	 */
-	ret = service_operation(new_op, "pvfs2_remount",
+	ret = service_operation(new_op, "orangefs_remount",
 		ORANGEFS_OP_PRIORITY | ORANGEFS_OP_NO_SEMAPHORE);
 	gossip_debug(GOSSIP_SUPER_DEBUG,
-		     "pvfs2_remount: mount got return value of %d\n",
+		     "orangefs_remount: mount got return value of %d\n",
 		     ret);
 	if (ret == 0) {
 		/*
@@ -270,12 +270,12 @@ static void pvfs2_dirty_inode(struct inode *inode, int flags)
 }
 
 static const struct super_operations pvfs2_s_ops = {
-	.alloc_inode = pvfs2_alloc_inode,
-	.destroy_inode = pvfs2_destroy_inode,
+	.alloc_inode = orangefs_alloc_inode,
+	.destroy_inode = orangefs_destroy_inode,
 	.dirty_inode = pvfs2_dirty_inode,
 	.drop_inode = generic_delete_inode,
 	.statfs = pvfs2_statfs,
-	.remount_fs = pvfs2_remount_fs,
+	.remount_fs = orangefs_remount_fs,
 	.show_options = generic_show_options,
 };
 
@@ -531,23 +531,23 @@ void pvfs2_kill_sb(struct super_block *sb)
 	kfree(ORANGEFS_SB(sb));
 }
 
-int pvfs2_inode_cache_initialize(void)
+int orangefs_inode_cache_initialize(void)
 {
-	pvfs2_inode_cache = kmem_cache_create("pvfs2_inode_cache",
+	orangefs_inode_cache = kmem_cache_create("orangefs_inode_cache",
 					      sizeof(struct orangefs_inode_s),
 					      0,
 					      PVFS2_CACHE_CREATE_FLAGS,
-					      pvfs2_inode_cache_ctor);
+					      orangefs_inode_cache_ctor);
 
-	if (!pvfs2_inode_cache) {
-		gossip_err("Cannot create pvfs2_inode_cache\n");
+	if (!orangefs_inode_cache) {
+		gossip_err("Cannot create orangefs_inode_cache\n");
 		return -ENOMEM;
 	}
 	return 0;
 }
 
-int pvfs2_inode_cache_finalize(void)
+int orangefs_inode_cache_finalize(void)
 {
-	kmem_cache_destroy(pvfs2_inode_cache);
+	kmem_cache_destroy(orangefs_inode_cache);
 	return 0;
 }

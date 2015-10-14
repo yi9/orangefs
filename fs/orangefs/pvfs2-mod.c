@@ -144,7 +144,7 @@ static int __init pvfs2_init(void)
 	if (ret < 0)
 		goto cleanup_op;
 
-	ret = pvfs2_inode_cache_initialize();
+	ret = orangefs_inode_cache_initialize();
 	if (ret < 0)
 		goto cleanup_req;
 
@@ -221,7 +221,7 @@ cleanup_kiocb:
 	kiocb_cache_finalize();
 
 cleanup_inode:
-	pvfs2_inode_cache_finalize();
+	orangefs_inode_cache_finalize();
 
 cleanup_req:
 	dev_req_cache_finalize();
@@ -271,7 +271,7 @@ static void __exit pvfs2_exit(void)
 		}
 
 	kiocb_cache_finalize();
-	pvfs2_inode_cache_finalize();
+	orangefs_inode_cache_finalize();
 	dev_req_cache_finalize();
 	op_cache_finalize();
 

@@ -530,8 +530,8 @@ int dev_req_cache_finalize(void);
 void *dev_req_alloc(void);
 void dev_req_release(void *);
 
-int pvfs2_inode_cache_initialize(void);
-int pvfs2_inode_cache_finalize(void);
+int orangefs_inode_cache_initialize(void);
+int orangefs_inode_cache_finalize(void);
 
 int kiocb_cache_initialize(void);
 int kiocb_cache_finalize(void);
@@ -560,7 +560,7 @@ struct dentry *pvfs2_mount(struct file_system_type *fst,
 			   void *data);
 
 void pvfs2_kill_sb(struct super_block *sb);
-int pvfs2_remount(struct super_block *sb);
+int orangefs_remount(struct super_block *sb);
 
 int fsid_key_table_initialize(void);
 void fsid_key_table_finalize(void);
@@ -663,7 +663,7 @@ extern int debug;
 extern int op_timeout_secs;
 extern int slot_timeout_secs;
 extern struct list_head pvfs2_superblocks;
-extern spinlock_t pvfs2_superblocks_lock;
+extern spinlock_t orangefs_superblocks_lock;
 extern struct list_head pvfs2_request_list;
 extern spinlock_t pvfs2_request_list_lock;
 extern wait_queue_head_t pvfs2_request_list_waitq;
@@ -789,9 +789,9 @@ do {									\
 	gossip_debug(GOSSIP_SUPER_DEBUG,				\
 		     "Adding SB %p to pvfs2 superblocks\n",		\
 		     ORANGEFS_SB(sb));					\
-	spin_lock(&pvfs2_superblocks_lock);				\
+	spin_lock(&orangefs_superblocks_lock);				\
 	list_add_tail(&ORANGEFS_SB(sb)->list, &pvfs2_superblocks);		\
-	spin_unlock(&pvfs2_superblocks_lock); \
+	spin_unlock(&orangefs_superblocks_lock); \
 } while (0)
 
 #define remove_pvfs2_sb(sb)						\
@@ -800,7 +800,7 @@ do {									\
 	struct list_head *tmp_safe = NULL;				\
 	struct pvfs2_sb_info_s *pvfs2_sb = NULL;			\
 									\
-	spin_lock(&pvfs2_superblocks_lock);				\
+	spin_lock(&orangefs_superblocks_lock);				\
 	list_for_each_safe(tmp, tmp_safe, &pvfs2_superblocks) {		\
 		pvfs2_sb = list_entry(tmp,				\
 				      struct pvfs2_sb_info_s,		\
@@ -813,7 +813,7 @@ do {									\
 			break;						\
 		}							\
 	}								\
-	spin_unlock(&pvfs2_superblocks_lock);				\
+	spin_unlock(&orangefs_superblocks_lock);				\
 } while (0)
 
 #define pvfs2_lock_inode(inode) spin_lock(&inode->i_lock)
