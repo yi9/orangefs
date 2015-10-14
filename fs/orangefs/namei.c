@@ -36,7 +36,7 @@ static int orangefs_create(struct inode *dir,
 			       PVFS_TYPE_METAFILE, mode);
 
 	strncpy(new_op->upcall.req.create.d_name,
-		dentry->d_name.name, PVFS2_NAME_LEN);
+		dentry->d_name.name, ORANGEFS_NAME_LEN);
 
 	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
 
@@ -106,10 +106,10 @@ static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
 	gossip_debug(GOSSIP_NAME_DEBUG, "%s called on %s\n",
 		     __func__, dentry->d_name.name);
 
-	if (dentry->d_name.len > (PVFS2_NAME_LEN - 1))
+	if (dentry->d_name.len > (ORANGEFS_NAME_LEN - 1))
 		return ERR_PTR(-ENAMETOOLONG);
 
-	new_op = op_alloc(PVFS2_VFS_OP_LOOKUP);
+	new_op = op_alloc(ORANGEFS_VFS_OP_LOOKUP);
 	if (!new_op)
 		return ERR_PTR(-ENOMEM);
 
@@ -123,7 +123,7 @@ static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
 	new_op->upcall.req.lookup.parent_refn = parent->refn;
 
 	strncpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name,
-		PVFS2_NAME_LEN);
+		ORANGEFS_NAME_LEN);
 
 	gossip_debug(GOSSIP_NAME_DEBUG,
 		     "%s: doing lookup on %s under %pU,%d (follow=%s)\n",
@@ -224,7 +224,7 @@ static int orangefs_unlink(struct inode *dir, struct dentry *dentry)
 
 	new_op->upcall.req.remove.parent_refn = parent->refn;
 	strncpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
-		PVFS2_NAME_LEN);
+		ORANGEFS_NAME_LEN);
 
 	ret = service_operation(new_op, "orangefs_unlink",
 				get_interruptible_flag(inode));
@@ -290,8 +290,8 @@ static int orangefs_symlink(struct inode *dir,
 
 	strncpy(new_op->upcall.req.sym.entry_name,
 		dentry->d_name.name,
-		PVFS2_NAME_LEN);
-	strncpy(new_op->upcall.req.sym.target, symname, PVFS2_NAME_LEN);
+		ORANGEFS_NAME_LEN);
+	strncpy(new_op->upcall.req.sym.target, symname, ORANGEFS_NAME_LEN);
 
 	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
 
@@ -354,7 +354,7 @@ static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 			       PVFS_TYPE_DIRECTORY, mode);
 
 	strncpy(new_op->upcall.req.mkdir.d_name,
-		dentry->d_name.name, PVFS2_NAME_LEN);
+		dentry->d_name.name, ORANGEFS_NAME_LEN);
 
 	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
 
@@ -427,10 +427,10 @@ static int orangefs_rename(struct inode *old_dir,
 
 	strncpy(new_op->upcall.req.rename.d_old_name,
 		old_dentry->d_name.name,
-		PVFS2_NAME_LEN);
+		ORANGEFS_NAME_LEN);
 	strncpy(new_op->upcall.req.rename.d_new_name,
 		new_dentry->d_name.name,
-		PVFS2_NAME_LEN);
+		ORANGEFS_NAME_LEN);
 
 	ret = service_operation(new_op,
 				"orangefs_rename",

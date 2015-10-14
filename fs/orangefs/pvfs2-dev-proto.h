@@ -17,7 +17,7 @@
  */
 #define PVFS2_VFS_OP_INVALID           0xFF000000
 #define ORANGEFS_VFS_OP_FILE_IO        0xFF000001
-#define PVFS2_VFS_OP_LOOKUP            0xFF000002
+#define ORANGEFS_VFS_OP_LOOKUP         0xFF000002
 #define PVFS2_VFS_OP_CREATE            0xFF000003
 #define PVFS2_VFS_OP_GETATTR           0xFF000004
 #define PVFS2_VFS_OP_REMOVE            0xFF000005
@@ -47,7 +47,7 @@
  * Misc constants. Please retain them as multiples of 8!
  * Otherwise 32-64 bit interactions will be messed up :)
  */
-#define PVFS2_NAME_LEN			0x00000100
+#define ORANGEFS_NAME_LEN			0x00000100
 #define PVFS2_MAX_DEBUG_STRING_LEN	0x00000400
 #define PVFS2_MAX_DEBUG_ARRAY_LEN	0x00000800
 

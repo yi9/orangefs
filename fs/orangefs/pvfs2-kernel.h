@@ -678,7 +678,7 @@ extern const struct file_operations orangefs_file_operations;
 extern struct inode_operations orangefs_symlink_inode_operations;
 extern struct inode_operations orangefs_dir_inode_operations;
 extern const struct file_operations orangefs_dir_operations;
-extern const struct dentry_operations pvfs2_dentry_operations;
+extern const struct dentry_operations orangefs_dentry_operations;
 extern const struct file_operations pvfs2_devreq_file_operations;
 
 extern wait_queue_head_t orangefs_bufmap_init_waitq;

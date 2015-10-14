@@ -17,7 +17,7 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 		case ORANGEFS_VFS_OP_FILE_IO:
 			fsid = op->upcall.req.io.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_LOOKUP:
+		case ORANGEFS_VFS_OP_LOOKUP:
 			fsid = op->upcall.req.lookup.parent_refn.fs_id;
 			break;
 		case PVFS2_VFS_OP_CREATE:

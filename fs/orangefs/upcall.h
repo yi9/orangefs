@@ -35,20 +35,20 @@ struct pvfs2_lookup_request_s {
 	__s32 sym_follow;
 	__s32 __pad1;
 	struct orangefs_object_kref parent_refn;
-	char d_name[PVFS2_NAME_LEN];
+	char d_name[ORANGEFS_NAME_LEN];
 };
 
 struct pvfs2_create_request_s {
 	struct orangefs_object_kref parent_refn;
 	struct PVFS_sys_attr_s attributes;
-	char d_name[PVFS2_NAME_LEN];
+	char d_name[ORANGEFS_NAME_LEN];
 };
 
 struct pvfs2_symlink_request_s {
 	struct orangefs_object_kref parent_refn;
 	struct PVFS_sys_attr_s attributes;
-	char entry_name[PVFS2_NAME_LEN];
-	char target[PVFS2_NAME_LEN];
+	char entry_name[ORANGEFS_NAME_LEN];
+	char target[ORANGEFS_NAME_LEN];
 };
 
 struct pvfs2_getattr_request_s {
@@ -64,13 +64,13 @@ struct pvfs2_setattr_request_s {
 
 struct pvfs2_remove_request_s {
 	struct orangefs_object_kref parent_refn;
-	char d_name[PVFS2_NAME_LEN];
+	char d_name[ORANGEFS_NAME_LEN];
 };
 
 struct pvfs2_mkdir_request_s {
 	struct orangefs_object_kref parent_refn;
 	struct PVFS_sys_attr_s attributes;
-	char d_name[PVFS2_NAME_LEN];
+	char d_name[ORANGEFS_NAME_LEN];
 };
 
 struct pvfs2_readdir_request_s {
@@ -92,8 +92,8 @@ struct pvfs2_readdirplus_request_s {
 struct pvfs2_rename_request_s {
 	struct orangefs_object_kref old_parent_refn;
 	struct orangefs_object_kref new_parent_refn;
-	char d_old_name[PVFS2_NAME_LEN];
-	char d_new_name[PVFS2_NAME_LEN];
+	char d_old_name[ORANGEFS_NAME_LEN];
+	char d_new_name[ORANGEFS_NAME_LEN];
 };
 
 struct pvfs2_statfs_request_s {

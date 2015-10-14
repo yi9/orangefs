@@ -55,7 +55,7 @@ char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 
 		if (type == ORANGEFS_VFS_OP_FILE_IO)
 			return "OP_FILE_IO";
-		else if (type == PVFS2_VFS_OP_LOOKUP)
+		else if (type == ORANGEFS_VFS_OP_LOOKUP)
 			return "OP_LOOKUP";
 		else if (type == PVFS2_VFS_OP_CREATE)
 			return "OP_CREATE";

@@ -167,7 +167,7 @@ static int pvfs2_statfs(struct dentry *dentry, struct kstatfs *buf)
 	buf->f_type = sb->s_magic;
 	memcpy(&buf->f_fsid, &ORANGEFS_SB(sb)->fs_id, sizeof(buf->f_fsid));
 	buf->f_bsize = new_op->downcall.resp.statfs.block_size;
-	buf->f_namelen = PVFS2_NAME_LEN;
+	buf->f_namelen = ORANGEFS_NAME_LEN;
 
 	buf->f_blocks = (sector_t) new_op->downcall.resp.statfs.blocks_total;
 	buf->f_bfree = (sector_t) new_op->downcall.resp.statfs.blocks_avail;
@@ -379,7 +379,7 @@ static int pvfs2_fill_sb(struct super_block *sb, void *data, int silent)
 	sb->s_xattr = orangefs_xattr_handlers;
 	sb->s_magic = PVFS2_SUPER_MAGIC;
 	sb->s_op = &pvfs2_s_ops;
-	sb->s_d_op = &pvfs2_dentry_operations;
+	sb->s_d_op = &orangefs_dentry_operations;
 
 	sb->s_blocksize = pvfs_bufmap_size_query();
 	sb->s_blocksize_bits = pvfs_bufmap_shift_query();

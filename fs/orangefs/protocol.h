@@ -197,7 +197,7 @@ typedef __s64 PVFS_offset;
 #define PVFS_ATTR_SYS_ALL_SETABLE		\
 (PVFS_ATTR_SYS_COMMON_ALL-PVFS_ATTR_SYS_TYPE)
 
-#define PVFS_ATTR_SYS_ALL_NOHINT			\
+#define ORANGEFS_ATTR_SYS_ALL_NOHINT			\
 	(PVFS_ATTR_SYS_COMMON_ALL		|	\
 	 ORANGEFS_ATTR_SYS_SIZE			|	\
 	 PVFS_ATTR_SYS_LNK_TARGET		|	\
@@ -329,7 +329,7 @@ struct PVFS_sys_attr_s {
 	__s64 blksize;
 };
 
-#define PVFS2_LOOKUP_LINK_NO_FOLLOW 0
+#define ORANGEFS_LOOKUP_LINK_NO_FOLLOW 0
 #define PVFS2_LOOKUP_LINK_FOLLOW    1
 
 /* pint-dev.h ***************************************************************/
