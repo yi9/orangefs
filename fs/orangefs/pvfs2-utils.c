@@ -530,13 +530,13 @@ int orangefs_flush_inode(struct inode *inode)
 	return ret;
 }
 
-int pvfs2_unmount_sb(struct super_block *sb)
+int orangefs_unmount_sb(struct super_block *sb)
 {
 	int ret = -EINVAL;
 	struct orangefs_kernel_op_s *new_op = NULL;
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "pvfs2_unmount_sb called on sb %p\n",
+		     "orangefs_unmount_sb called on sb %p\n",
 		     sb);
 
 	new_op = op_alloc(PVFS2_VFS_OP_FS_UMOUNT);
@@ -544,13 +544,13 @@ int pvfs2_unmount_sb(struct super_block *sb)
 		return -ENOMEM;
 	new_op->upcall.req.fs_umount.id = ORANGEFS_SB(sb)->id;
 	new_op->upcall.req.fs_umount.fs_id = ORANGEFS_SB(sb)->fs_id;
-	strncpy(new_op->upcall.req.fs_umount.pvfs2_config_server,
+	strncpy(new_op->upcall.req.fs_umount.orangefs_config_server,
 		ORANGEFS_SB(sb)->devname,
 		PVFS_MAX_SERVER_ADDR_LEN);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "Attempting PVFS2 Unmount via host %s\n",
-		     new_op->upcall.req.fs_umount.pvfs2_config_server);
+		     new_op->upcall.req.fs_umount.orangefs_config_server);
 
 	ret = service_operation(new_op, "pvfs2_fs_umount", 0);
 

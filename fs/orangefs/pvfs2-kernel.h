@@ -353,7 +353,7 @@ struct orangefs_inode_s {
 #define ModeFlag(pinode)      test_bit(P_MODE_FLAG, &(pinode)->pinode_flags)
 
 /* per superblock private pvfs2 info */
-struct pvfs2_sb_info_s {
+struct orangefs_sb_info_s {
 	struct orangefs_khandle root_khandle;
 	__s32 fs_id;
 	int id;
@@ -371,7 +371,7 @@ struct pvfs2_sb_info_s {
  * mount time data provided along with a private superblock structure
  * that is allocated before a 'kernel' superblock is allocated.
 */
-struct pvfs2_mount_sb_info_s {
+struct orangefs_mount_sb_info_s {
 	void *data;
 	struct orangefs_khandle root_khandle;
 	__s32 fs_id;
@@ -435,9 +435,9 @@ static inline struct orangefs_inode_s *ORANGEFS_I(struct inode *inode)
 	return container_of(inode, struct orangefs_inode_s, vfs_inode);
 }
 
-static inline struct pvfs2_sb_info_s *ORANGEFS_SB(struct super_block *sb)
+static inline struct orangefs_sb_info_s *ORANGEFS_SB(struct super_block *sb)
 {
-	return (struct pvfs2_sb_info_s *) sb->s_fs_info;
+	return (struct orangefs_sb_info_s *) sb->s_fs_info;
 }
 
 /* ino_t descends from "unsigned long", 8 bytes, 64 bits. */
@@ -554,12 +554,12 @@ void purge_waiting_ops(void);
 /*
  * defined in super.c
  */
-struct dentry *pvfs2_mount(struct file_system_type *fst,
+struct dentry *orangefs_mount(struct file_system_type *fst,
 			   int flags,
 			   const char *devname,
 			   void *data);
 
-void pvfs2_kill_sb(struct super_block *sb);
+void orangefs_kill_sb(struct super_block *sb);
 int orangefs_remount(struct super_block *sb);
 
 int fsid_key_table_initialize(void);
@@ -649,7 +649,7 @@ void block_signals(sigset_t *);
 
 void set_signals(sigset_t *);
 
-int pvfs2_unmount_sb(struct super_block *sb);
+int orangefs_unmount_sb(struct super_block *sb);
 
 int pvfs2_cancel_op_in_progress(__u64 tag);
 
@@ -662,7 +662,7 @@ extern struct mutex request_mutex;
 extern int debug;
 extern int op_timeout_secs;
 extern int slot_timeout_secs;
-extern struct list_head pvfs2_superblocks;
+extern struct list_head orangefs_superblocks;
 extern spinlock_t orangefs_superblocks_lock;
 extern struct list_head pvfs2_request_list;
 extern spinlock_t pvfs2_request_list_lock;
@@ -784,26 +784,26 @@ do {								\
 	((ORANGEFS_SB(inode->i_sb)->flags & PVFS2_OPT_INTR) ? \
 		ORANGEFS_OP_INTERRUPTIBLE : 0)
 
-#define add_pvfs2_sb(sb)						\
+#define add_orangefs_sb(sb)						\
 do {									\
 	gossip_debug(GOSSIP_SUPER_DEBUG,				\
 		     "Adding SB %p to pvfs2 superblocks\n",		\
 		     ORANGEFS_SB(sb));					\
 	spin_lock(&orangefs_superblocks_lock);				\
-	list_add_tail(&ORANGEFS_SB(sb)->list, &pvfs2_superblocks);		\
+	list_add_tail(&ORANGEFS_SB(sb)->list, &orangefs_superblocks);		\
 	spin_unlock(&orangefs_superblocks_lock); \
 } while (0)
 
-#define remove_pvfs2_sb(sb)						\
+#define remove_orangefs_sb(sb)						\
 do {									\
 	struct list_head *tmp = NULL;					\
 	struct list_head *tmp_safe = NULL;				\
-	struct pvfs2_sb_info_s *pvfs2_sb = NULL;			\
+	struct orangefs_sb_info_s *pvfs2_sb = NULL;			\
 									\
 	spin_lock(&orangefs_superblocks_lock);				\
-	list_for_each_safe(tmp, tmp_safe, &pvfs2_superblocks) {		\
+	list_for_each_safe(tmp, tmp_safe, &orangefs_superblocks) {		\
 		pvfs2_sb = list_entry(tmp,				\
-				      struct pvfs2_sb_info_s,		\
+				      struct orangefs_sb_info_s,		\
 				      list);				\
 		if (pvfs2_sb && (pvfs2_sb->sb == sb)) {			\
 			gossip_debug(GOSSIP_SUPER_DEBUG,		\

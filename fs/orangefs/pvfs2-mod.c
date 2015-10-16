@@ -59,8 +59,8 @@ MODULE_PARM_DESC(hash_table_size,
 
 static struct file_system_type pvfs2_fs_type = {
 	.name = "pvfs2",
-	.mount = pvfs2_mount,
-	.kill_sb = pvfs2_kill_sb,
+	.mount = orangefs_mount,
+	.kill_sb = orangefs_kill_sb,
 	.owner = THIS_MODULE,
 };
 

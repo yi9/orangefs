@@ -506,10 +506,10 @@ static ssize_t pvfs2_devreq_write_iter(struct kiocb *iocb,
 static int mark_all_pending_mounts(void)
 {
 	int unmounted = 1;
-	struct pvfs2_sb_info_s *pvfs2_sb = NULL;
+	struct orangefs_sb_info_s *pvfs2_sb = NULL;
 
 	spin_lock(&orangefs_superblocks_lock);
-	list_for_each_entry(pvfs2_sb, &pvfs2_superblocks, list) {
+	list_for_each_entry(pvfs2_sb, &orangefs_superblocks, list) {
 		/* All of these file system require a remount */
 		pvfs2_sb->mount_pending = 1;
 		unmounted = 0;
@@ -527,10 +527,10 @@ static int mark_all_pending_mounts(void)
 int fs_mount_pending(__s32 fsid)
 {
 	int mount_pending = -1;
-	struct pvfs2_sb_info_s *pvfs2_sb = NULL;
+	struct orangefs_sb_info_s *pvfs2_sb = NULL;
 
 	spin_lock(&orangefs_superblocks_lock);
-	list_for_each_entry(pvfs2_sb, &pvfs2_superblocks, list) {
+	list_for_each_entry(pvfs2_sb, &orangefs_superblocks, list) {
 		if (pvfs2_sb->fs_id == fsid) {
 			mount_pending = pvfs2_sb->mount_pending;
 			break;
@@ -625,7 +625,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 	struct dev_mask2_info_s mask2_info = { 0, 0 };
 	int upstream_kmod = 1;
 	struct list_head *tmp = NULL;
-	struct pvfs2_sb_info_s *pvfs2_sb = NULL;
+	struct orangefs_sb_info_s *pvfs2_sb = NULL;
 
 	/* mtmoore: add locking here */
 
@@ -668,9 +668,9 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 			return ret;
 		gossip_debug(GOSSIP_DEV_DEBUG,
 			     "pvfs2_devreq_ioctl: priority remount in progress\n");
-		list_for_each(tmp, &pvfs2_superblocks) {
+		list_for_each(tmp, &orangefs_superblocks) {
 			pvfs2_sb =
-				list_entry(tmp, struct pvfs2_sb_info_s, list);
+				list_entry(tmp, struct orangefs_sb_info_s, list);
 			if (pvfs2_sb && (pvfs2_sb->sb)) {
 				gossip_debug(GOSSIP_DEV_DEBUG,
 					     "Remounting SB %p\n",
