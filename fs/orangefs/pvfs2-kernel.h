@@ -176,12 +176,12 @@ struct client_debug_mask {
  */
 
 #if ((defined ORANGEFS_KERNEL_DEBUG) && (defined CONFIG_DEBUG_SLAB))
-#define PVFS2_CACHE_CREATE_FLAGS SLAB_RED_ZONE
+#define ORANGEFS_CACHE_CREATE_FLAGS SLAB_RED_ZONE
 #else
-#define PVFS2_CACHE_CREATE_FLAGS 0
+#define ORANGEFS_CACHE_CREATE_FLAGS 0
 #endif /* ((defined ORANGEFS_KERNEL_DEBUG) && (defined CONFIG_DEBUG_SLAB)) */
-#define PVFS2_CACHE_ALLOC_FLAGS (GFP_KERNEL)
-#define PVFS2_GFP_FLAGS (GFP_KERNEL)
+#define ORANGEFS_CACHE_ALLOC_FLAGS (GFP_KERNEL)
+#define ORANGEFS_GFP_FLAGS (GFP_KERNEL)
 #define ORANGEFS_BUFMAP_GFP_FLAGS (GFP_KERNEL)
 
 #define orangefs_kmap(page) kmap(page)
@@ -358,9 +358,9 @@ struct orangefs_sb_info_s {
 	__s32 fs_id;
 	int id;
 	int flags;
-#define PVFS2_OPT_INTR		0x01
+#define ORANGEFS_OPT_INTR	0x01
 #define ORANGEFS_OPT_LOCAL_LOCK	0x02
-	char devname[PVFS_MAX_SERVER_ADDR_LEN];
+	char devname[ORANGEFS_MAX_SERVER_ADDR_LEN];
 	struct super_block *sb;
 	int mount_pending;
 	struct list_head list;
@@ -781,7 +781,7 @@ do {								\
 } while (0)
 
 #define get_interruptible_flag(inode) \
-	((ORANGEFS_SB(inode->i_sb)->flags & PVFS2_OPT_INTR) ? \
+	((ORANGEFS_SB(inode->i_sb)->flags & ORANGEFS_OPT_INTR) ? \
 		ORANGEFS_OP_INTERRUPTIBLE : 0)
 
 #define add_orangefs_sb(sb)						\

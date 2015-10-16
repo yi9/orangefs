@@ -21,12 +21,12 @@ struct orangefs_bufmap *pvfs2_bufmap_ref(void);
 void pvfs2_bufmap_unref(struct orangefs_bufmap *bufmap);
 
 /*
- * pvfs_bufmap_size_query is now an inline function because buffer
+ * orangefs_bufmap_size_query is now an inline function because buffer
  * sizes are not hardcoded
  */
-int pvfs_bufmap_size_query(void);
+int orangefs_bufmap_size_query(void);
 
-int pvfs_bufmap_shift_query(void);
+int orangefs_bufmap_shift_query(void);
 
 int pvfs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc);
 

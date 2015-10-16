@@ -124,7 +124,7 @@ static ssize_t pvfs2_devreq_read(struct file *file,
 			 * Check if this op's fsid is known and needs
 			 * remounting
 			 */
-			if (fsid != PVFS_FS_ID_NULL &&
+			if (fsid != ORANGEFS_FS_ID_NULL &&
 			    fs_mount_pending(fsid) == 1) {
 				gossip_debug(GOSSIP_DEV_DEBUG,
 					     "Skipping op tag %llu %s\n",

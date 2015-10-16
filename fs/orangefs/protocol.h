@@ -70,7 +70,7 @@ static inline int PVFS_khandle_cmp(const struct orangefs_khandle *kh1,
 	return 0;
 }
 
-static inline void PVFS_khandle_to(const struct orangefs_khandle *kh,
+static inline void ORANGEFS_khandle_to(const struct orangefs_khandle *kh,
 				   void *p, int size)
 {
 
@@ -79,7 +79,7 @@ static inline void PVFS_khandle_to(const struct orangefs_khandle *kh,
 
 }
 
-static inline void PVFS_khandle_from(struct orangefs_khandle *kh,
+static inline void ORANGEFS_khandle_from(struct orangefs_khandle *kh,
 				     void *p, int size)
 {
 	memset(kh, 0, 16);
@@ -99,7 +99,7 @@ typedef __u64 PVFS_ds_position;
 typedef __s32 PVFS_error;
 typedef __s64 PVFS_offset;
 
-#define PVFS2_SUPER_MAGIC 0x20030528
+#define ORANGEFS_SUPER_MAGIC 0x20030528
 
 /*
  * PVFS2 error codes are a signed 32-bit integer. Error codes are negative, but
@@ -169,7 +169,7 @@ typedef __s64 PVFS_offset;
 #define PVFS_NOATIME_FL   FS_NOATIME_FL
 #define ORANGEFS_MIRROR_FL    0x01000000ULL
 #define PVFS_O_EXECUTE (1 << 0)
-#define PVFS_FS_ID_NULL       ((__s32)0)
+#define ORANGEFS_FS_ID_NULL       ((__s32)0)
 #define PVFS_ATTR_SYS_UID                   (1 << 0)
 #define PVFS_ATTR_SYS_GID                   (1 << 1)
 #define PVFS_ATTR_SYS_PERM                  (1 << 2)
@@ -207,8 +207,8 @@ typedef __s64 PVFS_offset;
 	 PVFS_ATTR_SYS_BLKSIZE)
 #define PVFS_XATTR_REPLACE 0x2
 #define PVFS_XATTR_CREATE  0x1
-#define PVFS_MAX_SERVER_ADDR_LEN 256
-#define PVFS_NAME_MAX            256
+#define ORANGEFS_MAX_SERVER_ADDR_LEN 256
+#define PVFS_NAME_MAX                256
 /*
  * max extended attribute name len as imposed by the VFS and exploited for the
  * upcall request types.

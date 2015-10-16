@@ -269,7 +269,7 @@ out:
 
 /*
  * The reason we need to do this is to be able to support readv and writev
- * that are larger than (pvfs_bufmap_size_query()) Default is
+ * that are larger than (orangefs_bufmap_size_query()) Default is
  * ORANGEFS_BUFMAP_DEFAULT_DESC_SIZE MB. What that means is that we will
  * create a new io vec descriptor for those memory addresses that
  * go beyond the limit. Return value for this routine is negative in case
@@ -278,7 +278,7 @@ out:
  * Further, the new_nr_segs pointer is updated to hold the new value
  * of number of iovecs, the new_vec pointer is updated to hold the pointer
  * to the new split iovec, and the size array is an array of integers holding
- * the number of iovecs that straddle pvfs_bufmap_size_query().
+ * the number of iovecs that straddle orangefs_bufmap_size_query().
  * The max_new_nr_segs value is computed by the caller and returned.
  * (It will be (count of all iov_len/ block_size) + 1).
  */
@@ -360,7 +360,7 @@ repeat:
 			return -EINVAL;
 		}
 		if (count + orig_iovec[seg].iov_len <
-		    pvfs_bufmap_size_query()) {
+		    orangefs_bufmap_size_query()) {
 			count += orig_iovec[seg].iov_len;
 			memcpy(&new_iovec[tmpnew_nr_segs],
 			       &orig_iovec[seg],
@@ -371,15 +371,15 @@ repeat:
 			new_iovec[tmpnew_nr_segs].iov_base =
 			    orig_iovec[seg].iov_base;
 			new_iovec[tmpnew_nr_segs].iov_len =
-			    (pvfs_bufmap_size_query() - count);
+			    (orangefs_bufmap_size_query() - count);
 			tmpnew_nr_segs++;
 			sizes[sizes_count]++;
 			sizes_count++;
 			begin_seg = seg;
 			orig_iovec[seg].iov_base +=
-			    (pvfs_bufmap_size_query() - count);
+			    (orangefs_bufmap_size_query() - count);
 			orig_iovec[seg].iov_len -=
-			    (pvfs_bufmap_size_query() - count);
+			    (orangefs_bufmap_size_query() - count);
 			count = 0;
 			break;
 		}
@@ -416,13 +416,13 @@ static long bound_max_iovecs(const struct iovec *curr, unsigned long nr_segs,
 		count += iv->iov_len;
 		if (unlikely((ssize_t) (count | iv->iov_len) < 0))
 			return -EINVAL;
-		if (total + iv->iov_len < pvfs_bufmap_size_query()) {
+		if (total + iv->iov_len < orangefs_bufmap_size_query()) {
 			total += iv->iov_len;
 			max_nr_iovecs++;
 		} else {
 			total =
-			    (total + iv->iov_len - pvfs_bufmap_size_query());
-			max_nr_iovecs += (total / pvfs_bufmap_size_query() + 2);
+			    (total + iv->iov_len - orangefs_bufmap_size_query());
+			max_nr_iovecs += (total / orangefs_bufmap_size_query() + 2);
 		}
 	}
 	*total_count = count;
@@ -492,9 +492,9 @@ static ssize_t do_readv_writev(enum ORANGEFS_io_type type, struct file *file,
 	gossip_debug(GOSSIP_FILE_DEBUG,
 		     "%s: pvfs_bufmap_size:%d\n",
 		     __func__,
-		     pvfs_bufmap_size_query());
+		     orangefs_bufmap_size_query());
 
-	if (count > pvfs_bufmap_size_query()) {
+	if (count > orangefs_bufmap_size_query()) {
 		/*
 		 * Split up the given iovec description such that
 		 * no iovec descriptor straddles over the block-size limitation.
@@ -574,8 +574,8 @@ static ssize_t do_readv_writev(enum ORANGEFS_io_type type, struct file *file,
 
 		/* how much to transfer in this loop iteration */
 		each_count =
-		   (((count - total_count) > pvfs_bufmap_size_query()) ?
-			pvfs_bufmap_size_query() :
+		   (((count - total_count) > orangefs_bufmap_size_query()) ?
+			orangefs_bufmap_size_query() :
 			(count - total_count));
 
 		gossip_debug(GOSSIP_FILE_DEBUG,
@@ -667,7 +667,7 @@ ssize_t orangefs_inode_read(struct inode *inode,
 	vec.iov_base = buf;
 	vec.iov_len = count;
 
-	bufmap_size = pvfs_bufmap_size_query();
+	bufmap_size = orangefs_bufmap_size_query();
 	if (count > bufmap_size) {
 		gossip_debug(GOSSIP_FILE_DEBUG,
 			     "%s: count is too large (%zd/%zd)!\n",

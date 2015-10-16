@@ -10,7 +10,7 @@
 
 __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 {
-	__s32 fsid = PVFS_FS_ID_NULL;
+	__s32 fsid = ORANGEFS_FS_ID_NULL;
 
 	if (op) {
 		switch (op->upcall.type) {
@@ -44,7 +44,7 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 		case PVFS2_VFS_OP_RENAME:
 			fsid = op->upcall.req.rename.old_parent_refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_STATFS:
+		case ORANGEFS_VFS_OP_STATFS:
 			fsid = op->upcall.req.statfs.fs_id;
 			break;
 		case ORANGEFS_VFS_OP_TRUNCATE:
@@ -546,7 +546,7 @@ int orangefs_unmount_sb(struct super_block *sb)
 	new_op->upcall.req.fs_umount.fs_id = ORANGEFS_SB(sb)->fs_id;
 	strncpy(new_op->upcall.req.fs_umount.orangefs_config_server,
 		ORANGEFS_SB(sb)->devname,
-		PVFS_MAX_SERVER_ADDR_LEN);
+		ORANGEFS_MAX_SERVER_ADDR_LEN);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "Attempting PVFS2 Unmount via host %s\n",

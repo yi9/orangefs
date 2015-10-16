@@ -74,7 +74,7 @@ void pvfs2_bufmap_unref(struct orangefs_bufmap *bufmap)
 	}
 }
 
-inline int pvfs_bufmap_size_query(void)
+inline int orangefs_bufmap_size_query(void)
 {
 	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
 	int size = bufmap ? bufmap->desc_size : 0;
@@ -83,7 +83,7 @@ inline int pvfs_bufmap_size_query(void)
 	return size;
 }
 
-inline int pvfs_bufmap_shift_query(void)
+inline int orangefs_bufmap_shift_query(void)
 {
 	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
 	int shift = bufmap ? bufmap->desc_shift : 0;

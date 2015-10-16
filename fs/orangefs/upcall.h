@@ -111,13 +111,13 @@ struct pvfs2_mmap_ra_cache_flush_request_s {
 };
 
 struct pvfs2_fs_mount_request_s {
-	char orangefs_config_server[PVFS_MAX_SERVER_ADDR_LEN];
+	char orangefs_config_server[ORANGEFS_MAX_SERVER_ADDR_LEN];
 };
 
 struct pvfs2_fs_umount_request_s {
 	__s32 id;
 	__s32 fs_id;
-	char orangefs_config_server[PVFS_MAX_SERVER_ADDR_LEN];
+	char orangefs_config_server[ORANGEFS_MAX_SERVER_ADDR_LEN];
 };
 
 struct pvfs2_getxattr_request_s {

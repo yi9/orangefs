@@ -27,7 +27,7 @@ int op_cache_initialize(void)
 	op_cache = kmem_cache_create("pvfs2_op_cache",
 				     sizeof(struct orangefs_kernel_op_s),
 				     0,
-				     PVFS2_CACHE_CREATE_FLAGS,
+				     ORANGEFS_CACHE_CREATE_FLAGS,
 				     NULL);
 
 	if (!op_cache) {
@@ -75,13 +75,13 @@ char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 			return "OP_SYMLINK";
 		else if (type == PVFS2_VFS_OP_RENAME)
 			return "OP_RENAME";
-		else if (type == PVFS2_VFS_OP_STATFS)
+		else if (type == ORANGEFS_VFS_OP_STATFS)
 			return "OP_STATFS";
 		else if (type == ORANGEFS_VFS_OP_TRUNCATE)
 			return "OP_TRUNCATE";
 		else if (type == PVFS2_VFS_OP_MMAP_RA_FLUSH)
 			return "OP_MMAP_RA_FLUSH";
-		else if (type == PVFS2_VFS_OP_FS_MOUNT)
+		else if (type == ORANGEFS_VFS_OP_FS_MOUNT)
 			return "OP_FS_MOUNT";
 		else if (type == PVFS2_VFS_OP_FS_UMOUNT)
 			return "OP_FS_UMOUNT";
@@ -113,7 +113,7 @@ static struct orangefs_kernel_op_s *op_alloc_common(__s32 op_linger, __s32 type)
 {
 	struct orangefs_kernel_op_s *new_op = NULL;
 
-	new_op = kmem_cache_alloc(op_cache, PVFS2_CACHE_ALLOC_FLAGS);
+	new_op = kmem_cache_alloc(op_cache, ORANGEFS_CACHE_ALLOC_FLAGS);
 	if (new_op) {
 		memset(new_op, 0, sizeof(struct orangefs_kernel_op_s));
 
@@ -182,7 +182,7 @@ int dev_req_cache_initialize(void)
 	dev_req_cache = kmem_cache_create("pvfs2_devreqcache",
 					  MAX_ALIGNED_DEV_REQ_DOWNSIZE,
 					  0,
-					  PVFS2_CACHE_CREATE_FLAGS,
+					  ORANGEFS_CACHE_CREATE_FLAGS,
 					  NULL);
 
 	if (!dev_req_cache) {
@@ -202,7 +202,7 @@ void *dev_req_alloc(void)
 {
 	void *buffer;
 
-	buffer = kmem_cache_alloc(dev_req_cache, PVFS2_CACHE_ALLOC_FLAGS);
+	buffer = kmem_cache_alloc(dev_req_cache, ORANGEFS_CACHE_ALLOC_FLAGS);
 	if (buffer == NULL)
 		gossip_err("Failed to allocate from dev_req_cache\n");
 	else
@@ -223,7 +223,7 @@ int kiocb_cache_initialize(void)
 	pvfs2_kiocb_cache = kmem_cache_create("pvfs2_kiocbcache",
 					      sizeof(struct pvfs2_kiocb_s),
 					      0,
-					      PVFS2_CACHE_CREATE_FLAGS,
+					      ORANGEFS_CACHE_CREATE_FLAGS,
 					      NULL);
 
 	if (!pvfs2_kiocb_cache) {
@@ -243,7 +243,7 @@ struct pvfs2_kiocb_s *kiocb_alloc(void)
 {
 	struct pvfs2_kiocb_s *x = NULL;
 
-	x = kmem_cache_alloc(pvfs2_kiocb_cache, PVFS2_CACHE_ALLOC_FLAGS);
+	x = kmem_cache_alloc(pvfs2_kiocb_cache, ORANGEFS_CACHE_ALLOC_FLAGS);
 	if (x == NULL)
 		gossip_err("kiocb_alloc: kmem_cache_alloc failed!\n");
 	else

@@ -46,7 +46,7 @@ static int parse_mount_options(struct super_block *sb, char *options,
 	 * to zero, ie, initialize to unset.
 	 */
 	sb->s_flags &= ~MS_POSIXACL;
-	orangefs_sb->flags &= ~PVFS2_OPT_INTR;
+	orangefs_sb->flags &= ~ORANGEFS_OPT_INTR;
 	orangefs_sb->flags &= ~ORANGEFS_OPT_LOCAL_LOCK;
 
 	while ((p = strsep(&options, ",")) != NULL) {
@@ -61,7 +61,7 @@ static int parse_mount_options(struct super_block *sb, char *options,
 			sb->s_flags |= MS_POSIXACL;
 			break;
 		case Opt_intr:
-			orangefs_sb->flags |= PVFS2_OPT_INTR;
+			orangefs_sb->flags |= ORANGEFS_OPT_INTR;
 			break;
 		case Opt_local_lock:
 			orangefs_sb->flags |= ORANGEFS_OPT_LOCAL_LOCK;
@@ -93,7 +93,7 @@ static struct inode *orangefs_alloc_inode(struct super_block *sb)
 	struct orangefs_inode_s *orangefs_inode;
 
 	orangefs_inode = kmem_cache_alloc(orangefs_inode_cache,
-				       PVFS2_CACHE_ALLOC_FLAGS);
+				       ORANGEFS_CACHE_ALLOC_FLAGS);
 	if (orangefs_inode == NULL) {
 		gossip_err("Failed to allocate orangefs_inode\n");
 		return NULL;
@@ -104,7 +104,7 @@ static struct inode *orangefs_alloc_inode(struct super_block *sb)
 	 * vfs_inode.
 	 */
 	memset(&orangefs_inode->refn.khandle, 0, 16);
-	orangefs_inode->refn.fs_id = PVFS_FS_ID_NULL;
+	orangefs_inode->refn.fs_id = ORANGEFS_FS_ID_NULL;
 	orangefs_inode->last_failed_block_index_read = 0;
 	memset(orangefs_inode->link_target, 0, sizeof(orangefs_inode->link_target));
 	orangefs_inode->pinode_flags = 0;
@@ -144,12 +144,12 @@ static int orangefs_statfs(struct dentry *dentry, struct kstatfs *buf)
 		     sb,
 		     (int)(ORANGEFS_SB(sb)->fs_id));
 
-	new_op = op_alloc(PVFS2_VFS_OP_STATFS);
+	new_op = op_alloc(ORANGEFS_VFS_OP_STATFS);
 	if (!new_op)
 		return ret;
 	new_op->upcall.req.statfs.fs_id = ORANGEFS_SB(sb)->fs_id;
 
-	if (ORANGEFS_SB(sb)->flags & PVFS2_OPT_INTR)
+	if (ORANGEFS_SB(sb)->flags & ORANGEFS_OPT_INTR)
 		flags = ORANGEFS_OP_INTERRUPTIBLE;
 
 	ret = service_operation(new_op, "orangefs_statfs", flags);
@@ -214,15 +214,15 @@ int orangefs_remount(struct super_block *sb)
 
 	gossip_debug(GOSSIP_SUPER_DEBUG, "orangefs_remount: called\n");
 
-	new_op = op_alloc(PVFS2_VFS_OP_FS_MOUNT);
+	new_op = op_alloc(ORANGEFS_VFS_OP_FS_MOUNT);
 	if (!new_op)
 		return -ENOMEM;
 	strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
 		ORANGEFS_SB(sb)->devname,
-		PVFS_MAX_SERVER_ADDR_LEN);
+		ORANGEFS_MAX_SERVER_ADDR_LEN);
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
-		     "Attempting PVFS2 Remount via host %s\n",
+		     "Attempting ORANGEFS Remount via host %s\n",
 		     new_op->upcall.req.fs_mount.orangefs_config_server);
 
 	/*
@@ -289,7 +289,7 @@ static struct dentry *orangefs_fh_to_dentry(struct super_block *sb,
 	if (fh_len < 5 || fh_type > 2)
 		return NULL;
 
-	PVFS_khandle_from(&(refn.khandle), fid->raw, 16);
+	ORANGEFS_khandle_from(&(refn.khandle), fid->raw, 16);
 	refn.fs_id = (u32) fid->raw[4];
 	gossip_debug(GOSSIP_SUPER_DEBUG,
 		     "fh_to_dentry: handle %pU, fs_id %d\n",
@@ -316,7 +316,7 @@ static int orangefs_encode_fh(struct inode *inode,
 	}
 
 	refn = ORANGEFS_I(inode)->refn;
-	PVFS_khandle_to(&refn.khandle, fh, 16);
+	ORANGEFS_khandle_to(&refn.khandle, fh, 16);
 	fh[4] = refn.fs_id;
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
@@ -327,7 +327,7 @@ static int orangefs_encode_fh(struct inode *inode,
 
 	if (parent) {
 		refn = ORANGEFS_I(parent)->refn;
-		PVFS_khandle_to(&refn.khandle, (char *) fh + 20, 16);
+		ORANGEFS_khandle_to(&refn.khandle, (char *) fh + 20, 16);
 		fh[9] = refn.fs_id;
 
 		type = 2;
@@ -358,7 +358,7 @@ static int orangefs_fill_sb(struct super_block *sb, void *data, int silent)
 
 	/* alloc and init our private orangefs sb info */
 	sb->s_fs_info =
-		kmalloc(sizeof(struct orangefs_sb_info_s), PVFS2_GFP_FLAGS);
+		kmalloc(sizeof(struct orangefs_sb_info_s), ORANGEFS_GFP_FLAGS);
 	if (!ORANGEFS_SB(sb))
 		return -ENOMEM;
 	memset(sb->s_fs_info, 0, sizeof(struct orangefs_sb_info_s));
@@ -377,12 +377,12 @@ static int orangefs_fill_sb(struct super_block *sb, void *data, int silent)
 
 	/* Hang the xattr handlers off the superblock */
 	sb->s_xattr = orangefs_xattr_handlers;
-	sb->s_magic = PVFS2_SUPER_MAGIC;
+	sb->s_magic = ORANGEFS_SUPER_MAGIC;
 	sb->s_op = &orangefs_s_ops;
 	sb->s_d_op = &orangefs_dentry_operations;
 
-	sb->s_blocksize = pvfs_bufmap_size_query();
-	sb->s_blocksize_bits = pvfs_bufmap_shift_query();
+	sb->s_blocksize = orangefs_bufmap_size_query();
+	sb->s_blocksize_bits = orangefs_bufmap_shift_query();
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 
 	root_object.khandle = ORANGEFS_SB(sb)->root_khandle;
@@ -433,16 +433,16 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
 		return ERR_PTR(-EINVAL);
 	}
 
-	new_op = op_alloc(PVFS2_VFS_OP_FS_MOUNT);
+	new_op = op_alloc(ORANGEFS_VFS_OP_FS_MOUNT);
 	if (!new_op)
 		return ERR_PTR(-ENOMEM);
 
 	strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
 		devname,
-		PVFS_MAX_SERVER_ADDR_LEN);
+		ORANGEFS_MAX_SERVER_ADDR_LEN);
 
 	gossip_debug(GOSSIP_SUPER_DEBUG,
-		     "Attempting PVFS2 Mount via host %s\n",
+		     "Attempting ORANGEFS Mount via host %s\n",
 		     new_op->upcall.req.fs_mount.orangefs_config_server);
 
 	ret = service_operation(new_op, "orangefs_mount", 0);
@@ -451,7 +451,7 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
 	if (ret)
 		goto free_op;
 
-	if (new_op->downcall.resp.fs_mount.fs_id == PVFS_FS_ID_NULL) {
+	if (new_op->downcall.resp.fs_mount.fs_id == ORANGEFS_FS_ID_NULL) {
 		gossip_err("ERROR: Retrieved null fs_id\n");
 		ret = -EINVAL;
 		goto free_op;
@@ -486,7 +486,7 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
 	 */
 	strncpy(ORANGEFS_SB(sb)->devname,
 		devname,
-		PVFS_MAX_SERVER_ADDR_LEN);
+		ORANGEFS_MAX_SERVER_ADDR_LEN);
 
 	/* mount_pending must be cleared */
 	ORANGEFS_SB(sb)->mount_pending = 0;
@@ -536,7 +536,7 @@ int orangefs_inode_cache_initialize(void)
 	orangefs_inode_cache = kmem_cache_create("orangefs_inode_cache",
 					      sizeof(struct orangefs_inode_s),
 					      0,
-					      PVFS2_CACHE_CREATE_FLAGS,
+					      ORANGEFS_CACHE_CREATE_FLAGS,
 					      orangefs_inode_cache_ctor);
 
 	if (!orangefs_inode_cache) {
