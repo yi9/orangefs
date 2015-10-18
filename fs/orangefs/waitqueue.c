@@ -210,7 +210,7 @@ retry_servicing:
 			set_current_state(TASK_INTERRUPTIBLE);
 
 			/*
-			 * Wait for pvfs_bufmap_initialize() to wake me up
+			 * Wait for orangefs_bufmap_initialize() to wake me up
 			 * within the allotted time.
 			 */
 			ret = schedule_timeout(MSECS_TO_JIFFIES

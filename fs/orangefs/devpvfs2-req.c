@@ -545,7 +545,7 @@ int fs_mount_pending(__s32 fsid)
  * Using the open_access_count variable, we enforce a reference count
  * on this file so that it can be opened by only one process at a time.
  * the devreq_mutex is used to make sure all i/o has completed
- * before we call pvfs_bufmap_finalize, and similar such tricky
+ * before we call orangefs_bufmap_finalize, and similar such tricky
  * situations
  */
 static int pvfs2_devreq_release(struct inode *inode, struct file *file)
@@ -557,7 +557,7 @@ static int pvfs2_devreq_release(struct inode *inode, struct file *file)
 		     __func__);
 
 	mutex_lock(&devreq_mutex);
-	pvfs_bufmap_finalize();
+	orangefs_bufmap_finalize();
 
 	open_access_count--;
 
@@ -649,7 +649,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 				     (struct PVFS_dev_map_desc __user *)
 				     arg,
 				     sizeof(struct PVFS_dev_map_desc));
-		return ret ? -EIO : pvfs_bufmap_initialize(&user_desc);
+		return ret ? -EIO : orangefs_bufmap_initialize(&user_desc);
 	case PVFS_DEV_REMOUNT_ALL:
 		gossip_debug(GOSSIP_DEV_DEBUG,
 			     "pvfs2_devreq_ioctl: got PVFS_DEV_REMOUNT_ALL\n");

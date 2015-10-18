@@ -19,7 +19,7 @@ static struct orangefs_bufmap {
 	int page_count;
 
 	struct page **page_array;
-	struct pvfs_bufmap_desc *desc_array;
+	struct orangefs_bufmap_desc *desc_array;
 
 	/* array to track usage of buffer descriptors */
 	int *buffer_index_array;
@@ -28,12 +28,12 @@ static struct orangefs_bufmap {
 	/* array to track usage of buffer descriptors for readdir */
 	int readdir_index_array[PVFS2_READDIR_DEFAULT_DESC_COUNT];
 	spinlock_t readdir_index_lock;
-} *__pvfs2_bufmap;
+} *__orangefs_bufmap;
 
-static DEFINE_SPINLOCK(pvfs2_bufmap_lock);
+static DEFINE_SPINLOCK(orangefs_bufmap_lock);
 
 static void
-pvfs2_bufmap_unmap(struct orangefs_bufmap *bufmap)
+orangefs_bufmap_unmap(struct orangefs_bufmap *bufmap)
 {
 	int i;
 
@@ -42,7 +42,7 @@ pvfs2_bufmap_unmap(struct orangefs_bufmap *bufmap)
 }
 
 static void
-pvfs2_bufmap_free(struct orangefs_bufmap *bufmap)
+orangefs_bufmap_free(struct orangefs_bufmap *bufmap)
 {
 	kfree(bufmap->page_array);
 	kfree(bufmap->desc_array);
@@ -50,45 +50,45 @@ pvfs2_bufmap_free(struct orangefs_bufmap *bufmap)
 	kfree(bufmap);
 }
 
-struct orangefs_bufmap *pvfs2_bufmap_ref(void)
+struct orangefs_bufmap *orangefs_bufmap_ref(void)
 {
 	struct orangefs_bufmap *bufmap = NULL;
 
-	spin_lock(&pvfs2_bufmap_lock);
-	if (__pvfs2_bufmap) {
-		bufmap = __pvfs2_bufmap;
+	spin_lock(&orangefs_bufmap_lock);
+	if (__orangefs_bufmap) {
+		bufmap = __orangefs_bufmap;
 		atomic_inc(&bufmap->refcnt);
 	}
-	spin_unlock(&pvfs2_bufmap_lock);
+	spin_unlock(&orangefs_bufmap_lock);
 	return bufmap;
 }
 
-void pvfs2_bufmap_unref(struct orangefs_bufmap *bufmap)
+void orangefs_bufmap_unref(struct orangefs_bufmap *bufmap)
 {
-	if (atomic_dec_and_lock(&bufmap->refcnt, &pvfs2_bufmap_lock)) {
-		__pvfs2_bufmap = NULL;
-		spin_unlock(&pvfs2_bufmap_lock);
+	if (atomic_dec_and_lock(&bufmap->refcnt, &orangefs_bufmap_lock)) {
+		__orangefs_bufmap = NULL;
+		spin_unlock(&orangefs_bufmap_lock);
 
-		pvfs2_bufmap_unmap(bufmap);
-		pvfs2_bufmap_free(bufmap);
+		orangefs_bufmap_unmap(bufmap);
+		orangefs_bufmap_free(bufmap);
 	}
 }
 
 inline int orangefs_bufmap_size_query(void)
 {
-	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = orangefs_bufmap_ref();
 	int size = bufmap ? bufmap->desc_size : 0;
 
-	pvfs2_bufmap_unref(bufmap);
+	orangefs_bufmap_unref(bufmap);
 	return size;
 }
 
 inline int orangefs_bufmap_shift_query(void)
 {
-	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = orangefs_bufmap_ref();
 	int shift = bufmap ? bufmap->desc_shift : 0;
 
-	pvfs2_bufmap_unref(bufmap);
+	orangefs_bufmap_unref(bufmap);
 	return shift;
 }
 
@@ -105,12 +105,12 @@ static DECLARE_WAIT_QUEUE_HEAD(readdir_waitq);
  */
 int get_bufmap_init(void)
 {
-	return __pvfs2_bufmap ? 1 : 0;
+	return __orangefs_bufmap ? 1 : 0;
 }
 
 
 static struct orangefs_bufmap *
-pvfs2_bufmap_alloc(struct PVFS_dev_map_desc *user_desc)
+orangefs_bufmap_alloc(struct PVFS_dev_map_desc *user_desc)
 {
 	struct orangefs_bufmap *bufmap;
 
@@ -135,7 +135,7 @@ pvfs2_bufmap_alloc(struct PVFS_dev_map_desc *user_desc)
 	spin_lock_init(&bufmap->readdir_index_lock);
 
 	bufmap->desc_array =
-		kcalloc(bufmap->desc_count, sizeof(struct pvfs_bufmap_desc),
+		kcalloc(bufmap->desc_count, sizeof(struct orangefs_bufmap_desc),
 			GFP_KERNEL);
 	if (!bufmap->desc_array) {
 		gossip_err("pvfs2: could not allocate %d descriptors\n",
@@ -164,7 +164,7 @@ out:
 }
 
 static int
-pvfs2_bufmap_map(struct orangefs_bufmap *bufmap,
+orangefs_bufmap_map(struct orangefs_bufmap *bufmap,
 		struct PVFS_dev_map_desc *user_desc)
 {
 	int pages_per_desc = bufmap->desc_size / PAGE_SIZE;
@@ -218,19 +218,19 @@ pvfs2_bufmap_map(struct orangefs_bufmap *bufmap,
 }
 
 /*
- * pvfs_bufmap_initialize()
+ * orangefs_bufmap_initialize()
  *
  * initializes the mapped buffer interface
  *
  * returns 0 on success, -errno on failure
  */
-int pvfs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
+int orangefs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 {
 	struct orangefs_bufmap *bufmap;
 	int ret = -EINVAL;
 
 	gossip_debug(GOSSIP_BUFMAP_DEBUG,
-		     "pvfs_bufmap_initialize: called (ptr ("
+		     "orangefs_bufmap_initialize: called (ptr ("
 		     "%p) sz (%d) cnt(%d).\n",
 		     user_desc->ptr,
 		     user_desc->size,
@@ -270,24 +270,24 @@ int pvfs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 	}
 
 	ret = -ENOMEM;
-	bufmap = pvfs2_bufmap_alloc(user_desc);
+	bufmap = orangefs_bufmap_alloc(user_desc);
 	if (!bufmap)
 		goto out;
 
-	ret = pvfs2_bufmap_map(bufmap, user_desc);
+	ret = orangefs_bufmap_map(bufmap, user_desc);
 	if (ret)
 		goto out_free_bufmap;
 
 
-	spin_lock(&pvfs2_bufmap_lock);
-	if (__pvfs2_bufmap) {
-		spin_unlock(&pvfs2_bufmap_lock);
+	spin_lock(&orangefs_bufmap_lock);
+	if (__orangefs_bufmap) {
+		spin_unlock(&orangefs_bufmap_lock);
 		gossip_err("pvfs2: error: bufmap already initialized.\n");
 		ret = -EALREADY;
 		goto out_unmap_bufmap;
 	}
-	__pvfs2_bufmap = bufmap;
-	spin_unlock(&pvfs2_bufmap_lock);
+	__orangefs_bufmap = bufmap;
+	spin_unlock(&orangefs_bufmap_lock);
 
 	/*
 	 * If there are operations in orangefs_bufmap_init_waitq, wake them up.
@@ -302,32 +302,32 @@ int pvfs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 	wake_up_interruptible(&orangefs_bufmap_init_waitq);
 
 	gossip_debug(GOSSIP_BUFMAP_DEBUG,
-		     "pvfs_bufmap_initialize: exiting normally\n");
+		     "orangefs_bufmap_initialize: exiting normally\n");
 	return 0;
 
 out_unmap_bufmap:
-	pvfs2_bufmap_unmap(bufmap);
+	orangefs_bufmap_unmap(bufmap);
 out_free_bufmap:
-	pvfs2_bufmap_free(bufmap);
+	orangefs_bufmap_free(bufmap);
 out:
 	return ret;
 }
 
 /*
- * pvfs_bufmap_finalize()
+ * orangefs_bufmap_finalize()
  *
  * shuts down the mapped buffer interface and releases any resources
  * associated with it
  *
  * no return value
  */
-void pvfs_bufmap_finalize(void)
+void orangefs_bufmap_finalize(void)
 {
-	gossip_debug(GOSSIP_BUFMAP_DEBUG, "pvfs2_bufmap_finalize: called\n");
-	BUG_ON(!__pvfs2_bufmap);
-	pvfs2_bufmap_unref(__pvfs2_bufmap);
+	gossip_debug(GOSSIP_BUFMAP_DEBUG, "orangefs_bufmap_finalize: called\n");
+	BUG_ON(!__orangefs_bufmap);
+	orangefs_bufmap_unref(__orangefs_bufmap);
 	gossip_debug(GOSSIP_BUFMAP_DEBUG,
-		     "pvfs2_bufmap_finalize: exiting normally\n");
+		     "orangefs_bufmap_finalize: exiting normally\n");
 }
 
 struct slot_args {
@@ -414,16 +414,16 @@ static void put_back_slot(struct slot_args *slargs, int buffer_index)
 }
 
 /*
- * pvfs_bufmap_get()
+ * orangefs_bufmap_get()
  *
  * gets a free mapped buffer descriptor, will sleep until one becomes
  * available if necessary
  *
  * returns 0 on success, -errno on failure
  */
-int pvfs_bufmap_get(struct orangefs_bufmap **mapp, int *buffer_index)
+int orangefs_bufmap_get(struct orangefs_bufmap **mapp, int *buffer_index)
 {
-	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = orangefs_bufmap_ref();
 	struct slot_args slargs;
 	int ret;
 
@@ -438,19 +438,19 @@ int pvfs_bufmap_get(struct orangefs_bufmap **mapp, int *buffer_index)
 	slargs.slot_wq = &bufmap_waitq;
 	ret = wait_for_a_slot(&slargs, buffer_index);
 	if (ret)
-		pvfs2_bufmap_unref(bufmap);
+		orangefs_bufmap_unref(bufmap);
 	*mapp = bufmap;
 	return ret;
 }
 
 /*
- * pvfs_bufmap_put()
+ * orangefs_bufmap_put()
  *
  * returns a mapped buffer descriptor to the collection
  *
  * no return value
  */
-void pvfs_bufmap_put(struct orangefs_bufmap *bufmap, int buffer_index)
+void orangefs_bufmap_put(struct orangefs_bufmap *bufmap, int buffer_index)
 {
 	struct slot_args slargs;
 
@@ -459,7 +459,7 @@ void pvfs_bufmap_put(struct orangefs_bufmap *bufmap, int buffer_index)
 	slargs.slot_lock = &bufmap->buffer_index_lock;
 	slargs.slot_wq = &bufmap_waitq;
 	put_back_slot(&slargs, buffer_index);
-	pvfs2_bufmap_unref(bufmap);
+	orangefs_bufmap_unref(bufmap);
 }
 
 /*
@@ -475,7 +475,7 @@ void pvfs_bufmap_put(struct orangefs_bufmap *bufmap, int buffer_index)
  */
 int readdir_index_get(struct orangefs_bufmap **mapp, int *buffer_index)
 {
-	struct orangefs_bufmap *bufmap = pvfs2_bufmap_ref();
+	struct orangefs_bufmap *bufmap = orangefs_bufmap_ref();
 	struct slot_args slargs;
 	int ret;
 
@@ -490,7 +490,7 @@ int readdir_index_get(struct orangefs_bufmap **mapp, int *buffer_index)
 	slargs.slot_wq = &readdir_waitq;
 	ret = wait_for_a_slot(&slargs, buffer_index);
 	if (ret)
-		pvfs2_bufmap_unref(bufmap);
+		orangefs_bufmap_unref(bufmap);
 	*mapp = bufmap;
 	return ret;
 }
@@ -504,15 +504,15 @@ void readdir_index_put(struct orangefs_bufmap *bufmap, int buffer_index)
 	slargs.slot_lock = &bufmap->readdir_index_lock;
 	slargs.slot_wq = &readdir_waitq;
 	put_back_slot(&slargs, buffer_index);
-	pvfs2_bufmap_unref(bufmap);
+	orangefs_bufmap_unref(bufmap);
 }
 
-int pvfs_bufmap_copy_from_iovec(struct orangefs_bufmap *bufmap,
+int orangefs_bufmap_copy_from_iovec(struct orangefs_bufmap *bufmap,
 				struct iov_iter *iter,
 				int buffer_index,
 				size_t size)
 {
-	struct pvfs_bufmap_desc *to;
+	struct orangefs_bufmap_desc *to;
 	struct page *page;
 	size_t copied;
 	int i;
@@ -540,11 +540,11 @@ int pvfs_bufmap_copy_from_iovec(struct orangefs_bufmap *bufmap,
  * a file being read.
  *
  */
-int pvfs_bufmap_copy_to_iovec(struct orangefs_bufmap *bufmap,
+int orangefs_bufmap_copy_to_iovec(struct orangefs_bufmap *bufmap,
 				    struct iov_iter *iter,
 				    int buffer_index)
 {
-	struct pvfs_bufmap_desc *from;
+	struct orangefs_bufmap_desc *from;
 	struct page *page;
 	int i;
 	size_t written;

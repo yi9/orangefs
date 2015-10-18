@@ -46,7 +46,7 @@ static int precopy_buffers(struct orangefs_bufmap *bufmap,
 
 	if (total_size) {
 		iov_iter_init(&iter, WRITE, vec, nr_segs, total_size);
-		ret = pvfs_bufmap_copy_from_iovec(bufmap,
+		ret = orangefs_bufmap_copy_from_iovec(bufmap,
 						&iter,
 						buffer_index,
 						total_size);
@@ -87,7 +87,7 @@ static int postcopy_buffers(struct orangefs_bufmap *bufmap,
 	 */
 	if (total_size) {
 		iov_iter_init(&iter, READ, vec, nr_segs, total_size);
-		ret = pvfs_bufmap_copy_to_iovec(bufmap,
+		ret = orangefs_bufmap_copy_to_iovec(bufmap,
 						&iter,
 						buffer_index);
 		if (ret < 0)
@@ -125,10 +125,10 @@ static ssize_t wait_for_direct_io(enum ORANGEFS_io_type type, struct inode *inod
 
 populate_shared_memory:
 	/* get a shared buffer index */
-	ret = pvfs_bufmap_get(&bufmap, &buffer_index);
+	ret = orangefs_bufmap_get(&bufmap, &buffer_index);
 	if (ret < 0) {
 		gossip_debug(GOSSIP_FILE_DEBUG,
-			     "%s: pvfs_bufmap_get failure (%ld)\n",
+			     "%s: orangefs_bufmap_get failure (%ld)\n",
 			     __func__, (long)ret);
 		goto out;
 	}
@@ -188,7 +188,7 @@ populate_shared_memory:
 	 * a new shared memory location.
 	 */
 	if (ret == -EAGAIN && op_state_purged(new_op)) {
-		pvfs_bufmap_put(bufmap, buffer_index);
+		orangefs_bufmap_put(bufmap, buffer_index);
 		gossip_debug(GOSSIP_FILE_DEBUG,
 			     "%s:going to repopulate_shared_memory.\n",
 			     __func__);
@@ -254,7 +254,7 @@ populate_shared_memory:
 
 out:
 	if (buffer_index >= 0) {
-		pvfs_bufmap_put(bufmap, buffer_index);
+		orangefs_bufmap_put(bufmap, buffer_index);
 		gossip_debug(GOSSIP_FILE_DEBUG,
 			     "%s(%pU): PUT buffer_index %d\n",
 			     __func__, handle, buffer_index);

@@ -392,7 +392,7 @@ struct pvfs2_kiocb_s {
 	struct kiocb *kiocb;
 
 	/* buffer index that was used for the I/O */
-	struct pvfs2_bufmap *bufmap;
+	struct orangefs_bufmap *bufmap;
 	int buffer_index;
 
 	/* pvfs2 kernel operation type */
@@ -776,7 +776,7 @@ do {								\
 		wake_up_daemon_for_return(new_op);		\
 	}							\
 	new_op = NULL;						\
-	pvfs_bufmap_put(bufmap, buffer_index);				\
+	orangefs_bufmap_put(bufmap, buffer_index);				\
 	buffer_index = -1;					\
 } while (0)
 
