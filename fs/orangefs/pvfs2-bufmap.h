@@ -4,8 +4,8 @@
  * See COPYING in top-level directory.
  */
 
-#ifndef __PVFS2_BUFMAP_H
-#define __PVFS2_BUFMAP_H
+#ifndef __ORANGEFS_BUFMAP_H
+#define __ORANGEFS_BUFMAP_H
 
 /* used to describe mapped buffers */
 struct orangefs_bufmap_desc {
@@ -28,7 +28,7 @@ int orangefs_bufmap_size_query(void);
 
 int orangefs_bufmap_shift_query(void);
 
-int orangefs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc);
+int orangefs_bufmap_initialize(struct ORANGEFS_dev_map_desc *user_desc);
 
 int get_bufmap_init(void);
 
@@ -51,11 +51,11 @@ int orangefs_bufmap_copy_to_iovec(struct orangefs_bufmap *bufmap,
 			      struct iov_iter *iter,
 			      int buffer_index);
 
-size_t pvfs_bufmap_copy_to_user_task_iovec(struct task_struct *tsk,
+size_t orangefs_bufmap_copy_to_user_task_iovec(struct task_struct *tsk,
 					   struct iovec *iovec,
 					   unsigned long nr_segs,
 					   struct orangefs_bufmap *bufmap,
 					   int buffer_index,
 					   size_t bytes_to_be_copied);
 
-#endif /* __PVFS2_BUFMAP_H */
+#endif /* __ORANGEFS_BUFMAP_H */

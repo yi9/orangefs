@@ -26,7 +26,7 @@ static struct orangefs_bufmap {
 	spinlock_t buffer_index_lock;
 
 	/* array to track usage of buffer descriptors for readdir */
-	int readdir_index_array[PVFS2_READDIR_DEFAULT_DESC_COUNT];
+	int readdir_index_array[ORANGEFS_READDIR_DEFAULT_DESC_COUNT];
 	spinlock_t readdir_index_lock;
 } *__orangefs_bufmap;
 
@@ -110,7 +110,7 @@ int get_bufmap_init(void)
 
 
 static struct orangefs_bufmap *
-orangefs_bufmap_alloc(struct PVFS_dev_map_desc *user_desc)
+orangefs_bufmap_alloc(struct ORANGEFS_dev_map_desc *user_desc)
 {
 	struct orangefs_bufmap *bufmap;
 
@@ -128,7 +128,7 @@ orangefs_bufmap_alloc(struct PVFS_dev_map_desc *user_desc)
 	bufmap->buffer_index_array =
 		kcalloc(bufmap->desc_count, sizeof(int), GFP_KERNEL);
 	if (!bufmap->buffer_index_array) {
-		gossip_err("pvfs2: could not allocate %d buffer indices\n",
+		gossip_err("orangefs: could not allocate %d buffer indices\n",
 				bufmap->desc_count);
 		goto out_free_bufmap;
 	}
@@ -138,7 +138,7 @@ orangefs_bufmap_alloc(struct PVFS_dev_map_desc *user_desc)
 		kcalloc(bufmap->desc_count, sizeof(struct orangefs_bufmap_desc),
 			GFP_KERNEL);
 	if (!bufmap->desc_array) {
-		gossip_err("pvfs2: could not allocate %d descriptors\n",
+		gossip_err("orangefs: could not allocate %d descriptors\n",
 				bufmap->desc_count);
 		goto out_free_index_array;
 	}
@@ -165,7 +165,7 @@ out:
 
 static int
 orangefs_bufmap_map(struct orangefs_bufmap *bufmap,
-		struct PVFS_dev_map_desc *user_desc)
+		struct ORANGEFS_dev_map_desc *user_desc)
 {
 	int pages_per_desc = bufmap->desc_size / PAGE_SIZE;
 	int offset = 0, ret, i;
@@ -186,7 +186,7 @@ orangefs_bufmap_map(struct orangefs_bufmap *bufmap,
 		return ret;
 
 	if (ret != bufmap->page_count) {
-		gossip_err("pvfs2 error: asked for %d pages, only got %d.\n",
+		gossip_err("orangefs error: asked for %d pages, only got %d.\n",
 				bufmap->page_count, ret);
 
 		for (i = 0; i < ret; i++) {
@@ -224,7 +224,7 @@ orangefs_bufmap_map(struct orangefs_bufmap *bufmap,
  *
  * returns 0 on success, -errno on failure
  */
-int orangefs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
+int orangefs_bufmap_initialize(struct ORANGEFS_dev_map_desc *user_desc)
 {
 	struct orangefs_bufmap *bufmap;
 	int ret = -EINVAL;
@@ -242,21 +242,21 @@ int orangefs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 	 */
 	if (PAGE_ALIGN((unsigned long)user_desc->ptr) !=
 	    (unsigned long)user_desc->ptr) {
-		gossip_err("pvfs2 error: memory alignment (front). %p\n",
+		gossip_err("orangefs error: memory alignment (front). %p\n",
 			   user_desc->ptr);
 		goto out;
 	}
 
 	if (PAGE_ALIGN(((unsigned long)user_desc->ptr + user_desc->total_size))
 	    != (unsigned long)(user_desc->ptr + user_desc->total_size)) {
-		gossip_err("pvfs2 error: memory alignment (back).(%p + %d)\n",
+		gossip_err("orangefs error: memory alignment (back).(%p + %d)\n",
 			   user_desc->ptr,
 			   user_desc->total_size);
 		goto out;
 	}
 
 	if (user_desc->total_size != (user_desc->size * user_desc->count)) {
-		gossip_err("pvfs2 error: user provided an oddly sized buffer: (%d, %d, %d)\n",
+		gossip_err("orangefs error: user provided an oddly sized buffer: (%d, %d, %d)\n",
 			   user_desc->total_size,
 			   user_desc->size,
 			   user_desc->count);
@@ -264,7 +264,7 @@ int orangefs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 	}
 
 	if ((user_desc->size % PAGE_SIZE) != 0) {
-		gossip_err("pvfs2 error: bufmap size not page size divisible (%d).\n",
+		gossip_err("orangefs error: bufmap size not page size divisible (%d).\n",
 			   user_desc->size);
 		goto out;
 	}
@@ -282,7 +282,7 @@ int orangefs_bufmap_initialize(struct PVFS_dev_map_desc *user_desc)
 	spin_lock(&orangefs_bufmap_lock);
 	if (__orangefs_bufmap) {
 		spin_unlock(&orangefs_bufmap_lock);
-		gossip_err("pvfs2: error: bufmap already initialized.\n");
+		gossip_err("orangefs: error: bufmap already initialized.\n");
 		ret = -EALREADY;
 		goto out_unmap_bufmap;
 	}
@@ -385,7 +385,7 @@ static int wait_for_a_slot(struct slot_args *slargs, int *buffer_index)
 			continue;
 		}
 
-		gossip_debug(GOSSIP_BUFMAP_DEBUG, "pvfs2: %s interrupted.\n",
+		gossip_debug(GOSSIP_BUFMAP_DEBUG, "orangefs: %s interrupted.\n",
 			     __func__);
 		ret = -EINTR;
 		break;
@@ -428,7 +428,7 @@ int orangefs_bufmap_get(struct orangefs_bufmap **mapp, int *buffer_index)
 	int ret;
 
 	if (!bufmap) {
-		gossip_err("pvfs2: please confirm that pvfs2-client daemon is running.\n");
+		gossip_err("orangefs: please confirm that orangefs-client daemon is running.\n");
 		return -EIO;
 	}
 
@@ -480,11 +480,11 @@ int readdir_index_get(struct orangefs_bufmap **mapp, int *buffer_index)
 	int ret;
 
 	if (!bufmap) {
-		gossip_err("pvfs2: please confirm that pvfs2-client daemon is running.\n");
+		gossip_err("orangefs: please confirm that orangefs-client daemon is running.\n");
 		return -EIO;
 	}
 
-	slargs.slot_count = PVFS2_READDIR_DEFAULT_DESC_COUNT;
+	slargs.slot_count = ORANGEFS_READDIR_DEFAULT_DESC_COUNT;
 	slargs.slot_array = bufmap->readdir_index_array;
 	slargs.slot_lock = &bufmap->readdir_index_lock;
 	slargs.slot_wq = &readdir_waitq;
@@ -499,7 +499,7 @@ void readdir_index_put(struct orangefs_bufmap *bufmap, int buffer_index)
 {
 	struct slot_args slargs;
 
-	slargs.slot_count = PVFS2_READDIR_DEFAULT_DESC_COUNT;
+	slargs.slot_count = ORANGEFS_READDIR_DEFAULT_DESC_COUNT;
 	slargs.slot_array = bufmap->readdir_index_array;
 	slargs.slot_lock = &bufmap->readdir_index_lock;
 	slargs.slot_wq = &readdir_waitq;

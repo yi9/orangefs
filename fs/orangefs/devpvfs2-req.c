@@ -619,7 +619,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 	static __s32 magic = PVFS2_DEVREQ_MAGIC;
 	static __s32 max_up_size = MAX_ALIGNED_DEV_REQ_UPSIZE;
 	static __s32 max_down_size = MAX_ALIGNED_DEV_REQ_DOWNSIZE;
-	struct PVFS_dev_map_desc user_desc;
+	struct ORANGEFS_dev_map_desc user_desc;
 	int ret = 0;
 	struct dev_mask_info_s mask_info = { 0 };
 	struct dev_mask2_info_s mask2_info = { 0, 0 };
@@ -646,9 +646,9 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 					0);
 	case PVFS_DEV_MAP:
 		ret = copy_from_user(&user_desc,
-				     (struct PVFS_dev_map_desc __user *)
+				     (struct ORANGEFS_dev_map_desc __user *)
 				     arg,
-				     sizeof(struct PVFS_dev_map_desc));
+				     sizeof(struct ORANGEFS_dev_map_desc));
 		return ret ? -EIO : orangefs_bufmap_initialize(&user_desc);
 	case PVFS_DEV_REMOUNT_ALL:
 		gossip_debug(GOSSIP_DEV_DEBUG,
@@ -841,7 +841,7 @@ static long pvfs2_devreq_ioctl(struct file *file,
 #ifdef CONFIG_COMPAT		/* CONFIG_COMPAT is in .config */
 
 /*  Compat structure for the PVFS_DEV_MAP ioctl */
-struct PVFS_dev_map_desc32 {
+struct ORANGEFS_dev_map_desc32 {
 	compat_uptr_t ptr;
 	__s32 total_size;
 	__s32 size;
@@ -850,12 +850,12 @@ struct PVFS_dev_map_desc32 {
 
 static unsigned long translate_dev_map26(unsigned long args, long *error)
 {
-	struct PVFS_dev_map_desc32 __user *p32 = (void __user *)args;
+	struct ORANGEFS_dev_map_desc32 __user *p32 = (void __user *)args;
 	/*
 	 * Depending on the architecture, allocate some space on the
 	 * user-call-stack based on our expected layout.
 	 */
-	struct PVFS_dev_map_desc __user *p =
+	struct ORANGEFS_dev_map_desc __user *p =
 	    compat_alloc_user_space(sizeof(*p));
 	compat_uptr_t addr;
 

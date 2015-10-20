@@ -361,7 +361,7 @@ __s32 PVFS_util_translate_mode(int mode);
 /* pint-dev-shared.h ********************************************************/
 #define PVFS_DEV_MAGIC 'k'
 
-#define PVFS2_READDIR_DEFAULT_DESC_COUNT  5
+#define ORANGEFS_READDIR_DEFAULT_DESC_COUNT  5
 
 #define DEV_GET_MAGIC           0x1
 #define DEV_GET_MAX_UPSIZE      0x2
@@ -408,7 +408,7 @@ enum {
  * on such systems before servicing ioctl calls from user-space binaries
  * that may be 32 bit!
  */
-struct PVFS_dev_map_desc {
+struct ORANGEFS_dev_map_desc {
 	void *ptr;
 	__s32 total_size;
 	__s32 size;
