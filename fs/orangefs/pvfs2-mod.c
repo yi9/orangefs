@@ -25,9 +25,9 @@
 struct client_debug_mask *cdm_array;
 int cdm_element_count;
 
-char kernel_debug_string[PVFS2_MAX_DEBUG_STRING_LEN] = "none";
-char client_debug_string[PVFS2_MAX_DEBUG_STRING_LEN];
-char client_debug_array_string[PVFS2_MAX_DEBUG_STRING_LEN];
+char kernel_debug_string[ORANGEFS_MAX_DEBUG_STRING_LEN] = "none";
+char client_debug_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
+char client_debug_array_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
 
 char *debug_help_string;
 int help_string_initialized;

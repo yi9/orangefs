@@ -961,7 +961,7 @@ void debug_mask_to_string(void *mask, int type)
 		element_count = num_kmod_keyword_mask_map;
 	}
 
-	memset(debug_string, 0, PVFS2_MAX_DEBUG_STRING_LEN);
+	memset(debug_string, 0, ORANGEFS_MAX_DEBUG_STRING_LEN);
 
 	/*
 	 * Some keywords, like "all" or "verbose", are amalgams of
@@ -1007,7 +1007,7 @@ void do_k_string(void *k_mask, int index)
 	if (*mask & s_kmod_keyword_mask_map[index].mask_val) {
 		if ((strlen(kernel_debug_string) +
 		     strlen(s_kmod_keyword_mask_map[index].keyword))
-			< PVFS2_MAX_DEBUG_STRING_LEN - 1) {
+			< ORANGEFS_MAX_DEBUG_STRING_LEN - 1) {
 				strcat(kernel_debug_string,
 				       s_kmod_keyword_mask_map[index].keyword);
 				strcat(kernel_debug_string, ",");
@@ -1034,7 +1034,7 @@ void do_c_string(void *c_mask, int index)
 	    (mask->mask2 & cdm_array[index].mask2)) {
 		if ((strlen(client_debug_string) +
 		     strlen(cdm_array[index].keyword) + 1)
-			< PVFS2_MAX_DEBUG_STRING_LEN - 2) {
+			< ORANGEFS_MAX_DEBUG_STRING_LEN - 2) {
 				strcat(client_debug_string,
 				       cdm_array[index].keyword);
 				strcat(client_debug_string, ",");

@@ -157,8 +157,8 @@ struct pvfs2_fsync_request_s {
 };
 
 enum pvfs2_param_request_type {
-	PVFS2_PARAM_REQUEST_SET = 1,
-	PVFS2_PARAM_REQUEST_GET = 2
+	ORANGEFS_PARAM_REQUEST_SET = 1,
+	ORANGEFS_PARAM_REQUEST_GET = 2
 };
 
 enum pvfs2_param_request_op {
@@ -186,14 +186,14 @@ enum pvfs2_param_request_op {
 	PVFS2_PARAM_REQUEST_OP_CAPCACHE_HARD_LIMIT = 22,
 	PVFS2_PARAM_REQUEST_OP_CAPCACHE_SOFT_LIMIT = 23,
 	PVFS2_PARAM_REQUEST_OP_CAPCACHE_RECLAIM_PERCENTAGE = 24,
-	PVFS2_PARAM_REQUEST_OP_TWO_MASK_VALUES = 25,
+	ORANGEFS_PARAM_REQUEST_OP_TWO_MASK_VALUES = 25,
 };
 
 struct pvfs2_param_request_s {
 	enum pvfs2_param_request_type type;
 	enum pvfs2_param_request_op op;
 	__s64 value;
-	char s_value[PVFS2_MAX_DEBUG_STRING_LEN];
+	char s_value[ORANGEFS_MAX_DEBUG_STRING_LEN];
 };
 
 enum pvfs2_perf_count_request_type {

@@ -35,7 +35,7 @@
 #define PVFS2_VFS_OP_SETXATTR          0xFF000011
 #define PVFS2_VFS_OP_LISTXATTR         0xFF000012
 #define PVFS2_VFS_OP_REMOVEXATTR       0xFF000013
-#define PVFS2_VFS_OP_PARAM             0xFF000014
+#define ORANGEFS_VFS_OP_PARAM             0xFF000014
 #define PVFS2_VFS_OP_PERF_COUNT        0xFF000015
 #define PVFS2_VFS_OP_CANCEL            0xFF00EE00
 #define ORANGEFS_VFS_OP_FSYNC          0xFF00EE01
@@ -47,8 +47,8 @@
  * Misc constants. Please retain them as multiples of 8!
  * Otherwise 32-64 bit interactions will be messed up :)
  */
-#define ORANGEFS_NAME_LEN			0x00000100
-#define PVFS2_MAX_DEBUG_STRING_LEN	0x00000400
+#define ORANGEFS_NAME_LEN		0x00000100
+#define ORANGEFS_MAX_DEBUG_STRING_LEN	0x00000400
 #define PVFS2_MAX_DEBUG_ARRAY_LEN	0x00000800
 
 /*

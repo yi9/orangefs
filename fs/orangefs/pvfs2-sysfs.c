@@ -768,7 +768,7 @@ static int sysfs_service_op_show(char *kobj_id, char *buf, void *attr)
 		     kobj_id);
 
 	if (strcmp(kobj_id, PC_KOBJ_ID))
-		op_alloc_type = PVFS2_VFS_OP_PARAM;
+		op_alloc_type = ORANGEFS_VFS_OP_PARAM;
 	else
 		op_alloc_type = PVFS2_VFS_OP_PERF_COUNT;
 
@@ -788,7 +788,7 @@ static int sysfs_service_op_show(char *kobj_id, char *buf, void *attr)
 	}
 
 	if (strcmp(kobj_id, PC_KOBJ_ID))
-		new_op->upcall.req.param.type = PVFS2_PARAM_REQUEST_GET;
+		new_op->upcall.req.param.type = ORANGEFS_PARAM_REQUEST_GET;
 
 	if (!strcmp(kobj_id, ORANGEFS_KOBJ_ID)) {
 		orangefs_attr = (struct orangefs_attribute *)attr;
@@ -1038,7 +1038,7 @@ static int sysfs_service_op_store(char *kobj_id, const char *buf, void *attr)
 		     "sysfs_service_op_store: id:%s:\n",
 		     kobj_id);
 
-	new_op = op_alloc(PVFS2_VFS_OP_PARAM);
+	new_op = op_alloc(ORANGEFS_VFS_OP_PARAM);
 	if (!new_op) {
 		rc = -ENOMEM;
 		goto out;
@@ -1250,7 +1250,7 @@ static int sysfs_service_op_store(char *kobj_id, const char *buf, void *attr)
 		goto out;
 	}
 
-	new_op->upcall.req.param.type = PVFS2_PARAM_REQUEST_SET;
+	new_op->upcall.req.param.type = ORANGEFS_PARAM_REQUEST_SET;
 
 	new_op->upcall.req.param.value = val;
 

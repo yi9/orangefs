@@ -93,7 +93,7 @@ char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 			return "OP_LISTXATTR";
 		else if (type == PVFS2_VFS_OP_REMOVEXATTR)
 			return "OP_REMOVEXATTR";
-		else if (type == PVFS2_VFS_OP_PARAM)
+		else if (type == ORANGEFS_VFS_OP_PARAM)
 			return "OP_PARAM";
 		else if (type == PVFS2_VFS_OP_PERF_COUNT)
 			return "OP_PERF_COUNT";

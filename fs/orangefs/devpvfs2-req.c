@@ -722,7 +722,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 	case PVFS_DEV_CLIENT_STRING:
 		ret = copy_from_user(&client_debug_array_string,
 				     (void __user *)arg,
-				     PVFS2_MAX_DEBUG_STRING_LEN);
+				     ORANGEFS_MAX_DEBUG_STRING_LEN);
 		if (ret != 0) {
 			pr_info("%s: "
 				"PVFS_DEV_CLIENT_STRING: copy_from_user failed"

@@ -225,9 +225,9 @@ int check_amalgam_keyword(void *, int);
 int keyword_is_amalgam(char *);
 
 /*these variables are defined in pvfs2-mod.c */
-extern char kernel_debug_string[PVFS2_MAX_DEBUG_STRING_LEN];
-extern char client_debug_string[PVFS2_MAX_DEBUG_STRING_LEN];
-extern char client_debug_array_string[PVFS2_MAX_DEBUG_STRING_LEN];
+extern char kernel_debug_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
+extern char client_debug_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
+extern char client_debug_array_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
 extern unsigned int kernel_mask_set_mod_init;
 
 extern int orangefs_init_acl(struct inode *inode, struct inode *dir);
