@@ -212,7 +212,7 @@ int orangefs_prepare_cdm_array(char *debug_array_string);
 int orangefs_prepare_debugfs_help_string(int);
 
 /* defined in pvfs2-debugfs.c */
-int pvfs2_client_debug_init(void);
+int orangefs_client_debug_init(void);
 
 void debug_string_to_mask(char *, void *, int);
 void do_c_mask(int, char *, struct client_debug_mask **);

@@ -95,7 +95,7 @@ static const struct file_operations kernel_debug_fops = {
  * initialize kmod debug operations, create orangefs debugfs dir and
  * ORANGEFS_KMOD_DEBUG_HELP_FILE.
  */
-int pvfs2_debugfs_init(void)
+int orangefs_debugfs_init(void)
 {
 
 	int rc = -ENOMEM;
@@ -117,12 +117,12 @@ int pvfs2_debugfs_init(void)
 
 out:
 	if (rc)
-		pvfs2_debugfs_cleanup();
+		orangefs_debugfs_cleanup();
 
 	return rc;
 }
 
-void pvfs2_debugfs_cleanup(void)
+void orangefs_debugfs_cleanup(void)
 {
 	debugfs_remove_recursive(debug_dir);
 }
@@ -196,7 +196,7 @@ static int help_show(struct seq_file *m, void *v)
 /*
  * initialize the kernel-debug file.
  */
-int pvfs2_kernel_debug_init(void)
+int orangefs_kernel_debug_init(void)
 {
 
 	int rc = -ENOMEM;
@@ -233,7 +233,7 @@ int pvfs2_kernel_debug_init(void)
 
 out:
 	if (rc)
-		pvfs2_debugfs_cleanup();
+		orangefs_debugfs_cleanup();
 
 	gossip_debug(GOSSIP_DEBUGFS_DEBUG, "%s: rc:%d:\n", __func__, rc);
 	return rc;
@@ -242,7 +242,7 @@ out:
 /*
  * initialize the client-debug file.
  */
-int pvfs2_client_debug_init(void)
+int orangefs_client_debug_init(void)
 {
 
 	int rc = -ENOMEM;
@@ -278,7 +278,7 @@ int pvfs2_client_debug_init(void)
 
 out:
 	if (rc)
-		pvfs2_debugfs_cleanup();
+		orangefs_debugfs_cleanup();
 
 	gossip_debug(GOSSIP_DEBUGFS_DEBUG, "%s: rc:%d:\n", __func__, rc);
 	return rc;

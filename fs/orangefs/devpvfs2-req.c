@@ -773,7 +773,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 
 		debugfs_remove(client_debug_dentry);
 
-		pvfs2_client_debug_init();
+		orangefs_client_debug_init();
 
 		help_string_initialized++;
 

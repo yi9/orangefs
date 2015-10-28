@@ -197,8 +197,8 @@ static int __init pvfs2_init(void)
 	if (ret)
 		goto out;
 
-	pvfs2_debugfs_init();
-	pvfs2_kernel_debug_init();
+	orangefs_debugfs_init();
+	orangefs_kernel_debug_init();
 	orangefs_sysfs_init();
 
 	ret = register_filesystem(&pvfs2_fs_type);
@@ -207,7 +207,7 @@ static int __init pvfs2_init(void)
 		return 0;
 	}
 
-	pvfs2_debugfs_cleanup();
+	orangefs_debugfs_cleanup();
 	orangefs_sysfs_exit();
 	fsid_key_table_finalize();
 
@@ -244,7 +244,7 @@ static void __exit pvfs2_exit(void)
 	gossip_debug(GOSSIP_INIT_DEBUG, "pvfs2: pvfs2_exit called\n");
 
 	unregister_filesystem(&pvfs2_fs_type);
-	pvfs2_debugfs_cleanup();
+	orangefs_debugfs_cleanup();
 	orangefs_sysfs_exit();
 	fsid_key_table_finalize();
 	pvfs2_dev_cleanup();
