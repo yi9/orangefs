@@ -36,7 +36,7 @@ struct dentry *client_debug_dentry;
 struct dentry *debug_dir;
 int client_verbose_index;
 int client_all_index;
-struct pvfs2_stats g_pvfs2_stats;
+struct pvfs2_stats g_orangefs_stats;
 
 /* the size of the hash tables for ops in progress */
 int hash_table_size = 509;

@@ -424,7 +424,7 @@ struct pvfs2_stats {
 	unsigned long writes;
 };
 
-extern struct pvfs2_stats g_pvfs2_stats;
+extern struct pvfs2_stats g_orangefs_stats;
 
 /*
  * NOTE: See Documentation/filesystems/porting for information

@@ -662,7 +662,7 @@ ssize_t orangefs_inode_read(struct inode *inode,
 	struct iovec vec;
 	ssize_t ret = -EINVAL;
 
-	g_pvfs2_stats.reads++;
+	g_orangefs_stats.reads++;
 
 	vec.iov_base = buf;
 	vec.iov_len = count;
@@ -707,7 +707,7 @@ static ssize_t orangefs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter
 
 	gossip_debug(GOSSIP_FILE_DEBUG, "orangefs_file_read_iter\n");
 
-	g_pvfs2_stats.reads++;
+	g_orangefs_stats.reads++;
 
 	rc = do_readv_writev(ORANGEFS_IO_READ,
 			     file,
@@ -766,7 +766,7 @@ static ssize_t orangefs_file_write_iter(struct kiocb *iocb, struct iov_iter *ite
 	}
 
 	iocb->ki_pos = pos;
-	g_pvfs2_stats.writes++;
+	g_orangefs_stats.writes++;
 
 out:
 

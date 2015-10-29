@@ -669,13 +669,13 @@ static ssize_t sysfs_int_show(char *kobj_id, char *buf, void *attr)
 			rc = scnprintf(buf,
 				       PAGE_SIZE,
 				       "%lu\n",
-				       g_pvfs2_stats.reads);
+				       g_orangefs_stats.reads);
 			goto out;
 		} else if (!strcmp(stats_orangefs_attr->attr.name, "writes")) {
 			rc = scnprintf(buf,
 				       PAGE_SIZE,
 				       "%lu\n",
-				       g_pvfs2_stats.writes);
+				       g_orangefs_stats.writes);
 			goto out;
 		} else {
 			goto out;
@@ -905,9 +905,9 @@ static int sysfs_service_op_show(char *kobj_id, char *buf, void *attr)
 
 
 	if (strcmp(kobj_id, PC_KOBJ_ID))
-		ser_op_type = "pvfs2_param";
+		ser_op_type = "orangefs_param";
 	else
-		ser_op_type = "pvfs2_perf_count";
+		ser_op_type = "orangefs_perf_count";
 
 	/*
 	 * The service_operation will return an errno return code on
@@ -1258,7 +1258,7 @@ static int sysfs_service_op_store(char *kobj_id, const char *buf, void *attr)
 	 * The service_operation will return a errno return code on
 	 * error, and zero on success.
 	 */
-	rc = service_operation(new_op, "pvfs2_param", ORANGEFS_OP_INTERRUPTIBLE);
+	rc = service_operation(new_op, "orangefs_param", ORANGEFS_OP_INTERRUPTIBLE);
 
 	if (rc < 0) {
 		gossip_err("sysfs_service_op_store: service op returned:%d:\n",
