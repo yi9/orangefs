@@ -296,7 +296,7 @@ struct orangefs_kernel_op_s {
 	__s32 op_linger, op_linger_tmp;
 	/* VFS aio fields */
 
-	/* used by the async I/O code to stash the pvfs2_kiocb_s structure */
+	/* used by the async I/O code to stash the orangefs_kiocb_s structure */
 	void *priv;
 
 	/* used again for the async I/O code for deallocation */
@@ -384,7 +384,7 @@ struct orangefs_mount_sb_info_s {
  * or even completion notification so that the VFS client-side daemon
  * can free up its vfs_request slots.
  */
-struct pvfs2_kiocb_s {
+struct orangefs_kiocb_s {
 	/* the pointer to the task that initiated the AIO */
 	struct task_struct *tsk;
 
@@ -535,8 +535,8 @@ int orangefs_inode_cache_finalize(void);
 
 int kiocb_cache_initialize(void);
 int kiocb_cache_finalize(void);
-struct pvfs2_kiocb_s *kiocb_alloc(void);
-void kiocb_release(struct pvfs2_kiocb_s *ptr);
+struct orangefs_kiocb_s *kiocb_alloc(void);
+void kiocb_release(struct orangefs_kiocb_s *ptr);
 
 /*
  * defined in pvfs2-mod.c
@@ -641,7 +641,7 @@ int orangefs_inode_getattr(struct inode *inode, __u32 mask);
 
 int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr);
 
-void pvfs2_op_initialize(struct orangefs_kernel_op_s *op);
+void orangefs_op_initialize(struct orangefs_kernel_op_s *op);
 
 void orangefs_make_bad_inode(struct inode *inode);
 

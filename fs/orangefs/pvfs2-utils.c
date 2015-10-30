@@ -597,7 +597,7 @@ int pvfs2_cancel_op_in_progress(__u64 tag)
 	return ret;
 }
 
-void pvfs2_op_initialize(struct orangefs_kernel_op_s *op)
+void orangefs_op_initialize(struct orangefs_kernel_op_s *op)
 {
 	if (op) {
 		spin_lock(&op->lock);
