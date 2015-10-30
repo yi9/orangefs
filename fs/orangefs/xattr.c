@@ -96,7 +96,7 @@ ssize_t orangefs_inode_getxattr(struct inode *inode, const char *prefix,
 
 	down_read(&orangefs_inode->xattr_sem);
 
-	new_op = op_alloc(PVFS2_VFS_OP_GETXATTR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_GETXATTR);
 	if (!new_op)
 		goto out_unlock;
 
@@ -177,7 +177,7 @@ static int orangefs_inode_removexattr(struct inode *inode,
 	int ret = -ENOMEM;
 
 	down_write(&orangefs_inode->xattr_sem);
-	new_op = op_alloc(PVFS2_VFS_OP_REMOVEXATTR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_REMOVEXATTR);
 	if (!new_op)
 		goto out_unlock;
 
@@ -287,7 +287,7 @@ int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 		     name);
 
 	down_write(&orangefs_inode->xattr_sem);
-	new_op = op_alloc(PVFS2_VFS_OP_SETXATTR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_SETXATTR);
 	if (!new_op)
 		goto out_unlock;
 
@@ -359,7 +359,7 @@ ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 	}
 
 	down_read(&orangefs_inode->xattr_sem);
-	new_op = op_alloc(PVFS2_VFS_OP_LISTXATTR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_LISTXATTR);
 	if (!new_op)
 		goto out_unlock;
 

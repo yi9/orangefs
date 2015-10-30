@@ -26,7 +26,7 @@ static int orangefs_create(struct inode *dir,
 
 	gossip_debug(GOSSIP_NAME_DEBUG, "%s: called\n", __func__);
 
-	new_op = op_alloc(PVFS2_VFS_OP_CREATE);
+	new_op = op_alloc(ORANGEFS_VFS_OP_CREATE);
 	if (!new_op)
 		return -ENOMEM;
 
@@ -218,7 +218,7 @@ static int orangefs_unlink(struct inode *dir, struct dentry *dentry)
 		     &parent->refn.khandle,
 		     parent->refn.fs_id);
 
-	new_op = op_alloc(PVFS2_VFS_OP_REMOVE);
+	new_op = op_alloc(ORANGEFS_VFS_OP_REMOVE);
 	if (!new_op)
 		return -ENOMEM;
 
@@ -278,7 +278,7 @@ static int orangefs_symlink(struct inode *dir,
 	if (!symname)
 		return -EINVAL;
 
-	new_op = op_alloc(PVFS2_VFS_OP_SYMLINK);
+	new_op = op_alloc(ORANGEFS_VFS_OP_SYMLINK);
 	if (!new_op)
 		return -ENOMEM;
 
@@ -344,7 +344,7 @@ static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 	struct inode *inode;
 	int ret;
 
-	new_op = op_alloc(PVFS2_VFS_OP_MKDIR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_MKDIR);
 	if (!new_op)
 		return -ENOMEM;
 
@@ -418,7 +418,7 @@ static int orangefs_rename(struct inode *old_dir,
 		     new_dentry->d_name.name,
 		     d_count(new_dentry));
 
-	new_op = op_alloc(PVFS2_VFS_OP_RENAME);
+	new_op = op_alloc(ORANGEFS_VFS_OP_RENAME);
 	if (!new_op)
 		return -EINVAL;
 

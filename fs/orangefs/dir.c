@@ -142,7 +142,7 @@ static int orangefs_readdir(struct file *file, struct dir_context *ctx)
 	rhandle.dents_buf = NULL;
 	memset(&rhandle.readdir_response, 0, sizeof(rhandle.readdir_response));
 
-	new_op = op_alloc(PVFS2_VFS_OP_READDIR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_READDIR);
 	if (!new_op)
 		return -ENOMEM;
 

@@ -20,28 +20,28 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 		case ORANGEFS_VFS_OP_LOOKUP:
 			fsid = op->upcall.req.lookup.parent_refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_CREATE:
+		case ORANGEFS_VFS_OP_CREATE:
 			fsid = op->upcall.req.create.parent_refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_GETATTR:
+		case ORANGEFS_VFS_OP_GETATTR:
 			fsid = op->upcall.req.getattr.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_REMOVE:
+		case ORANGEFS_VFS_OP_REMOVE:
 			fsid = op->upcall.req.remove.parent_refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_MKDIR:
+		case ORANGEFS_VFS_OP_MKDIR:
 			fsid = op->upcall.req.mkdir.parent_refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_READDIR:
+		case ORANGEFS_VFS_OP_READDIR:
 			fsid = op->upcall.req.readdir.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_SETATTR:
+		case ORANGEFS_VFS_OP_SETATTR:
 			fsid = op->upcall.req.setattr.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_SYMLINK:
+		case ORANGEFS_VFS_OP_SYMLINK:
 			fsid = op->upcall.req.sym.parent_refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_RENAME:
+		case ORANGEFS_VFS_OP_RENAME:
 			fsid = op->upcall.req.rename.old_parent_refn.fs_id;
 			break;
 		case ORANGEFS_VFS_OP_STATFS:
@@ -50,22 +50,22 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 		case ORANGEFS_VFS_OP_TRUNCATE:
 			fsid = op->upcall.req.truncate.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_MMAP_RA_FLUSH:
+		case ORANGEFS_VFS_OP_MMAP_RA_FLUSH:
 			fsid = op->upcall.req.ra_cache_flush.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_FS_UMOUNT:
+		case ORANGEFS_VFS_OP_FS_UMOUNT:
 			fsid = op->upcall.req.fs_umount.fs_id;
 			break;
-		case PVFS2_VFS_OP_GETXATTR:
+		case ORANGEFS_VFS_OP_GETXATTR:
 			fsid = op->upcall.req.getxattr.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_SETXATTR:
+		case ORANGEFS_VFS_OP_SETXATTR:
 			fsid = op->upcall.req.setxattr.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_LISTXATTR:
+		case ORANGEFS_VFS_OP_LISTXATTR:
 			fsid = op->upcall.req.listxattr.refn.fs_id;
 			break;
-		case PVFS2_VFS_OP_REMOVEXATTR:
+		case ORANGEFS_VFS_OP_REMOVEXATTR:
 			fsid = op->upcall.req.removexattr.refn.fs_id;
 			break;
 		case ORANGEFS_VFS_OP_FSYNC:
@@ -364,7 +364,7 @@ int orangefs_inode_getattr(struct inode *inode, __u32 getattr_mask)
 		     __func__,
 		     get_khandle_from_ino(inode));
 
-	new_op = op_alloc(PVFS2_VFS_OP_GETATTR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_GETATTR);
 	if (!new_op)
 		return -ENOMEM;
 	new_op->upcall.req.getattr.refn = pvfs2_inode->refn;
@@ -421,7 +421,7 @@ int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr)
 	struct orangefs_kernel_op_s *new_op;
 	int ret;
 
-	new_op = op_alloc(PVFS2_VFS_OP_SETATTR);
+	new_op = op_alloc(ORANGEFS_VFS_OP_SETATTR);
 	if (!new_op)
 		return -ENOMEM;
 
@@ -539,7 +539,7 @@ int orangefs_unmount_sb(struct super_block *sb)
 		     "orangefs_unmount_sb called on sb %p\n",
 		     sb);
 
-	new_op = op_alloc(PVFS2_VFS_OP_FS_UMOUNT);
+	new_op = op_alloc(ORANGEFS_VFS_OP_FS_UMOUNT);
 	if (!new_op)
 		return -ENOMEM;
 	new_op->upcall.req.fs_umount.id = ORANGEFS_SB(sb)->id;
@@ -578,7 +578,7 @@ int pvfs2_cancel_op_in_progress(__u64 tag)
 		     "pvfs2_cancel_op_in_progress called on tag %llu\n",
 		     llu(tag));
 
-	new_op = op_alloc(PVFS2_VFS_OP_CANCEL);
+	new_op = op_alloc(ORANGEFS_VFS_OP_CANCEL);
 	if (!new_op)
 		return -ENOMEM;
 	new_op->upcall.req.cancel.op_tag = tag;

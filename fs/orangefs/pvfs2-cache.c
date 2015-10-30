@@ -57,51 +57,51 @@ char *get_opname_string(struct orangefs_kernel_op_s *new_op)
 			return "OP_FILE_IO";
 		else if (type == ORANGEFS_VFS_OP_LOOKUP)
 			return "OP_LOOKUP";
-		else if (type == PVFS2_VFS_OP_CREATE)
+		else if (type == ORANGEFS_VFS_OP_CREATE)
 			return "OP_CREATE";
-		else if (type == PVFS2_VFS_OP_GETATTR)
+		else if (type == ORANGEFS_VFS_OP_GETATTR)
 			return "OP_GETATTR";
-		else if (type == PVFS2_VFS_OP_REMOVE)
+		else if (type == ORANGEFS_VFS_OP_REMOVE)
 			return "OP_REMOVE";
-		else if (type == PVFS2_VFS_OP_MKDIR)
+		else if (type == ORANGEFS_VFS_OP_MKDIR)
 			return "OP_MKDIR";
-		else if (type == PVFS2_VFS_OP_READDIR)
+		else if (type == ORANGEFS_VFS_OP_READDIR)
 			return "OP_READDIR";
-		else if (type == PVFS2_VFS_OP_READDIRPLUS)
+		else if (type == ORANGEFS_VFS_OP_READDIRPLUS)
 			return "OP_READDIRPLUS";
-		else if (type == PVFS2_VFS_OP_SETATTR)
+		else if (type == ORANGEFS_VFS_OP_SETATTR)
 			return "OP_SETATTR";
-		else if (type == PVFS2_VFS_OP_SYMLINK)
+		else if (type == ORANGEFS_VFS_OP_SYMLINK)
 			return "OP_SYMLINK";
-		else if (type == PVFS2_VFS_OP_RENAME)
+		else if (type == ORANGEFS_VFS_OP_RENAME)
 			return "OP_RENAME";
 		else if (type == ORANGEFS_VFS_OP_STATFS)
 			return "OP_STATFS";
 		else if (type == ORANGEFS_VFS_OP_TRUNCATE)
 			return "OP_TRUNCATE";
-		else if (type == PVFS2_VFS_OP_MMAP_RA_FLUSH)
+		else if (type == ORANGEFS_VFS_OP_MMAP_RA_FLUSH)
 			return "OP_MMAP_RA_FLUSH";
 		else if (type == ORANGEFS_VFS_OP_FS_MOUNT)
 			return "OP_FS_MOUNT";
-		else if (type == PVFS2_VFS_OP_FS_UMOUNT)
+		else if (type == ORANGEFS_VFS_OP_FS_UMOUNT)
 			return "OP_FS_UMOUNT";
-		else if (type == PVFS2_VFS_OP_GETXATTR)
+		else if (type == ORANGEFS_VFS_OP_GETXATTR)
 			return "OP_GETXATTR";
-		else if (type == PVFS2_VFS_OP_SETXATTR)
+		else if (type == ORANGEFS_VFS_OP_SETXATTR)
 			return "OP_SETXATTR";
-		else if (type == PVFS2_VFS_OP_LISTXATTR)
+		else if (type == ORANGEFS_VFS_OP_LISTXATTR)
 			return "OP_LISTXATTR";
-		else if (type == PVFS2_VFS_OP_REMOVEXATTR)
+		else if (type == ORANGEFS_VFS_OP_REMOVEXATTR)
 			return "OP_REMOVEXATTR";
 		else if (type == ORANGEFS_VFS_OP_PARAM)
 			return "OP_PARAM";
 		else if (type == ORANGEFS_VFS_OP_PERF_COUNT)
 			return "OP_PERF_COUNT";
-		else if (type == PVFS2_VFS_OP_CANCEL)
+		else if (type == ORANGEFS_VFS_OP_CANCEL)
 			return "OP_CANCEL";
 		else if (type == ORANGEFS_VFS_OP_FSYNC)
 			return "OP_FSYNC";
-		else if (type == PVFS2_VFS_OP_FSKEY)
+		else if (type == ORANGEFS_VFS_OP_FSKEY)
 			return "OP_FSKEY";
 		else if (type == ORANGEFS_VFS_OP_FILE_IOX)
 			return "OP_FILE_IOX";
