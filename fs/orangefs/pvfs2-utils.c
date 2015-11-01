@@ -78,7 +78,7 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 	return fsid;
 }
 
-static void pvfs2_set_inode_flags(struct inode *inode,
+static void orangefs_set_inode_flags(struct inode *inode,
 				  struct PVFS_sys_attr_s *attrs)
 {
 	if (attrs->flags & PVFS_IMMUTABLE_FL)
@@ -105,7 +105,7 @@ static int copy_attributes_to_inode(struct inode *inode,
 {
 	int ret = -1;
 	int perm_mode = 0;
-	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 	loff_t inode_size = 0;
 	loff_t rounded_up_size = 0;
 
@@ -134,17 +134,17 @@ static int copy_attributes_to_inode(struct inode *inode,
 
 	switch (attrs->objtype) {
 	case PVFS_TYPE_METAFILE:
-		pvfs2_set_inode_flags(inode, attrs);
+		orangefs_set_inode_flags(inode, attrs);
 		if (attrs->mask & ORANGEFS_ATTR_SYS_SIZE) {
 			inode_size = (loff_t) attrs->size;
 			rounded_up_size =
 			    (inode_size + (4096 - (inode_size % 4096)));
 
-			pvfs2_lock_inode(inode);
+			orangefs_lock_inode(inode);
 			inode->i_bytes = inode_size;
 			inode->i_blocks =
 			    (unsigned long)(rounded_up_size / 512);
-			pvfs2_unlock_inode(inode);
+			orangefs_unlock_inode(inode);
 
 			/*
 			 * NOTE: make sure all the places we're called
@@ -164,9 +164,9 @@ static int copy_attributes_to_inode(struct inode *inode,
 	default:
 		inode->i_size = PAGE_CACHE_SIZE;
 
-		pvfs2_lock_inode(inode);
+		orangefs_lock_inode(inode);
 		inode_set_bytes(inode, inode->i_size);
-		pvfs2_unlock_inode(inode);
+		orangefs_unlock_inode(inode);
 		break;
 	}
 
@@ -234,13 +234,13 @@ static int copy_attributes_to_inode(struct inode *inode,
 		inode->i_mode |= S_IFLNK;
 
 		/* copy link target to inode private data */
-		if (pvfs2_inode && symname) {
-			strncpy(pvfs2_inode->link_target,
+		if (orangefs_inode && symname) {
+			strncpy(orangefs_inode->link_target,
 				symname,
 				PVFS_NAME_MAX);
 			gossip_debug(GOSSIP_UTILS_DEBUG,
 				     "Copied attr link target %s\n",
-				     pvfs2_inode->link_target);
+				     orangefs_inode->link_target);
 		}
 		gossip_debug(GOSSIP_UTILS_DEBUG,
 			     "symlink mode %o\n",
@@ -298,7 +298,7 @@ static inline int copy_attributes_from_inode(struct inode *inode,
 		attrs->mask |= PVFS_ATTR_SYS_ATIME;
 		if (iattr->ia_valid & ATTR_ATIME_SET) {
 			attrs->atime =
-			    pvfs2_convert_time_field((void *)&iattr->ia_atime);
+			    orangefs_convert_time_field((void *)&iattr->ia_atime);
 			attrs->mask |= PVFS_ATTR_SYS_ATIME_SET;
 		}
 	}
@@ -306,7 +306,7 @@ static inline int copy_attributes_from_inode(struct inode *inode,
 		attrs->mask |= PVFS_ATTR_SYS_MTIME;
 		if (iattr->ia_valid & ATTR_MTIME_SET) {
 			attrs->mtime =
-			    pvfs2_convert_time_field((void *)&iattr->ia_mtime);
+			    orangefs_convert_time_field((void *)&iattr->ia_mtime);
 			attrs->mask |= PVFS_ATTR_SYS_MTIME_SET;
 		}
 	}
@@ -355,7 +355,7 @@ static inline int copy_attributes_from_inode(struct inode *inode,
  */
 int orangefs_inode_getattr(struct inode *inode, __u32 getattr_mask)
 {
-	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 	struct orangefs_kernel_op_s *new_op;
 	int ret = -EINVAL;
 
@@ -367,7 +367,7 @@ int orangefs_inode_getattr(struct inode *inode, __u32 getattr_mask)
 	new_op = op_alloc(ORANGEFS_VFS_OP_GETATTR);
 	if (!new_op)
 		return -ENOMEM;
-	new_op->upcall.req.getattr.refn = pvfs2_inode->refn;
+	new_op->upcall.req.getattr.refn = orangefs_inode->refn;
 	new_op->upcall.req.getattr.mask = getattr_mask;
 
 	ret = service_operation(new_op, __func__,
@@ -390,11 +390,11 @@ int orangefs_inode_getattr(struct inode *inode, __u32 getattr_mask)
 	 */
 	if (new_op->downcall.resp.getattr.attributes.objtype ==
 			PVFS_TYPE_METAFILE) {
-		pvfs2_inode->blksize =
+		orangefs_inode->blksize =
 			new_op->downcall.resp.getattr.attributes.blksize;
 	} else {
 		/* mimic behavior of generic_fillattr() for other types. */
-		pvfs2_inode->blksize = (1 << inode->i_blkbits);
+		orangefs_inode->blksize = (1 << inode->i_blkbits);
 
 	}
 
@@ -402,8 +402,8 @@ out:
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "Getattr on handle %pU, "
 		     "fsid %d\n  (inode ct = %d) returned %d\n",
-		     &pvfs2_inode->refn.khandle,
-		     pvfs2_inode->refn.fs_id,
+		     &orangefs_inode->refn.khandle,
+		     orangefs_inode->refn.fs_id,
 		     (int)atomic_read(&inode->i_count),
 		     ret);
 
@@ -417,7 +417,7 @@ out:
  */
 int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr)
 {
-	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 	struct orangefs_kernel_op_s *new_op;
 	int ret;
 
@@ -425,7 +425,7 @@ int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr)
 	if (!new_op)
 		return -ENOMEM;
 
-	new_op->upcall.req.setattr.refn = pvfs2_inode->refn;
+	new_op->upcall.req.setattr.refn = orangefs_inode->refn;
 	ret = copy_attributes_from_inode(inode,
 		       &new_op->upcall.req.setattr.attributes,
 		       iattr);
@@ -449,10 +449,10 @@ int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr)
 	 * ctime flags.
 	 */
 	if (ret == 0) {
-		ClearAtimeFlag(pvfs2_inode);
-		ClearMtimeFlag(pvfs2_inode);
-		ClearCtimeFlag(pvfs2_inode);
-		ClearModeFlag(pvfs2_inode);
+		ClearAtimeFlag(orangefs_inode);
+		ClearMtimeFlag(orangefs_inode);
+		ClearCtimeFlag(orangefs_inode);
+		ClearModeFlag(orangefs_inode);
 	}
 
 	return ret;
@@ -472,7 +472,7 @@ int orangefs_flush_inode(struct inode *inode)
 	int ctime_flag;
 	int atime_flag;
 	int mode_flag;
-	struct orangefs_inode_s *pvfs2_inode = ORANGEFS_I(inode);
+	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 
 	memset(&wbattr, 0, sizeof(wbattr));
 
@@ -481,14 +481,14 @@ int orangefs_flush_inode(struct inode *inode)
 	 * will prevent multiple processes from all trying to flush the same
 	 * inode if they call close() simultaneously
 	 */
-	mtime_flag = MtimeFlag(pvfs2_inode);
-	ClearMtimeFlag(pvfs2_inode);
-	ctime_flag = CtimeFlag(pvfs2_inode);
-	ClearCtimeFlag(pvfs2_inode);
-	atime_flag = AtimeFlag(pvfs2_inode);
-	ClearAtimeFlag(pvfs2_inode);
-	mode_flag = ModeFlag(pvfs2_inode);
-	ClearModeFlag(pvfs2_inode);
+	mtime_flag = MtimeFlag(orangefs_inode);
+	ClearMtimeFlag(orangefs_inode);
+	ctime_flag = CtimeFlag(orangefs_inode);
+	ClearCtimeFlag(orangefs_inode);
+	atime_flag = AtimeFlag(orangefs_inode);
+	ClearAtimeFlag(orangefs_inode);
+	mode_flag = ModeFlag(orangefs_inode);
+	ClearModeFlag(orangefs_inode);
 
 	/*  -- Lazy atime,mtime and ctime update --
 	 * Note: all times are dictated by server in the new scheme
@@ -569,13 +569,13 @@ int orangefs_unmount_sb(struct super_block *sb)
  * NOTE: on successful cancellation, be sure to return -EINTR, as
  * that's the return value the caller expects
  */
-int pvfs2_cancel_op_in_progress(__u64 tag)
+int orangefs_cancel_op_in_progress(__u64 tag)
 {
 	int ret = -EINVAL;
 	struct orangefs_kernel_op_s *new_op = NULL;
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "pvfs2_cancel_op_in_progress called on tag %llu\n",
+		     "orangefs_cancel_op_in_progress called on tag %llu\n",
 		     llu(tag));
 
 	new_op = op_alloc(ORANGEFS_VFS_OP_CANCEL);
@@ -590,7 +590,7 @@ int pvfs2_cancel_op_in_progress(__u64 tag)
 	ret = service_operation(new_op, "pvfs2_cancel", ORANGEFS_OP_CANCELLATION);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "pvfs2_cancel_op_in_progress: got return value of %d\n",
+		     "orangefs_cancel_op_in_progress: got return value of %d\n",
 		     ret);
 
 	op_release(new_op);
@@ -653,13 +653,13 @@ void set_signals(sigset_t *sigset)
 	sigprocmask(SIG_SETMASK, sigset, NULL);
 }
 
-__u64 pvfs2_convert_time_field(void *time_ptr)
+__u64 orangefs_convert_time_field(void *time_ptr)
 {
-	__u64 pvfs2_time;
+	__u64 orangefs_time;
 	struct timespec *tspec = (struct timespec *)time_ptr;
 
-	pvfs2_time = (__u64) ((time_t) tspec->tv_sec);
-	return pvfs2_time;
+	orangefs_time = (__u64) ((time_t) tspec->tv_sec);
+	return orangefs_time;
 }
 
 /*
@@ -751,7 +751,7 @@ __s32 PVFS_util_translate_mode(int mode)
 		S_IXUSR, S_IWUSR, S_IRUSR,
 		S_ISGID, S_ISUID
 	};
-	static int pvfs2_modes[NUM_MODES] = {
+	static int orangefs_modes[NUM_MODES] = {
 		PVFS_O_EXECUTE, PVFS_O_WRITE, PVFS_O_READ,
 		PVFS_G_EXECUTE, PVFS_G_WRITE, PVFS_G_READ,
 		PVFS_U_EXECUTE, PVFS_U_WRITE, PVFS_U_READ,
@@ -760,7 +760,7 @@ __s32 PVFS_util_translate_mode(int mode)
 
 	for (i = 0; i < NUM_MODES; i++)
 		if (mode & modes[i])
-			ret |= pvfs2_modes[i];
+			ret |= orangefs_modes[i];
 
 	return ret;
 }

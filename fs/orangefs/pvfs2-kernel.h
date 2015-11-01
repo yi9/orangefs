@@ -651,9 +651,9 @@ void set_signals(sigset_t *);
 
 int orangefs_unmount_sb(struct super_block *sb);
 
-int pvfs2_cancel_op_in_progress(__u64 tag);
+int orangefs_cancel_op_in_progress(__u64 tag);
 
-__u64 pvfs2_convert_time_field(void *time_ptr);
+__u64 orangefs_convert_time_field(void *time_ptr);
 
 int orangefs_normalize_to_errno(__s32 error_code);
 
@@ -770,7 +770,7 @@ int service_operation(struct orangefs_kernel_op_s *op,
 #define handle_io_error()					\
 do {								\
 	if (!op_state_serviced(new_op)) {			\
-		pvfs2_cancel_op_in_progress(new_op->tag);	\
+		orangefs_cancel_op_in_progress(new_op->tag);	\
 		op_release(new_op);				\
 	} else {						\
 		wake_up_daemon_for_return(new_op);		\
@@ -816,8 +816,8 @@ do {									\
 	spin_unlock(&orangefs_superblocks_lock);				\
 } while (0)
 
-#define pvfs2_lock_inode(inode) spin_lock(&inode->i_lock)
-#define pvfs2_unlock_inode(inode) spin_unlock(&inode->i_lock)
+#define orangefs_lock_inode(inode) spin_lock(&inode->i_lock)
+#define orangefs_unlock_inode(inode) spin_unlock(&inode->i_lock)
 
 #define fill_default_sys_attrs(sys_attr, type, mode)			\
 do {									\
