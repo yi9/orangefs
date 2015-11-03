@@ -39,7 +39,7 @@ static int hash_func(__u64 tag, int table_size)
 	return do_div(tag, (unsigned int)table_size);
 }
 
-static void pvfs2_devreq_add_op(struct orangefs_kernel_op_s *op)
+static void orangefs_devreq_add_op(struct orangefs_kernel_op_s *op)
 {
 	int index = hash_func(op->tag, hash_table_size);
 
@@ -48,7 +48,7 @@ static void pvfs2_devreq_add_op(struct orangefs_kernel_op_s *op)
 	spin_unlock(&htable_ops_in_progress_lock);
 }
 
-static struct orangefs_kernel_op_s *pvfs2_devreq_remove_op(__u64 tag)
+static struct orangefs_kernel_op_s *orangefs_devreq_remove_op(__u64 tag)
 {
 	struct orangefs_kernel_op_s *op, *next;
 	int index;
@@ -71,7 +71,7 @@ static struct orangefs_kernel_op_s *pvfs2_devreq_remove_op(__u64 tag)
 	return NULL;
 }
 
-static int pvfs2_devreq_open(struct inode *inode, struct file *file)
+static int orangefs_devreq_open(struct inode *inode, struct file *file)
 {
 	int ret = -EINVAL;
 
@@ -100,7 +100,7 @@ out:
 	return ret;
 }
 
-static ssize_t pvfs2_devreq_read(struct file *file,
+static ssize_t orangefs_devreq_read(struct file *file,
 				 char __user *buf,
 				 size_t count, loff_t *offset)
 {
@@ -117,8 +117,8 @@ static ssize_t pvfs2_devreq_read(struct file *file,
 	} else {
 		struct orangefs_kernel_op_s *op = NULL, *temp = NULL;
 		/* get next op (if any) from top of list */
-		spin_lock(&pvfs2_request_list_lock);
-		list_for_each_entry_safe(op, temp, &pvfs2_request_list, list) {
+		spin_lock(&orangefs_request_list_lock);
+		list_for_each_entry_safe(op, temp, &orangefs_request_list, list) {
 			__s32 fsid = fsid_of_op(op);
 			/*
 			 * Check if this op's fsid is known and needs
@@ -151,13 +151,13 @@ static ssize_t pvfs2_devreq_read(struct file *file,
 						gossip_err("BUG:trailer_size is %ld and trailer buf is %p\n", (long)cur_op->upcall.trailer_size, cur_op->upcall.trailer_buf);
 					/* re-add it to the head of the list */
 					list_add(&cur_op->list,
-						 &pvfs2_request_list);
+						 &orangefs_request_list);
 				}
 				spin_unlock(&cur_op->lock);
 				break;
 			}
 		}
-		spin_unlock(&pvfs2_request_list_lock);
+		spin_unlock(&orangefs_request_list_lock);
 	}
 
 	if (cur_op) {
@@ -177,7 +177,7 @@ static ssize_t pvfs2_devreq_read(struct file *file,
 			 * htable_ops_in_progress
 			 */
 			set_op_state_inprogress(cur_op);
-			pvfs2_devreq_add_op(cur_op);
+			orangefs_devreq_add_op(cur_op);
 		}
 
 		spin_unlock(&cur_op->lock);
@@ -259,7 +259,7 @@ static ssize_t pvfs2_devreq_read(struct file *file,
 }
 
 /* Function for writev() callers into the device */
-static ssize_t pvfs2_devreq_writev(struct file *file,
+static ssize_t orangefs_devreq_writev(struct file *file,
 				   const struct iovec *iov,
 				   size_t count,
 				   loff_t *offset)
@@ -332,7 +332,7 @@ static ssize_t pvfs2_devreq_writev(struct file *file,
 	 * proto_ver = 20902 for 2.9.2
 	 */
 
-	op = pvfs2_devreq_remove_op(tag);
+	op = orangefs_devreq_remove_op(tag);
 	if (op) {
 		/* Increase ref count! */
 		get_op(op);
@@ -496,7 +496,7 @@ static ssize_t pvfs2_devreq_writev(struct file *file,
 static ssize_t pvfs2_devreq_write_iter(struct kiocb *iocb,
 				      struct iov_iter *iter)
 {
-	return pvfs2_devreq_writev(iocb->ki_filp,
+	return orangefs_devreq_writev(iocb->ki_filp,
 				   iter->iov,
 				   iter->nr_segs,
 				   &iocb->ki_pos);
@@ -506,12 +506,12 @@ static ssize_t pvfs2_devreq_write_iter(struct kiocb *iocb,
 static int mark_all_pending_mounts(void)
 {
 	int unmounted = 1;
-	struct orangefs_sb_info_s *pvfs2_sb = NULL;
+	struct orangefs_sb_info_s *orangefs_sb = NULL;
 
 	spin_lock(&orangefs_superblocks_lock);
-	list_for_each_entry(pvfs2_sb, &orangefs_superblocks, list) {
+	list_for_each_entry(orangefs_sb, &orangefs_superblocks, list) {
 		/* All of these file system require a remount */
-		pvfs2_sb->mount_pending = 1;
+		orangefs_sb->mount_pending = 1;
 		unmounted = 0;
 	}
 	spin_unlock(&orangefs_superblocks_lock);
@@ -527,12 +527,12 @@ static int mark_all_pending_mounts(void)
 int fs_mount_pending(__s32 fsid)
 {
 	int mount_pending = -1;
-	struct orangefs_sb_info_s *pvfs2_sb = NULL;
+	struct orangefs_sb_info_s *orangefs_sb = NULL;
 
 	spin_lock(&orangefs_superblocks_lock);
-	list_for_each_entry(pvfs2_sb, &orangefs_superblocks, list) {
-		if (pvfs2_sb->fs_id == fsid) {
-			mount_pending = pvfs2_sb->mount_pending;
+	list_for_each_entry(orangefs_sb, &orangefs_superblocks, list) {
+		if (orangefs_sb->fs_id == fsid) {
+			mount_pending = orangefs_sb->mount_pending;
 			break;
 		}
 	}
@@ -548,7 +548,7 @@ int fs_mount_pending(__s32 fsid)
  * before we call orangefs_bufmap_finalize, and similar such tricky
  * situations
  */
-static int pvfs2_devreq_release(struct inode *inode, struct file *file)
+static int orangefs_devreq_release(struct inode *inode, struct file *file)
 {
 	int unmounted = 0;
 
@@ -625,7 +625,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 	struct dev_mask2_info_s mask2_info = { 0, 0 };
 	int upstream_kmod = 1;
 	struct list_head *tmp = NULL;
-	struct orangefs_sb_info_s *pvfs2_sb = NULL;
+	struct orangefs_sb_info_s *orangefs_sb = NULL;
 
 	/* mtmoore: add locking here */
 
@@ -652,7 +652,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 		return ret ? -EIO : orangefs_bufmap_initialize(&user_desc);
 	case PVFS_DEV_REMOUNT_ALL:
 		gossip_debug(GOSSIP_DEV_DEBUG,
-			     "pvfs2_devreq_ioctl: got PVFS_DEV_REMOUNT_ALL\n");
+			     "orangefs_devreq_ioctl: got PVFS_DEV_REMOUNT_ALL\n");
 
 		/*
 		 * remount all mounted pvfs2 volumes to regain the lost
@@ -667,26 +667,26 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 		if (ret < 0)
 			return ret;
 		gossip_debug(GOSSIP_DEV_DEBUG,
-			     "pvfs2_devreq_ioctl: priority remount in progress\n");
+			     "orangefs_devreq_ioctl: priority remount in progress\n");
 		list_for_each(tmp, &orangefs_superblocks) {
-			pvfs2_sb =
+			orangefs_sb =
 				list_entry(tmp, struct orangefs_sb_info_s, list);
-			if (pvfs2_sb && (pvfs2_sb->sb)) {
+			if (orangefs_sb && (orangefs_sb->sb)) {
 				gossip_debug(GOSSIP_DEV_DEBUG,
 					     "Remounting SB %p\n",
-					     pvfs2_sb);
+					     orangefs_sb);
 
-				ret = orangefs_remount(pvfs2_sb->sb);
+				ret = orangefs_remount(orangefs_sb->sb);
 				if (ret) {
 					gossip_debug(GOSSIP_DEV_DEBUG,
 						     "SB %p remount failed\n",
-						     pvfs2_sb);
+						     orangefs_sb);
 						break;
 				}
 			}
 		}
 		gossip_debug(GOSSIP_DEV_DEBUG,
-			     "pvfs2_devreq_ioctl: priority remount complete\n");
+			     "orangefs_devreq_ioctl: priority remount complete\n");
 		mutex_unlock(&request_mutex);
 		return ret;
 
@@ -825,7 +825,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 	return -ENOIOCTLCMD;
 }
 
-static long pvfs2_devreq_ioctl(struct file *file,
+static long orangefs_devreq_ioctl(struct file *file,
 			       unsigned int command, unsigned long arg)
 {
 	long ret;
@@ -883,7 +883,7 @@ err:
  * 32 bit user-space apps' ioctl handlers when kernel modules
  * is compiled as a 64 bit one
  */
-static long pvfs2_devreq_compat_ioctl(struct file *filp, unsigned int cmd,
+static long orangefs_devreq_compat_ioctl(struct file *filp, unsigned int cmd,
 				      unsigned long args)
 {
 	long ret;
@@ -921,14 +921,14 @@ static int pvfs2_ioctl32_init(void)
 	return 0;
 }
 
-static void pvfs2_ioctl32_cleanup(void)
+static void orangefs_ioctl32_cleanup(void)
 {
 	return;
 }
 #endif
 
 /* the assigned character device major number */
-static int pvfs2_dev_major;
+static int orangefs_dev_major;
 
 /*
  * Initialize pvfs2 device specific state:
@@ -944,61 +944,61 @@ int pvfs2_dev_init(void)
 		return ret;
 
 	/* register pvfs2-req device  */
-	pvfs2_dev_major = register_chrdev(0,
+	orangefs_dev_major = register_chrdev(0,
 					  PVFS2_REQDEVICE_NAME,
-					  &pvfs2_devreq_file_operations);
-	if (pvfs2_dev_major < 0) {
+					  &orangefs_devreq_file_operations);
+	if (orangefs_dev_major < 0) {
 		gossip_debug(GOSSIP_DEV_DEBUG,
 			     "Failed to register /dev/%s (error %d)\n",
-			     PVFS2_REQDEVICE_NAME, pvfs2_dev_major);
-		pvfs2_ioctl32_cleanup();
-		return pvfs2_dev_major;
+			     PVFS2_REQDEVICE_NAME, orangefs_dev_major);
+		orangefs_ioctl32_cleanup();
+		return orangefs_dev_major;
 	}
 
 	gossip_debug(GOSSIP_DEV_DEBUG,
 		     "*** /dev/%s character device registered ***\n",
 		     PVFS2_REQDEVICE_NAME);
 	gossip_debug(GOSSIP_DEV_DEBUG, "'mknod /dev/%s c %d 0'.\n",
-		     PVFS2_REQDEVICE_NAME, pvfs2_dev_major);
+		     PVFS2_REQDEVICE_NAME, orangefs_dev_major);
 	return 0;
 }
 
 void pvfs2_dev_cleanup(void)
 {
-	unregister_chrdev(pvfs2_dev_major, PVFS2_REQDEVICE_NAME);
+	unregister_chrdev(orangefs_dev_major, PVFS2_REQDEVICE_NAME);
 	gossip_debug(GOSSIP_DEV_DEBUG,
 		     "*** /dev/%s character device unregistered ***\n",
 		     PVFS2_REQDEVICE_NAME);
 	/* unregister the ioctl32 sub-system */
-	pvfs2_ioctl32_cleanup();
+	orangefs_ioctl32_cleanup();
 }
 
-static unsigned int pvfs2_devreq_poll(struct file *file,
+static unsigned int orangefs_devreq_poll(struct file *file,
 				      struct poll_table_struct *poll_table)
 {
 	int poll_revent_mask = 0;
 
 	if (open_access_count == 1) {
-		poll_wait(file, &pvfs2_request_list_waitq, poll_table);
+		poll_wait(file, &orangefs_request_list_waitq, poll_table);
 
-		spin_lock(&pvfs2_request_list_lock);
-		if (!list_empty(&pvfs2_request_list))
+		spin_lock(&orangefs_request_list_lock);
+		if (!list_empty(&orangefs_request_list))
 			poll_revent_mask |= POLL_IN;
-		spin_unlock(&pvfs2_request_list_lock);
+		spin_unlock(&orangefs_request_list_lock);
 	}
 	return poll_revent_mask;
 }
 
-const struct file_operations pvfs2_devreq_file_operations = {
+const struct file_operations orangefs_devreq_file_operations = {
 	.owner = THIS_MODULE,
-	.read = pvfs2_devreq_read,
+	.read = orangefs_devreq_read,
 	.write_iter = pvfs2_devreq_write_iter,
-	.open = pvfs2_devreq_open,
-	.release = pvfs2_devreq_release,
-	.unlocked_ioctl = pvfs2_devreq_ioctl,
+	.open = orangefs_devreq_open,
+	.release = orangefs_devreq_release,
+	.unlocked_ioctl = orangefs_devreq_ioctl,
 
 #ifdef CONFIG_COMPAT		/* CONFIG_COMPAT is in .config */
-	.compat_ioctl = pvfs2_devreq_compat_ioctl,
+	.compat_ioctl = orangefs_devreq_compat_ioctl,
 #endif
-	.poll = pvfs2_devreq_poll
+	.poll = orangefs_devreq_poll
 };

@@ -664,9 +664,9 @@ extern int op_timeout_secs;
 extern int slot_timeout_secs;
 extern struct list_head orangefs_superblocks;
 extern spinlock_t orangefs_superblocks_lock;
-extern struct list_head pvfs2_request_list;
-extern spinlock_t pvfs2_request_list_lock;
-extern wait_queue_head_t pvfs2_request_list_waitq;
+extern struct list_head orangefs_request_list;
+extern spinlock_t orangefs_request_list_lock;
+extern wait_queue_head_t orangefs_request_list_waitq;
 extern struct list_head *htable_ops_in_progress;
 extern spinlock_t htable_ops_in_progress_lock;
 extern int hash_table_size;
@@ -679,7 +679,7 @@ extern struct inode_operations orangefs_symlink_inode_operations;
 extern struct inode_operations orangefs_dir_inode_operations;
 extern const struct file_operations orangefs_dir_operations;
 extern const struct dentry_operations orangefs_dentry_operations;
-extern const struct file_operations pvfs2_devreq_file_operations;
+extern const struct file_operations orangefs_devreq_file_operations;
 
 extern wait_queue_head_t orangefs_bufmap_init_waitq;
 
@@ -688,25 +688,25 @@ extern wait_queue_head_t orangefs_bufmap_init_waitq;
  */
 #define add_op_to_request_list(op)				\
 do {								\
-	spin_lock(&pvfs2_request_list_lock);			\
+	spin_lock(&orangefs_request_list_lock);			\
 	spin_lock(&op->lock);					\
 	set_op_state_waiting(op);				\
-	list_add_tail(&op->list, &pvfs2_request_list);		\
-	spin_unlock(&pvfs2_request_list_lock);			\
+	list_add_tail(&op->list, &orangefs_request_list);		\
+	spin_unlock(&orangefs_request_list_lock);			\
 	spin_unlock(&op->lock);					\
-	wake_up_interruptible(&pvfs2_request_list_waitq);	\
+	wake_up_interruptible(&orangefs_request_list_waitq);	\
 } while (0)
 
 #define add_priority_op_to_request_list(op)				\
 	do {								\
-		spin_lock(&pvfs2_request_list_lock);			\
+		spin_lock(&orangefs_request_list_lock);			\
 		spin_lock(&op->lock);					\
 		set_op_state_waiting(op);				\
 									\
-		list_add(&op->list, &pvfs2_request_list);		\
-		spin_unlock(&pvfs2_request_list_lock);			\
+		list_add(&op->list, &orangefs_request_list);		\
+		spin_unlock(&orangefs_request_list_lock);			\
 		spin_unlock(&op->lock);					\
-		wake_up_interruptible(&pvfs2_request_list_waitq);	\
+		wake_up_interruptible(&orangefs_request_list_waitq);	\
 } while (0)
 
 #define remove_op_from_request_list(op)					\
@@ -715,8 +715,8 @@ do {								\
 		struct list_head *tmp_safe = NULL;			\
 		struct orangefs_kernel_op_s *tmp_op = NULL;		\
 									\
-		spin_lock(&pvfs2_request_list_lock);			\
-		list_for_each_safe(tmp, tmp_safe, &pvfs2_request_list) { \
+		spin_lock(&orangefs_request_list_lock);			\
+		list_for_each_safe(tmp, tmp_safe, &orangefs_request_list) { \
 			tmp_op = list_entry(tmp,			\
 					    struct orangefs_kernel_op_s,	\
 					    list);			\
@@ -725,7 +725,7 @@ do {								\
 				break;					\
 			}						\
 		}							\
-		spin_unlock(&pvfs2_request_list_lock);			\
+		spin_unlock(&orangefs_request_list_lock);			\
 	} while (0)
 
 #define ORANGEFS_OP_INTERRUPTIBLE 1   /* service_operation() is interruptible */
@@ -798,18 +798,18 @@ do {									\
 do {									\
 	struct list_head *tmp = NULL;					\
 	struct list_head *tmp_safe = NULL;				\
-	struct orangefs_sb_info_s *pvfs2_sb = NULL;			\
+	struct orangefs_sb_info_s *orangefs_sb = NULL;			\
 									\
 	spin_lock(&orangefs_superblocks_lock);				\
 	list_for_each_safe(tmp, tmp_safe, &orangefs_superblocks) {		\
-		pvfs2_sb = list_entry(tmp,				\
+		orangefs_sb = list_entry(tmp,				\
 				      struct orangefs_sb_info_s,		\
 				      list);				\
-		if (pvfs2_sb && (pvfs2_sb->sb == sb)) {			\
+		if (orangefs_sb && (orangefs_sb->sb == sb)) {			\
 			gossip_debug(GOSSIP_SUPER_DEBUG,		\
 			    "Removing SB %p from pvfs2 superblocks\n",	\
-			pvfs2_sb);					\
-			list_del(&pvfs2_sb->list);			\
+			orangefs_sb);					\
+			list_del(&orangefs_sb->list);			\
 			break;						\
 		}							\
 	}								\

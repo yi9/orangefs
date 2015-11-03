@@ -27,8 +27,8 @@ void purge_waiting_ops(void)
 {
 	struct orangefs_kernel_op_s *op;
 
-	spin_lock(&pvfs2_request_list_lock);
-	list_for_each_entry(op, &pvfs2_request_list, list) {
+	spin_lock(&orangefs_request_list_lock);
+	list_for_each_entry(op, &orangefs_request_list, list) {
 		gossip_debug(GOSSIP_WAIT_DEBUG,
 			     "orangefs-client-core: purging op tag %llu %s\n",
 			     llu(op->tag),
@@ -38,7 +38,7 @@ void purge_waiting_ops(void)
 		spin_unlock(&op->lock);
 		wake_up_interruptible(&op->waitq);
 	}
-	spin_unlock(&pvfs2_request_list_lock);
+	spin_unlock(&orangefs_request_list_lock);
 }
 
 /*

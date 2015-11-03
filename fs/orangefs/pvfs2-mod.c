@@ -85,13 +85,13 @@ struct list_head *htable_ops_in_progress;
 DEFINE_SPINLOCK(htable_ops_in_progress_lock);
 
 /* list for queueing upcall operations */
-LIST_HEAD(pvfs2_request_list);
+LIST_HEAD(orangefs_request_list);
 
-/* used to protect the above pvfs2_request_list */
-DEFINE_SPINLOCK(pvfs2_request_list_lock);
+/* used to protect the above orangefs_request_list */
+DEFINE_SPINLOCK(orangefs_request_list_lock);
 
 /* used for incoming request notification */
-DECLARE_WAIT_QUEUE_HEAD(pvfs2_request_list_waitq);
+DECLARE_WAIT_QUEUE_HEAD(orangefs_request_list_waitq);
 
 static int __init pvfs2_init(void)
 {
@@ -249,9 +249,9 @@ static void __exit pvfs2_exit(void)
 	fsid_key_table_finalize();
 	pvfs2_dev_cleanup();
 	/* clear out all pending upcall op requests */
-	spin_lock(&pvfs2_request_list_lock);
-	while (!list_empty(&pvfs2_request_list)) {
-		cur_op = list_entry(pvfs2_request_list.next,
+	spin_lock(&orangefs_request_list_lock);
+	while (!list_empty(&orangefs_request_list)) {
+		cur_op = list_entry(orangefs_request_list.next,
 				    struct orangefs_kernel_op_s,
 				    list);
 		list_del(&cur_op->list);
@@ -260,7 +260,7 @@ static void __exit pvfs2_exit(void)
 			     cur_op->upcall.type);
 		op_release(cur_op);
 	}
-	spin_unlock(&pvfs2_request_list_lock);
+	spin_unlock(&orangefs_request_list_lock);
 
 	for (i = 0; i < hash_table_size; i++)
 		while (!list_empty(&htable_ops_in_progress[i])) {
