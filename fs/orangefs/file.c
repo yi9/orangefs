@@ -722,7 +722,7 @@ static ssize_t orangefs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter
 static ssize_t orangefs_file_write_iter(struct kiocb *iocb, struct iov_iter *iter)
 {
 	struct file *file = iocb->ki_filp;
-	loff_t pos = *(&iocb->ki_pos);
+	loff_t pos;
 	unsigned long nr_segs = iter->nr_segs;
 	ssize_t rc;
 
@@ -753,6 +753,13 @@ static ssize_t orangefs_file_write_iter(struct kiocb *iocb, struct iov_iter *ite
 			   __func__, rc);
 		goto out;
 	}
+
+    	/*
+ 	*      * if we are appending, generic_write_checks would have updated
+ 	*           * pos to the end of the file, so we will wait till now to set
+ 	*                * pos...
+ 	*                     */
+    	pos = *(&iocb->ki_pos);
 
 	rc = do_readv_writev(ORANGEFS_IO_WRITE,
 			     file,
