@@ -79,19 +79,19 @@ __s32 fsid_of_op(struct orangefs_kernel_op_s *op)
 }
 
 static void orangefs_set_inode_flags(struct inode *inode,
-				  struct PVFS_sys_attr_s *attrs)
+				     struct ORANGEFS_sys_attr_s *attrs)
 {
-	if (attrs->flags & PVFS_IMMUTABLE_FL)
+	if (attrs->flags & ORANGEFS_IMMUTABLE_FL)
 		inode->i_flags |= S_IMMUTABLE;
 	else
 		inode->i_flags &= ~S_IMMUTABLE;
 
-	if (attrs->flags & PVFS_APPEND_FL)
+	if (attrs->flags & ORANGEFS_APPEND_FL)
 		inode->i_flags |= S_APPEND;
 	else
 		inode->i_flags &= ~S_APPEND;
 
-	if (attrs->flags & PVFS_NOATIME_FL)
+	if (attrs->flags & ORANGEFS_NOATIME_FL)
 		inode->i_flags |= S_NOATIME;
 	else
 		inode->i_flags &= ~S_NOATIME;
@@ -100,7 +100,7 @@ static void orangefs_set_inode_flags(struct inode *inode,
 
 /* NOTE: symname is ignored unless the inode is a sym link */
 static int copy_attributes_to_inode(struct inode *inode,
-				    struct PVFS_sys_attr_s *attrs,
+				    struct ORANGEFS_sys_attr_s *attrs,
 				    char *symname)
 {
 	int ret = -1;
@@ -127,13 +127,13 @@ static int copy_attributes_to_inode(struct inode *inode,
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "attrs->mask = %x (objtype = %s)\n",
 		     attrs->mask,
-		     attrs->objtype == PVFS_TYPE_METAFILE ? "file" :
-		     attrs->objtype == PVFS_TYPE_DIRECTORY ? "directory" :
-		     attrs->objtype == PVFS_TYPE_SYMLINK ? "symlink" :
+		     attrs->objtype == ORANGEFS_TYPE_METAFILE ? "file" :
+		     attrs->objtype == ORANGEFS_TYPE_DIRECTORY ? "directory" :
+		     attrs->objtype == ORANGEFS_TYPE_SYMLINK ? "symlink" :
 			"invalid/unknown");
 
 	switch (attrs->objtype) {
-	case PVFS_TYPE_METAFILE:
+	case ORANGEFS_TYPE_METAFILE:
 		orangefs_set_inode_flags(inode, attrs);
 		if (attrs->mask & ORANGEFS_ATTR_SYS_SIZE) {
 			inode_size = (loff_t) attrs->size;
@@ -155,7 +155,7 @@ static int copy_attributes_to_inode(struct inode *inode,
 			inode->i_size = inode_size;
 		}
 		break;
-	case PVFS_TYPE_SYMLINK:
+	case ORANGEFS_TYPE_SYMLINK:
 		if (symname != NULL) {
 			inode->i_size = (loff_t) strlen(symname);
 			break;
@@ -179,30 +179,30 @@ static int copy_attributes_to_inode(struct inode *inode,
 	inode->i_mtime.tv_nsec = 0;
 	inode->i_ctime.tv_nsec = 0;
 
-	if (attrs->perms & PVFS_O_EXECUTE)
+	if (attrs->perms & ORANGEFS_O_EXECUTE)
 		perm_mode |= S_IXOTH;
-	if (attrs->perms & PVFS_O_WRITE)
+	if (attrs->perms & ORANGEFS_O_WRITE)
 		perm_mode |= S_IWOTH;
-	if (attrs->perms & PVFS_O_READ)
+	if (attrs->perms & ORANGEFS_O_READ)
 		perm_mode |= S_IROTH;
 
-	if (attrs->perms & PVFS_G_EXECUTE)
+	if (attrs->perms & ORANGEFS_G_EXECUTE)
 		perm_mode |= S_IXGRP;
-	if (attrs->perms & PVFS_G_WRITE)
+	if (attrs->perms & ORANGEFS_G_WRITE)
 		perm_mode |= S_IWGRP;
-	if (attrs->perms & PVFS_G_READ)
+	if (attrs->perms & ORANGEFS_G_READ)
 		perm_mode |= S_IRGRP;
 
-	if (attrs->perms & PVFS_U_EXECUTE)
+	if (attrs->perms & ORANGEFS_U_EXECUTE)
 		perm_mode |= S_IXUSR;
-	if (attrs->perms & PVFS_U_WRITE)
+	if (attrs->perms & ORANGEFS_U_WRITE)
 		perm_mode |= S_IWUSR;
-	if (attrs->perms & PVFS_U_READ)
+	if (attrs->perms & ORANGEFS_U_READ)
 		perm_mode |= S_IRUSR;
 
-	if (attrs->perms & PVFS_G_SGID)
+	if (attrs->perms & ORANGEFS_G_SGID)
 		perm_mode |= S_ISGID;
-	if (attrs->perms & PVFS_U_SUID)
+	if (attrs->perms & ORANGEFS_U_SUID)
 		perm_mode |= S_ISUID;
 
 	inode->i_mode = perm_mode;
@@ -216,11 +216,11 @@ static int copy_attributes_to_inode(struct inode *inode,
 	}
 
 	switch (attrs->objtype) {
-	case PVFS_TYPE_METAFILE:
+	case ORANGEFS_TYPE_METAFILE:
 		inode->i_mode |= S_IFREG;
 		ret = 0;
 		break;
-	case PVFS_TYPE_DIRECTORY:
+	case ORANGEFS_TYPE_DIRECTORY:
 		inode->i_mode |= S_IFDIR;
 		/* NOTE: we have no good way to keep nlink consistent
 		 * for directories across clients; keep constant at 1.
@@ -230,14 +230,14 @@ static int copy_attributes_to_inode(struct inode *inode,
 		set_nlink(inode, 1);
 		ret = 0;
 		break;
-	case PVFS_TYPE_SYMLINK:
+	case ORANGEFS_TYPE_SYMLINK:
 		inode->i_mode |= S_IFLNK;
 
 		/* copy link target to inode private data */
 		if (orangefs_inode && symname) {
 			strncpy(orangefs_inode->link_target,
 				symname,
-				PVFS_NAME_MAX);
+				ORANGEFS_NAME_MAX);
 			gossip_debug(GOSSIP_UTILS_DEBUG,
 				     "Copied attr link target %s\n",
 				     orangefs_inode->link_target);
@@ -248,12 +248,12 @@ static int copy_attributes_to_inode(struct inode *inode,
 		ret = 0;
 		break;
 	default:
-		gossip_err("pvfs2: copy_attributes_to_inode: got invalid attribute type %x\n",
+		gossip_err("orangefs: copy_attributes_to_inode: got invalid attribute type %x\n",
 			attrs->objtype);
 	}
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "pvfs2: copy_attributes_to_inode: setting i_mode to %o, i_size to %lu\n",
+		     "orangefs: copy_attributes_to_inode: setting i_mode to %o, i_size to %lu\n",
 		     inode->i_mode,
 		     (unsigned long)i_size_read(inode));
 
@@ -265,7 +265,7 @@ static int copy_attributes_to_inode(struct inode *inode,
  * anything, so don't bother copying it into the sys_attr object here.
  */
 static inline int copy_attributes_from_inode(struct inode *inode,
-					     struct PVFS_sys_attr_s *attrs,
+					     struct ORANGEFS_sys_attr_s *attrs,
 					     struct iattr *iattr)
 {
 	umode_t tmp_mode;
@@ -285,36 +285,36 @@ static inline int copy_attributes_from_inode(struct inode *inode,
 	attrs->mask = 0;
 	if (iattr->ia_valid & ATTR_UID) {
 		attrs->owner = from_kuid(current_user_ns(), iattr->ia_uid);
-		attrs->mask |= PVFS_ATTR_SYS_UID;
+		attrs->mask |= ORANGEFS_ATTR_SYS_UID;
 		gossip_debug(GOSSIP_UTILS_DEBUG, "(UID) %d\n", attrs->owner);
 	}
 	if (iattr->ia_valid & ATTR_GID) {
 		attrs->group = from_kgid(current_user_ns(), iattr->ia_gid);
-		attrs->mask |= PVFS_ATTR_SYS_GID;
+		attrs->mask |= ORANGEFS_ATTR_SYS_GID;
 		gossip_debug(GOSSIP_UTILS_DEBUG, "(GID) %d\n", attrs->group);
 	}
 
 	if (iattr->ia_valid & ATTR_ATIME) {
-		attrs->mask |= PVFS_ATTR_SYS_ATIME;
+		attrs->mask |= ORANGEFS_ATTR_SYS_ATIME;
 		if (iattr->ia_valid & ATTR_ATIME_SET) {
 			attrs->atime =
 			    orangefs_convert_time_field((void *)&iattr->ia_atime);
-			attrs->mask |= PVFS_ATTR_SYS_ATIME_SET;
+			attrs->mask |= ORANGEFS_ATTR_SYS_ATIME_SET;
 		}
 	}
 	if (iattr->ia_valid & ATTR_MTIME) {
-		attrs->mask |= PVFS_ATTR_SYS_MTIME;
+		attrs->mask |= ORANGEFS_ATTR_SYS_MTIME;
 		if (iattr->ia_valid & ATTR_MTIME_SET) {
 			attrs->mtime =
 			    orangefs_convert_time_field((void *)&iattr->ia_mtime);
-			attrs->mask |= PVFS_ATTR_SYS_MTIME_SET;
+			attrs->mask |= ORANGEFS_ATTR_SYS_MTIME_SET;
 		}
 	}
 	if (iattr->ia_valid & ATTR_CTIME)
-		attrs->mask |= PVFS_ATTR_SYS_CTIME;
+		attrs->mask |= ORANGEFS_ATTR_SYS_CTIME;
 
 	/*
-	 * PVFS2 cannot set size with a setattr operation.  Probably not likely
+	 * ORANGEFS cannot set size with a setattr operation.  Probably not likely
 	 * to be requested through the VFS, but just in case, don't worry about
 	 * ATTR_SIZE
 	 */
@@ -342,15 +342,15 @@ static inline int copy_attributes_from_inode(struct inode *inode,
 			return -EINVAL;
 		}
 
-		attrs->perms = PVFS_util_translate_mode(tmp_mode);
-		attrs->mask |= PVFS_ATTR_SYS_PERM;
+		attrs->perms = ORANGEFS_util_translate_mode(tmp_mode);
+		attrs->mask |= ORANGEFS_ATTR_SYS_PERM;
 	}
 
 	return 0;
 }
 
 /*
- * issues a pvfs2 getattr request and fills in the appropriate inode
+ * issues a orangefs getattr request and fills in the appropriate inode
  * attributes if successful.  returns 0 on success; -errno otherwise
  */
 int orangefs_inode_getattr(struct inode *inode, __u32 getattr_mask)
@@ -384,12 +384,12 @@ int orangefs_inode_getattr(struct inode *inode, __u32 getattr_mask)
 	}
 
 	/*
-	 * Store blksize in pvfs2 specific part of inode structure; we are
+	 * Store blksize in orangefs specific part of inode structure; we are
 	 * only going to use this to report to stat to make sure it doesn't
 	 * perturb any inode related code paths.
 	 */
 	if (new_op->downcall.resp.getattr.attributes.objtype ==
-			PVFS_TYPE_METAFILE) {
+			ORANGEFS_TYPE_METAFILE) {
 		orangefs_inode->blksize =
 			new_op->downcall.resp.getattr.attributes.blksize;
 	} else {
@@ -412,7 +412,7 @@ out:
 }
 
 /*
- * issues a pvfs2 setattr request to make sure the new attribute values
+ * issues a orangefs setattr request to make sure the new attribute values
  * take effect if successful.  returns 0 on success; -errno otherwise
  */
 int orangefs_inode_setattr(struct inode *inode, struct iattr *iattr)
@@ -549,13 +549,13 @@ int orangefs_unmount_sb(struct super_block *sb)
 		ORANGEFS_MAX_SERVER_ADDR_LEN);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "Attempting PVFS2 Unmount via host %s\n",
+		     "Attempting ORANGEFS Unmount via host %s\n",
 		     new_op->upcall.req.fs_umount.orangefs_config_server);
 
-	ret = service_operation(new_op, "pvfs2_fs_umount", 0);
+	ret = service_operation(new_op, "orangefs_fs_umount", 0);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "pvfs2_unmount: got return value of %d\n", ret);
+		     "orangefs_unmount: got return value of %d\n", ret);
 	if (ret)
 		sb = ERR_PTR(ret);
 	else
@@ -584,10 +584,10 @@ int orangefs_cancel_op_in_progress(__u64 tag)
 	new_op->upcall.req.cancel.op_tag = tag;
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
-		     "Attempting PVFS2 operation cancellation of tag %llu\n",
+		     "Attempting ORANGEFS operation cancellation of tag %llu\n",
 		     llu(new_op->upcall.req.cancel.op_tag));
 
-	ret = service_operation(new_op, "pvfs2_cancel", ORANGEFS_OP_CANCELLATION);
+	ret = service_operation(new_op, "orangefs_cancel", ORANGEFS_OP_CANCELLATION);
 
 	gossip_debug(GOSSIP_UTILS_DEBUG,
 		     "orangefs_cancel_op_in_progress: got return value of %d\n",
@@ -603,8 +603,8 @@ void orangefs_op_initialize(struct orangefs_kernel_op_s *op)
 		spin_lock(&op->lock);
 		op->io_completed = 0;
 
-		op->upcall.type = PVFS2_VFS_OP_INVALID;
-		op->downcall.type = PVFS2_VFS_OP_INVALID;
+		op->upcall.type = ORANGEFS_VFS_OP_INVALID;
+		op->downcall.type = ORANGEFS_VFS_OP_INVALID;
 		op->downcall.status = -1;
 
 		op->op_state = OP_VFS_STATE_UNKNOWN;
@@ -617,7 +617,7 @@ void orangefs_make_bad_inode(struct inode *inode)
 {
 	if (is_root_handle(inode)) {
 		/*
-		 * if this occurs, the pvfs2-client-core was killed but we
+		 * if this occurs, the orangefs-client-core was killed but we
 		 * can't afford to lose the inode operations and such
 		 * associated with the root handle in any case.
 		 */
@@ -664,10 +664,10 @@ __u64 orangefs_convert_time_field(void *time_ptr)
 
 /*
  * The following is a very dirty hack that is now a permanent part of the
- * PVFS2 protocol. See protocol.h for more error definitions.
+ * ORANGEFS protocol. See protocol.h for more error definitions.
  */
 
-/* The order matches include/pvfs2-types.h in the OrangeFS source. */
+/* The order matches include/orangefs-types.h in the OrangeFS source. */
 static int PINT_errno_mapping[] = {
 	0, EPERM, ENOENT, EINTR, EIO, ENXIO, EBADF, EAGAIN, ENOMEM,
 	EFAULT, EBUSY, EEXIST, ENODEV, ENOTDIR, EISDIR, EINVAL, EMFILE,
@@ -693,24 +693,24 @@ int orangefs_normalize_to_errno(__s32 error_code)
 	 * server.
 	 */
 	} else if (error_code > 0) {
-		gossip_err("pvfs2: error status receieved.\n");
-		gossip_err("pvfs2: assuming error code is inverted.\n");
+		gossip_err("orangefs: error status receieved.\n");
+		gossip_err("orangefs: assuming error code is inverted.\n");
 		error_code = -error_code;
 	}
 
 	/*
-	 * XXX: This is very bad since error codes from PVFS2 may not be
+	 * XXX: This is very bad since error codes from ORANGEFS may not be
 	 * suitable for return into userspace.
 	 */
 
 	/*
-	 * Convert PVFS2 error values into errno values suitable for return
+	 * Convert ORANGEFS error values into errno values suitable for return
 	 * from the kernel.
 	 */
-	if ((-error_code) & PVFS_NON_ERRNO_ERROR_BIT) {
+	if ((-error_code) & ORANGEFS_NON_ERRNO_ERROR_BIT) {
 		if (((-error_code) &
-		    (PVFS_ERROR_NUMBER_BITS|PVFS_NON_ERRNO_ERROR_BIT|
-		    PVFS_ERROR_BIT)) == PVFS_ECANCEL) {
+		    (ORANGEFS_ERROR_NUMBER_BITS|ORANGEFS_NON_ERRNO_ERROR_BIT|
+		    ORANGEFS_ERROR_BIT)) == PVFS_ECANCEL) {
 			/*
 			 * cancellation error codes generally correspond to
 			 * a timeout from the client's perspective
@@ -718,30 +718,30 @@ int orangefs_normalize_to_errno(__s32 error_code)
 			error_code = -ETIMEDOUT;
 		} else {
 			/* assume a default error code */
-			gossip_err("pvfs2: warning: got error code without errno equivalent: %d.\n", error_code);
+			gossip_err("orangefs: warning: got error code without errno equivalent: %d.\n", error_code);
 			error_code = -EINVAL;
 		}
 
-	/* Convert PVFS2 encoded errno values into regular errno values. */
-	} else if ((-error_code) & PVFS_ERROR_BIT) {
-		i = (-error_code) & ~(PVFS_ERROR_BIT|PVFS_ERROR_CLASS_BITS);
+	/* Convert ORANGEFS encoded errno values into regular errno values. */
+	} else if ((-error_code) & ORANGEFS_ERROR_BIT) {
+		i = (-error_code) & ~(ORANGEFS_ERROR_BIT|ORANGEFS_ERROR_CLASS_BITS);
 		if (i < sizeof(PINT_errno_mapping)/sizeof(*PINT_errno_mapping))
 			error_code = -PINT_errno_mapping[i];
 		else
 			error_code = -EINVAL;
 
 	/*
-	 * Only PVFS2 protocol error codes should ever come here. Otherwise
+	 * Only ORANGEFS protocol error codes should ever come here. Otherwise
 	 * there is a bug somewhere.
 	 */
 	} else {
-		gossip_err("orangefs: orangefs_normalize_to_errno: got error code which is not from PVFS2.\n");
+		gossip_err("orangefs: orangefs_normalize_to_errno: got error code which is not from ORANGEFS.\n");
 	}
 	return error_code;
 }
 
 #define NUM_MODES 11
-__s32 PVFS_util_translate_mode(int mode)
+__s32 ORANGEFS_util_translate_mode(int mode)
 {
 	int ret = 0;
 	int i = 0;
@@ -752,10 +752,10 @@ __s32 PVFS_util_translate_mode(int mode)
 		S_ISGID, S_ISUID
 	};
 	static int orangefs_modes[NUM_MODES] = {
-		PVFS_O_EXECUTE, PVFS_O_WRITE, PVFS_O_READ,
-		PVFS_G_EXECUTE, PVFS_G_WRITE, PVFS_G_READ,
-		PVFS_U_EXECUTE, PVFS_U_WRITE, PVFS_U_READ,
-		PVFS_G_SGID, PVFS_U_SUID
+		ORANGEFS_O_EXECUTE, ORANGEFS_O_WRITE, ORANGEFS_O_READ,
+		ORANGEFS_G_EXECUTE, ORANGEFS_G_WRITE, ORANGEFS_G_READ,
+		ORANGEFS_U_EXECUTE, ORANGEFS_U_WRITE, ORANGEFS_U_READ,
+		ORANGEFS_G_SGID, ORANGEFS_U_SUID
 	};
 
 	for (i = 0; i < NUM_MODES; i++)
@@ -822,10 +822,10 @@ int orangefs_prepare_cdm_array(char *debug_array_string)
 		       (unsigned long long *)&(cdm_array[i].mask1),
 		       (unsigned long long *)&(cdm_array[i].mask2));
 
-		if (!strcmp(cdm_array[i].keyword, PVFS2_VERBOSE))
+		if (!strcmp(cdm_array[i].keyword, ORANGEFS_VERBOSE))
 			client_verbose_index = i;
 
-		if (!strcmp(cdm_array[i].keyword, PVFS2_ALL))
+		if (!strcmp(cdm_array[i].keyword, ORANGEFS_ALL))
 			client_all_index = i;
 
 		cds_head = cds_delimiter + 1;
@@ -1013,7 +1013,7 @@ void do_k_string(void *k_mask, int index)
 				strcat(kernel_debug_string, ",");
 			} else {
 				gossip_err("%s: overflow!\n", __func__);
-				strcpy(kernel_debug_string, PVFS2_ALL);
+				strcpy(kernel_debug_string, ORANGEFS_ALL);
 				goto out;
 			}
 	}
@@ -1040,7 +1040,7 @@ void do_c_string(void *c_mask, int index)
 				strcat(client_debug_string, ",");
 			} else {
 				gossip_err("%s: overflow!\n", __func__);
-				strcpy(client_debug_string, PVFS2_ALL);
+				strcpy(client_debug_string, ORANGEFS_ALL);
 				goto out;
 			}
 	}
@@ -1052,7 +1052,7 @@ int keyword_is_amalgam(char *keyword)
 {
 	int rc = 0;
 
-	if ((!strcmp(keyword, PVFS2_ALL)) || (!strcmp(keyword, PVFS2_VERBOSE)))
+	if ((!strcmp(keyword, ORANGEFS_ALL)) || (!strcmp(keyword, ORANGEFS_VERBOSE)))
 		rc = 1;
 
 	return rc;
@@ -1076,14 +1076,14 @@ int check_amalgam_keyword(void *mask, int type)
 
 		if ((c_mask->mask1 == cdm_array[client_all_index].mask1) &&
 		    (c_mask->mask2 == cdm_array[client_all_index].mask2)) {
-			strcpy(client_debug_string, PVFS2_ALL);
+			strcpy(client_debug_string, ORANGEFS_ALL);
 			rc = 1;
 			goto out;
 		}
 
 		if ((c_mask->mask1 == cdm_array[client_verbose_index].mask1) &&
 		    (c_mask->mask2 == cdm_array[client_verbose_index].mask2)) {
-			strcpy(client_debug_string, PVFS2_VERBOSE);
+			strcpy(client_debug_string, ORANGEFS_VERBOSE);
 			rc = 1;
 			goto out;
 		}
@@ -1092,7 +1092,7 @@ int check_amalgam_keyword(void *mask, int type)
 		k_mask = (__u64 *) mask;
 
 		if (*k_mask >= s_kmod_keyword_mask_map[k_all_index].mask_val) {
-			strcpy(kernel_debug_string, PVFS2_ALL);
+			strcpy(kernel_debug_string, ORANGEFS_ALL);
 			rc = 1;
 			goto out;
 		}

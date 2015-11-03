@@ -15,7 +15,7 @@
 /*
  * valid pvfs2 kernel operation types
  */
-#define PVFS2_VFS_OP_INVALID           0xFF000000
+#define ORANGEFS_VFS_OP_INVALID           0xFF000000
 #define ORANGEFS_VFS_OP_FILE_IO        0xFF000001
 #define ORANGEFS_VFS_OP_LOOKUP         0xFF000002
 #define ORANGEFS_VFS_OP_CREATE         0xFF000003

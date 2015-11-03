@@ -20,8 +20,8 @@ extern int cdm_element_count;
 #define ORANGEFS_KMOD_DEBUG_HELP_FILE "debug-help"
 #define ORANGEFS_KMOD_DEBUG_FILE "kernel-debug"
 #define ORANGEFS_CLIENT_DEBUG_FILE "client-debug"
-#define PVFS2_VERBOSE "verbose"
-#define PVFS2_ALL "all"
+#define ORANGEFS_VERBOSE "verbose"
+#define ORANGEFS_ALL "all"
 
 /* pvfs2-config.h ***********************************************************/
 #define PVFS2_VERSION_MAJOR 2
@@ -112,50 +112,50 @@ typedef __s64 PVFS_offset;
  * Bit 30 specifies that this is a PVFS2 error. A PVFS2 error is either an
  * encoded errno value or a PVFS2 protocol error.
  */
-#define PVFS_ERROR_BIT (1 << 30)
+#define ORANGEFS_ERROR_BIT (1 << 30)
 
 /*
  * Bit 29 specifies that this is a PVFS2 protocol error and not an encoded
  * errno value.
  */
-#define PVFS_NON_ERRNO_ERROR_BIT (1 << 29)
+#define ORANGEFS_NON_ERRNO_ERROR_BIT (1 << 29)
 
 /*
  * Bits 9, 8, and 7 specify the error class, which encodes the section of
  * server code the error originated in for logging purposes. It is not used
  * in the kernel except to be masked out.
  */
-#define PVFS_ERROR_CLASS_BITS 0x380
+#define ORANGEFS_ERROR_CLASS_BITS 0x380
 
 /* Bits 6 - 0 are reserved for the actual error code. */
-#define PVFS_ERROR_NUMBER_BITS 0x7f
+#define ORANGEFS_ERROR_NUMBER_BITS 0x7f
 
 /* Encoded errno values are decoded by PINT_errno_mapping in pvfs2-utils.c. */
 
 /* Our own PVFS2 protocol error codes. */
-#define PVFS_ECANCEL    (1|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_EDEVINIT   (2|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_EDETAIL    (3|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_EHOSTNTFD  (4|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_EADDRNTFD  (5|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_ENORECVR   (6|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_ETRYAGAIN  (7|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_ENOTPVFS   (8|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
-#define PVFS_ESECURITY  (9|PVFS_NON_ERRNO_ERROR_BIT|PVFS_ERROR_BIT)
+#define PVFS_ECANCEL    (1|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_EDEVINIT   (2|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_EDETAIL    (3|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_EHOSTNTFD  (4|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_EADDRNTFD  (5|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_ENORECVR   (6|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_ETRYAGAIN  (7|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_ENOTPVFS   (8|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define PVFS_ESECURITY  (9|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
 
 /* permission bits */
-#define PVFS_O_EXECUTE (1 << 0)
-#define PVFS_O_WRITE   (1 << 1)
-#define PVFS_O_READ    (1 << 2)
-#define PVFS_G_EXECUTE (1 << 3)
-#define PVFS_G_WRITE   (1 << 4)
-#define PVFS_G_READ    (1 << 5)
-#define PVFS_U_EXECUTE (1 << 6)
-#define PVFS_U_WRITE   (1 << 7)
-#define PVFS_U_READ    (1 << 8)
-/* no PVFS_U_VTX (sticky bit) */
-#define PVFS_G_SGID    (1 << 10)
-#define PVFS_U_SUID    (1 << 11)
+#define ORANGEFS_O_EXECUTE (1 << 0)
+#define ORANGEFS_O_WRITE   (1 << 1)
+#define ORANGEFS_O_READ    (1 << 2)
+#define ORANGEFS_G_EXECUTE (1 << 3)
+#define ORANGEFS_G_WRITE   (1 << 4)
+#define ORANGEFS_G_READ    (1 << 5)
+#define ORANGEFS_U_EXECUTE (1 << 6)
+#define ORANGEFS_U_WRITE   (1 << 7)
+#define ORANGEFS_U_READ    (1 << 8)
+/* no ORANGEFS_U_VTX (sticky bit) */
+#define ORANGEFS_G_SGID    (1 << 10)
+#define ORANGEFS_U_SUID    (1 << 11)
 
 /* definition taken from stdint.h */
 #define INT32_MAX (2147483647)
@@ -164,21 +164,21 @@ typedef __s64 PVFS_offset;
 #define PVFS_ITERATE_NEXT     (INT32_MAX - 3)
 #define PVFS_READDIR_START PVFS_ITERATE_START
 #define PVFS_READDIR_END   PVFS_ITERATE_END
-#define PVFS_IMMUTABLE_FL FS_IMMUTABLE_FL
-#define PVFS_APPEND_FL    FS_APPEND_FL
-#define PVFS_NOATIME_FL   FS_NOATIME_FL
+#define ORANGEFS_IMMUTABLE_FL FS_IMMUTABLE_FL
+#define ORANGEFS_APPEND_FL    FS_APPEND_FL
+#define ORANGEFS_NOATIME_FL   FS_NOATIME_FL
 #define ORANGEFS_MIRROR_FL    0x01000000ULL
-#define PVFS_O_EXECUTE (1 << 0)
+#define ORANGEFS_O_EXECUTE (1 << 0)
 #define ORANGEFS_FS_ID_NULL       ((__s32)0)
-#define PVFS_ATTR_SYS_UID                   (1 << 0)
-#define PVFS_ATTR_SYS_GID                   (1 << 1)
-#define PVFS_ATTR_SYS_PERM                  (1 << 2)
-#define PVFS_ATTR_SYS_ATIME                 (1 << 3)
-#define PVFS_ATTR_SYS_CTIME                 (1 << 4)
-#define PVFS_ATTR_SYS_MTIME                 (1 << 5)
-#define PVFS_ATTR_SYS_TYPE                  (1 << 6)
-#define PVFS_ATTR_SYS_ATIME_SET             (1 << 7)
-#define PVFS_ATTR_SYS_MTIME_SET             (1 << 8)
+#define ORANGEFS_ATTR_SYS_UID                   (1 << 0)
+#define ORANGEFS_ATTR_SYS_GID                   (1 << 1)
+#define ORANGEFS_ATTR_SYS_PERM                  (1 << 2)
+#define ORANGEFS_ATTR_SYS_ATIME                 (1 << 3)
+#define ORANGEFS_ATTR_SYS_CTIME                 (1 << 4)
+#define ORANGEFS_ATTR_SYS_MTIME                 (1 << 5)
+#define ORANGEFS_ATTR_SYS_TYPE                  (1 << 6)
+#define ORANGEFS_ATTR_SYS_ATIME_SET             (1 << 7)
+#define ORANGEFS_ATTR_SYS_MTIME_SET             (1 << 8)
 #define ORANGEFS_ATTR_SYS_SIZE                  (1 << 20)
 #define PVFS_ATTR_SYS_LNK_TARGET            (1 << 24)
 #define PVFS_ATTR_SYS_DFILE_COUNT           (1 << 25)
@@ -186,16 +186,16 @@ typedef __s64 PVFS_offset;
 #define PVFS_ATTR_SYS_BLKSIZE               (1 << 28)
 #define PVFS_ATTR_SYS_MIRROR_COPIES_COUNT   (1 << 29)
 #define PVFS_ATTR_SYS_COMMON_ALL	\
-	(PVFS_ATTR_SYS_UID	|	\
-	 PVFS_ATTR_SYS_GID	|	\
-	 PVFS_ATTR_SYS_PERM	|	\
-	 PVFS_ATTR_SYS_ATIME	|	\
-	 PVFS_ATTR_SYS_CTIME	|	\
-	 PVFS_ATTR_SYS_MTIME	|	\
-	 PVFS_ATTR_SYS_TYPE)
+	(ORANGEFS_ATTR_SYS_UID	|	\
+	 ORANGEFS_ATTR_SYS_GID	|	\
+	 ORANGEFS_ATTR_SYS_PERM	|	\
+	 ORANGEFS_ATTR_SYS_ATIME	|	\
+	 ORANGEFS_ATTR_SYS_CTIME	|	\
+	 ORANGEFS_ATTR_SYS_MTIME	|	\
+	 ORANGEFS_ATTR_SYS_TYPE)
 
-#define PVFS_ATTR_SYS_ALL_SETABLE		\
-(PVFS_ATTR_SYS_COMMON_ALL-PVFS_ATTR_SYS_TYPE)
+#define ORANGEFS_ATTR_SYS_ALL_SETABLE		\
+(PVFS_ATTR_SYS_COMMON_ALL-ORANGEFS_ATTR_SYS_TYPE)
 
 #define ORANGEFS_ATTR_SYS_ALL_NOHINT			\
 	(PVFS_ATTR_SYS_COMMON_ALL		|	\
@@ -208,17 +208,17 @@ typedef __s64 PVFS_offset;
 #define PVFS_XATTR_REPLACE 0x2
 #define PVFS_XATTR_CREATE  0x1
 #define ORANGEFS_MAX_SERVER_ADDR_LEN 256
-#define PVFS_NAME_MAX                256
+#define ORANGEFS_NAME_MAX                256
 /*
  * max extended attribute name len as imposed by the VFS and exploited for the
  * upcall request types.
  * NOTE: Please retain them as multiples of 8 even if you wish to change them
  * This is *NECESSARY* for supporting 32 bit user-space binaries on a 64-bit
  * kernel. Due to implementation within DBPF, this really needs to be
- * PVFS_NAME_MAX, which it was the same value as, but no reason to let it
+ * ORANGEFS_NAME_MAX, which it was the same value as, but no reason to let it
  * break if that changes in the future.
  */
-#define PVFS_MAX_XATTR_NAMELEN   PVFS_NAME_MAX	/* Not the same as
+#define PVFS_MAX_XATTR_NAMELEN   ORANGEFS_NAME_MAX	/* Not the same as
 						 * XATTR_NAME_MAX defined
 						 * by <linux/xattr.h>
 						 */
@@ -242,13 +242,13 @@ enum ORANGEFS_io_type {
  * change.
  */
 enum pvfs2_ds_type {
-	PVFS_TYPE_NONE = 0,
-	PVFS_TYPE_METAFILE = (1 << 0),
-	PVFS_TYPE_DATAFILE = (1 << 1),
-	PVFS_TYPE_DIRECTORY = (1 << 2),
-	PVFS_TYPE_SYMLINK = (1 << 3),
-	PVFS_TYPE_DIRDATA = (1 << 4),
-	PVFS_TYPE_INTERNAL = (1 << 5)	/* for the server's private use */
+	ORANGEFS_TYPE_NONE = 0,
+	ORANGEFS_TYPE_METAFILE = (1 << 0),
+	ORANGEFS_TYPE_DATAFILE = (1 << 1),
+	ORANGEFS_TYPE_DIRECTORY = (1 << 2),
+	ORANGEFS_TYPE_SYMLINK = (1 << 3),
+	ORANGEFS_TYPE_DIRDATA = (1 << 4),
+	ORANGEFS_TYPE_INTERNAL = (1 << 5)	/* for the server's private use */
 };
 
 /*
@@ -290,7 +290,7 @@ struct PVFS_keyval_pair {
 
 /* pvfs2-sysint.h ***********************************************************/
 /* Describes attributes for a file, directory, or symlink. */
-struct PVFS_sys_attr_s {
+struct ORANGEFS_sys_attr_s {
 	__u32 owner;
 	__u32 group;
 	__u32 perms;
@@ -349,7 +349,7 @@ struct dev_mask2_info_s {
 };
 
 /* pvfs2-util.h *************************************************************/
-__s32 PVFS_util_translate_mode(int mode);
+__s32 ORANGEFS_util_translate_mode(int mode);
 
 /* pvfs2-debug.h ************************************************************/
 #include "pvfs2-debug.h"

@@ -36,7 +36,7 @@ struct pvfs2_symlink_response {
 };
 
 struct pvfs2_getattr_response {
-	struct PVFS_sys_attr_s attributes;
+	struct ORANGEFS_sys_attr_s attributes;
 	char link_target[ORANGEFS_NAME_LEN];
 };
 

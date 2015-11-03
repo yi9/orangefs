@@ -310,7 +310,7 @@ struct orangefs_kernel_op_s {
 /* per inode private pvfs2 info */
 struct orangefs_inode_s {
 	struct orangefs_object_kref refn;
-	char link_target[PVFS_NAME_MAX];
+	char link_target[ORANGEFS_NAME_MAX];
 	__s64 blksize;
 	/*
 	 * Reading/Writing Extended attributes need to acquire the appropriate
@@ -824,9 +824,9 @@ do {									\
 	sys_attr.owner = from_kuid(current_user_ns(), current_fsuid()); \
 	sys_attr.group = from_kgid(current_user_ns(), current_fsgid()); \
 	sys_attr.size = 0;						\
-	sys_attr.perms = PVFS_util_translate_mode(mode);		\
+	sys_attr.perms = ORANGEFS_util_translate_mode(mode);		\
 	sys_attr.objtype = type;					\
-	sys_attr.mask = PVFS_ATTR_SYS_ALL_SETABLE;			\
+	sys_attr.mask = ORANGEFS_ATTR_SYS_ALL_SETABLE;			\
 } while (0)
 
 #define pvfs2_inode_lock(__i)  mutex_lock(&(__i)->i_mutex)

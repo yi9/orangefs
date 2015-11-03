@@ -33,7 +33,7 @@ static int orangefs_create(struct inode *dir,
 	new_op->upcall.req.create.parent_refn = parent->refn;
 
 	fill_default_sys_attrs(new_op->upcall.req.create.attributes,
-			       PVFS_TYPE_METAFILE, mode);
+			       ORANGEFS_TYPE_METAFILE, mode);
 
 	strncpy(new_op->upcall.req.create.d_name,
 		dentry->d_name.name, ORANGEFS_NAME_LEN);
@@ -285,7 +285,7 @@ static int orangefs_symlink(struct inode *dir,
 	new_op->upcall.req.sym.parent_refn = parent->refn;
 
 	fill_default_sys_attrs(new_op->upcall.req.sym.attributes,
-			       PVFS_TYPE_SYMLINK,
+			       ORANGEFS_TYPE_SYMLINK,
 			       mode);
 
 	strncpy(new_op->upcall.req.sym.entry_name,
@@ -351,7 +351,7 @@ static int orangefs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 	new_op->upcall.req.mkdir.parent_refn = parent->refn;
 
 	fill_default_sys_attrs(new_op->upcall.req.mkdir.attributes,
-			       PVFS_TYPE_DIRECTORY, mode);
+			      ORANGEFS_TYPE_DIRECTORY, mode);
 
 	strncpy(new_op->upcall.req.mkdir.d_name,
 		dentry->d_name.name, ORANGEFS_NAME_LEN);
