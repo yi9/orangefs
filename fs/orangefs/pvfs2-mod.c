@@ -153,7 +153,7 @@ static int __init pvfs2_init(void)
 		goto cleanup_inode;
 
 	/* Initialize the pvfsdev subsystem. */
-	ret = pvfs2_dev_init();
+	ret = orangefs_dev_init();
 	if (ret < 0) {
 		gossip_err("pvfs2: could not initialize device subsystem %d!\n",
 			   ret);
@@ -215,7 +215,7 @@ cleanup_progress_table:
 	kfree(htable_ops_in_progress);
 
 cleanup_device:
-	pvfs2_dev_cleanup();
+	orangefs_dev_cleanup();
 
 cleanup_kiocb:
 	kiocb_cache_finalize();
@@ -247,7 +247,7 @@ static void __exit pvfs2_exit(void)
 	orangefs_debugfs_cleanup();
 	orangefs_sysfs_exit();
 	fsid_key_table_finalize();
-	pvfs2_dev_cleanup();
+	orangefs_dev_cleanup();
 	/* clear out all pending upcall op requests */
 	spin_lock(&orangefs_request_list_lock);
 	while (!list_empty(&orangefs_request_list)) {

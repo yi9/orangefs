@@ -76,9 +76,9 @@
 #define PVFS2_MAX_FSKEY_LEN            64
 
 #define MAX_DEV_REQ_UPSIZE (2*sizeof(__s32) +   \
-sizeof(__u64) + sizeof(struct pvfs2_upcall_s))
+sizeof(__u64) + sizeof(struct orangefs_upcall_s))
 #define MAX_DEV_REQ_DOWNSIZE (2*sizeof(__s32) + \
-sizeof(__u64) + sizeof(struct pvfs2_downcall_s))
+sizeof(__u64) + sizeof(struct orangefs_downcall_s))
 
 #define BITS_PER_LONG_DIV_8 (BITS_PER_LONG >> 3)
 
@@ -272,8 +272,8 @@ struct orangefs_kernel_op_s {
 	 */
 	int uses_shared_memory;
 
-	struct pvfs2_upcall_s upcall;
-	struct pvfs2_downcall_s downcall;
+	struct orangefs_upcall_s upcall;
+	struct orangefs_downcall_s downcall;
 
 	wait_queue_head_t waitq;
 	spinlock_t lock;
@@ -612,8 +612,8 @@ ssize_t orangefs_inode_read(struct inode *inode,
 /*
  * defined in devpvfs2-req.c
  */
-int pvfs2_dev_init(void);
-void pvfs2_dev_cleanup(void);
+int orangefs_dev_init(void);
+void orangefs_dev_cleanup(void);
 int is_daemon_in_service(void);
 int fs_mount_pending(__s32 fsid);
 

@@ -102,7 +102,7 @@ struct pvfs2_fs_key_response {
 	char fs_key[FS_KEY_BUF_SIZE];
 };
 
-struct pvfs2_downcall_s {
+struct orangefs_downcall_s {
 	__s32 type;
 	__s32 status;
 	/* currently trailer is used only by readdir */

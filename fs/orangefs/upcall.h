@@ -212,7 +212,7 @@ struct pvfs2_fs_key_request_s {
 	__s32 __pad1;
 };
 
-struct pvfs2_upcall_s {
+struct orangefs_upcall_s {
 	__s32 type;
 	__u32 uid;
 	__u32 gid;

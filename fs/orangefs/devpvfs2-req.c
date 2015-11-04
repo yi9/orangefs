@@ -76,11 +76,11 @@ static int orangefs_devreq_open(struct inode *inode, struct file *file)
 	int ret = -EINVAL;
 
 	if (!(file->f_flags & O_NONBLOCK)) {
-		gossip_err("pvfs2: device cannot be opened in blocking mode\n");
+		gossip_err("orangefs: device cannot be opened in blocking mode\n");
 		goto out;
 	}
 	ret = -EACCES;
-	gossip_debug(GOSSIP_DEV_DEBUG, "pvfs2-client-core: opening device\n");
+	gossip_debug(GOSSIP_DEV_DEBUG, "orangefs-client-core: opening device\n");
 	mutex_lock(&devreq_mutex);
 
 	if (open_access_count == 0) {
@@ -95,7 +95,7 @@ static int orangefs_devreq_open(struct inode *inode, struct file *file)
 out:
 
 	gossip_debug(GOSSIP_DEV_DEBUG,
-		     "pvfs2-client-core: open device complete (ret = %d)\n",
+		     "orangefs-client-core: open device complete (ret = %d)\n",
 		     ret);
 	return ret;
 }
@@ -112,7 +112,7 @@ static ssize_t orangefs_devreq_read(struct file *file,
 
 	if (!(file->f_flags & O_NONBLOCK)) {
 		/* We do not support blocking reads/opens any more */
-		gossip_err("pvfs2: blocking reads are not supported! (pvfs2-client-core bug)\n");
+		gossip_err("orangefs: blocking reads are not supported! (orangefs-client-core bug)\n");
 		return -EINVAL;
 	} else {
 		struct orangefs_kernel_op_s *op = NULL, *temp = NULL;
@@ -209,7 +209,7 @@ static ssize_t orangefs_devreq_read(struct file *file,
 						  sizeof(__s32) +
 						  sizeof(__u64),
 						&cur_op->upcall,
-						sizeof(struct pvfs2_upcall_s));
+						sizeof(struct orangefs_upcall_s));
 				    }
 				}
 			    }
@@ -338,11 +338,11 @@ static ssize_t orangefs_devreq_writev(struct file *file,
 		get_op(op);
 		/* cut off magic and tag from payload size */
 		payload_size -= (2 * sizeof(__s32) + sizeof(__u64));
-		if (payload_size <= sizeof(struct pvfs2_downcall_s))
+		if (payload_size <= sizeof(struct orangefs_downcall_s))
 			/* copy the passed in downcall into the op */
 			memcpy(&op->downcall,
 			       ptr,
-			       sizeof(struct pvfs2_downcall_s));
+			       sizeof(struct orangefs_downcall_s));
 		else
 			gossip_debug(GOSSIP_DEV_DEBUG,
 				     "writev: Ignoring %d bytes\n",
@@ -493,7 +493,7 @@ static ssize_t orangefs_devreq_writev(struct file *file,
 	return total_returned_size;
 }
 
-static ssize_t pvfs2_devreq_write_iter(struct kiocb *iocb,
+static ssize_t orangefs_devreq_write_iter(struct kiocb *iocb,
 				      struct iov_iter *iter)
 {
 	return orangefs_devreq_writev(iocb->ki_filp,
@@ -553,7 +553,7 @@ static int orangefs_devreq_release(struct inode *inode, struct file *file)
 	int unmounted = 0;
 
 	gossip_debug(GOSSIP_DEV_DEBUG,
-		     "%s:pvfs2-client-core: exiting, closing device\n",
+		     "%s:orangefs-client-core: exiting, closing device\n",
 		     __func__);
 
 	mutex_lock(&devreq_mutex);
@@ -577,7 +577,7 @@ static int orangefs_devreq_release(struct inode *inode, struct file *file)
 	 */
 	purge_inprogress_ops();
 	gossip_debug(GOSSIP_DEV_DEBUG,
-		     "pvfs2-client-core: device close complete\n");
+		     "orangefs-client-core: device close complete\n");
 	return 0;
 }
 
@@ -599,7 +599,7 @@ static inline long check_ioctl_command(unsigned int command)
 {
 	/* Check for valid ioctl codes */
 	if (_IOC_TYPE(command) != PVFS_DEV_MAGIC) {
-		gossip_err("device ioctl magic numbers don't match! Did you rebuild pvfs2-client-core/libpvfs2? [cmd %x, magic %x != %x]\n",
+		gossip_err("device ioctl magic numbers don't match! Did you rebuild orangefs-client-core/libpvfs2? [cmd %x, magic %x != %x]\n",
 			command,
 			_IOC_TYPE(command),
 			PVFS_DEV_MAGIC);
@@ -655,7 +655,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 			     "orangefs_devreq_ioctl: got PVFS_DEV_REMOUNT_ALL\n");
 
 		/*
-		 * remount all mounted pvfs2 volumes to regain the lost
+		 * remount all mounted orangefs volumes to regain the lost
 		 * dynamic mount tables (if any) -- NOTE: this is done
 		 * without keeping the superblock list locked due to the
 		 * upcall/downcall waiting.  also, the request semaphore is
@@ -916,7 +916,7 @@ static long orangefs_devreq_compat_ioctl(struct file *filp, unsigned int cmd,
  * not noticed until we tried to compile on power pc...
  */
 #if (defined(CONFIG_COMPAT) && !defined(HAVE_REGISTER_IOCTL32_CONVERSION)) || !defined(CONFIG_COMPAT)
-static int pvfs2_ioctl32_init(void)
+static int orangefs_ioctl32_init(void)
 {
 	return 0;
 }
@@ -931,19 +931,19 @@ static void orangefs_ioctl32_cleanup(void)
 static int orangefs_dev_major;
 
 /*
- * Initialize pvfs2 device specific state:
+ * Initialize orangefs device specific state:
  * Must be called at module load time only
  */
-int pvfs2_dev_init(void)
+int orangefs_dev_init(void)
 {
 	int ret;
 
 	/* register the ioctl32 sub-system */
-	ret = pvfs2_ioctl32_init();
+	ret = orangefs_ioctl32_init();
 	if (ret < 0)
 		return ret;
 
-	/* register pvfs2-req device  */
+	/* register orangefs-req device  */
 	orangefs_dev_major = register_chrdev(0,
 					  PVFS2_REQDEVICE_NAME,
 					  &orangefs_devreq_file_operations);
@@ -963,7 +963,7 @@ int pvfs2_dev_init(void)
 	return 0;
 }
 
-void pvfs2_dev_cleanup(void)
+void orangefs_dev_cleanup(void)
 {
 	unregister_chrdev(orangefs_dev_major, PVFS2_REQDEVICE_NAME);
 	gossip_debug(GOSSIP_DEV_DEBUG,
@@ -992,7 +992,7 @@ static unsigned int orangefs_devreq_poll(struct file *file,
 const struct file_operations orangefs_devreq_file_operations = {
 	.owner = THIS_MODULE,
 	.read = orangefs_devreq_read,
-	.write_iter = pvfs2_devreq_write_iter,
+	.write_iter = orangefs_devreq_write_iter,
 	.open = orangefs_devreq_open,
 	.release = orangefs_devreq_release,
 	.unlocked_ioctl = orangefs_devreq_ioctl,
