@@ -334,7 +334,7 @@ struct ORANGEFS_sys_attr_s {
 
 /* pint-dev.h ***************************************************************/
 
-/* parameter structure used in PVFS_DEV_DEBUG ioctl command */
+/* parameter structure used in ORANGEFS_DEV_DEBUG ioctl command */
 struct dev_mask_info_s {
 	enum {
 		KERNEL_MASK,
@@ -359,7 +359,7 @@ __s32 ORANGEFS_util_translate_mode(int mode);
 #define lld(x) (long long)(x)
 
 /* pint-dev-shared.h ********************************************************/
-#define PVFS_DEV_MAGIC 'k'
+#define ORANGEFS_DEV_MAGIC 'k'
 
 #define ORANGEFS_READDIR_DEFAULT_DESC_COUNT  5
 
@@ -376,32 +376,32 @@ __s32 ORANGEFS_util_translate_mode(int mode);
 
 /* supported ioctls, codes are with respect to user-space */
 enum {
-	PVFS_DEV_GET_MAGIC = _IOW(PVFS_DEV_MAGIC, DEV_GET_MAGIC, __s32),
-	PVFS_DEV_GET_MAX_UPSIZE =
-	    _IOW(PVFS_DEV_MAGIC, DEV_GET_MAX_UPSIZE, __s32),
-	PVFS_DEV_GET_MAX_DOWNSIZE =
-	    _IOW(PVFS_DEV_MAGIC, DEV_GET_MAX_DOWNSIZE, __s32),
-	PVFS_DEV_MAP = _IO(PVFS_DEV_MAGIC, DEV_MAP),
-	PVFS_DEV_REMOUNT_ALL = _IO(PVFS_DEV_MAGIC, DEV_REMOUNT_ALL),
-	PVFS_DEV_DEBUG = _IOR(PVFS_DEV_MAGIC, DEV_DEBUG, __s32),
-	PVFS_DEV_UPSTREAM = _IOW(PVFS_DEV_MAGIC, DEV_UPSTREAM, int),
-	PVFS_DEV_CLIENT_MASK = _IOW(PVFS_DEV_MAGIC,
+	ORANGEFS_DEV_GET_MAGIC = _IOW(ORANGEFS_DEV_MAGIC, DEV_GET_MAGIC, __s32),
+	ORANGEFS_DEV_GET_MAX_UPSIZE =
+	    _IOW(ORANGEFS_DEV_MAGIC, DEV_GET_MAX_UPSIZE, __s32),
+	ORANGEFS_DEV_GET_MAX_DOWNSIZE =
+	    _IOW(ORANGEFS_DEV_MAGIC, DEV_GET_MAX_DOWNSIZE, __s32),
+	ORANGEFS_DEV_MAP = _IO(ORANGEFS_DEV_MAGIC, DEV_MAP),
+	ORANGEFS_DEV_REMOUNT_ALL = _IO(ORANGEFS_DEV_MAGIC, DEV_REMOUNT_ALL),
+	ORANGEFS_DEV_DEBUG = _IOR(ORANGEFS_DEV_MAGIC, DEV_DEBUG, __s32),
+	ORANGEFS_DEV_UPSTREAM = _IOW(ORANGEFS_DEV_MAGIC, DEV_UPSTREAM, int),
+	ORANGEFS_DEV_CLIENT_MASK = _IOW(ORANGEFS_DEV_MAGIC,
 				    DEV_CLIENT_MASK,
 				    struct dev_mask2_info_s),
-	PVFS_DEV_CLIENT_STRING = _IOW(PVFS_DEV_MAGIC,
+	ORANGEFS_DEV_CLIENT_STRING = _IOW(ORANGEFS_DEV_MAGIC,
 				      DEV_CLIENT_STRING,
 				      char *),
-	PVFS_DEV_MAXNR = DEV_MAX_NR,
+	ORANGEFS_DEV_MAXNR = DEV_MAX_NR,
 };
 
 /*
  * version number for use in communicating between kernel space and user
  * space. Zero signifies the upstream version of the kernel module.
  */
-#define PVFS_KERNEL_PROTO_VERSION 0
+#define ORANGEFS_KERNEL_PROTO_VERSION 0
 
 /*
- * describes memory regions to map in the PVFS_DEV_MAP ioctl.
+ * describes memory regions to map in the ORANGEFS_DEV_MAP ioctl.
  * NOTE: See devpvfs2-req.c for 32 bit compat structure.
  * Since this structure has a variable-sized layout that is different
  * on 32 and 64 bit platforms, we need to normalize to a 64 bit layout

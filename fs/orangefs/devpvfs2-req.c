@@ -22,14 +22,14 @@ static int open_access_count;
 #define DUMP_DEVICE_ERROR()                                                   \
 do {                                                                          \
 	gossip_err("*****************************************************\n");\
-	gossip_err("PVFS2 Device Error:  You cannot open the device file ");  \
+	gossip_err("ORANGEFS Device Error:  You cannot open the device file ");  \
 	gossip_err("\n/dev/%s more than once.  Please make sure that\nthere " \
-		   "are no ", PVFS2_REQDEVICE_NAME);                          \
+		   "are no ", ORANGEFS_REQDEVICE_NAME);                          \
 	gossip_err("instances of a program using this device\ncurrently "     \
 		   "running. (You must verify this!)\n");                     \
 	gossip_err("For example, you can use the lsof program as follows:\n");\
 	gossip_err("'lsof | grep %s' (run this as root)\n",                   \
-		   PVFS2_REQDEVICE_NAME);                                     \
+		   ORANGEFS_REQDEVICE_NAME);                                     \
 	gossip_err("  open_access_count = %d\n", open_access_count);          \
 	gossip_err("*****************************************************\n");\
 } while (0)
@@ -107,8 +107,8 @@ static ssize_t orangefs_devreq_read(struct file *file,
 	int ret = 0;
 	ssize_t len = 0;
 	struct orangefs_kernel_op_s *cur_op = NULL;
-	static __s32 magic = PVFS2_DEVREQ_MAGIC;
-	__s32 proto_ver = PVFS_KERNEL_PROTO_VERSION;
+	static __s32 magic = ORANGEFS_DEVREQ_MAGIC;
+	__s32 proto_ver = ORANGEFS_KERNEL_PROTO_VERSION;
 
 	if (!(file->f_flags & O_NONBLOCK)) {
 		/* We do not support blocking reads/opens any more */
@@ -322,7 +322,7 @@ static ssize_t orangefs_devreq_writev(struct file *file,
 	tag = *((__u64 *) ptr);
 	ptr += sizeof(__u64);
 
-	if (magic != PVFS2_DEVREQ_MAGIC) {
+	if (magic != ORANGEFS_DEVREQ_MAGIC) {
 		gossip_err("Error: Device magic number does not match.\n");
 		dev_req_release(buffer);
 		return -EPROTO;
@@ -562,7 +562,7 @@ static int orangefs_devreq_release(struct inode *inode, struct file *file)
 	open_access_count--;
 
 	unmounted = mark_all_pending_mounts();
-	gossip_debug(GOSSIP_DEV_DEBUG, "PVFS2 Device Close: Filesystem(s) %s\n",
+	gossip_debug(GOSSIP_DEV_DEBUG, "ORANGEFS Device Close: Filesystem(s) %s\n",
 		     (unmounted ? "UNMOUNTED" : "MOUNTED"));
 	mutex_unlock(&devreq_mutex);
 
@@ -598,17 +598,17 @@ int is_daemon_in_service(void)
 static inline long check_ioctl_command(unsigned int command)
 {
 	/* Check for valid ioctl codes */
-	if (_IOC_TYPE(command) != PVFS_DEV_MAGIC) {
+	if (_IOC_TYPE(command) != ORANGEFS_DEV_MAGIC) {
 		gossip_err("device ioctl magic numbers don't match! Did you rebuild orangefs-client-core/libpvfs2? [cmd %x, magic %x != %x]\n",
 			command,
 			_IOC_TYPE(command),
-			PVFS_DEV_MAGIC);
+			ORANGEFS_DEV_MAGIC);
 		return -EINVAL;
 	}
 	/* and valid ioctl commands */
-	if (_IOC_NR(command) >= PVFS_DEV_MAXNR || _IOC_NR(command) <= 0) {
+	if (_IOC_NR(command) >= ORANGEFS_DEV_MAXNR || _IOC_NR(command) <= 0) {
 		gossip_err("Invalid ioctl command number [%d >= %d]\n",
-			   _IOC_NR(command), PVFS_DEV_MAXNR);
+			   _IOC_NR(command), ORANGEFS_DEV_MAXNR);
 		return -ENOIOCTLCMD;
 	}
 	return 0;
@@ -616,7 +616,7 @@ static inline long check_ioctl_command(unsigned int command)
 
 static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 {
-	static __s32 magic = PVFS2_DEVREQ_MAGIC;
+	static __s32 magic = ORANGEFS_DEVREQ_MAGIC;
 	static __s32 max_up_size = MAX_ALIGNED_DEV_REQ_UPSIZE;
 	static __s32 max_down_size = MAX_ALIGNED_DEV_REQ_DOWNSIZE;
 	struct ORANGEFS_dev_map_desc user_desc;
@@ -630,29 +630,29 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 	/* mtmoore: add locking here */
 
 	switch (command) {
-	case PVFS_DEV_GET_MAGIC:
+	case ORANGEFS_DEV_GET_MAGIC:
 		return ((put_user(magic, (__s32 __user *) arg) == -EFAULT) ?
 			-EIO :
 			0);
-	case PVFS_DEV_GET_MAX_UPSIZE:
+	case ORANGEFS_DEV_GET_MAX_UPSIZE:
 		return ((put_user(max_up_size,
 				  (__s32 __user *) arg) == -EFAULT) ?
 					-EIO :
 					0);
-	case PVFS_DEV_GET_MAX_DOWNSIZE:
+	case ORANGEFS_DEV_GET_MAX_DOWNSIZE:
 		return ((put_user(max_down_size,
 				  (__s32 __user *) arg) == -EFAULT) ?
 					-EIO :
 					0);
-	case PVFS_DEV_MAP:
+	case ORANGEFS_DEV_MAP:
 		ret = copy_from_user(&user_desc,
 				     (struct ORANGEFS_dev_map_desc __user *)
 				     arg,
 				     sizeof(struct ORANGEFS_dev_map_desc));
 		return ret ? -EIO : orangefs_bufmap_initialize(&user_desc);
-	case PVFS_DEV_REMOUNT_ALL:
+	case ORANGEFS_DEV_REMOUNT_ALL:
 		gossip_debug(GOSSIP_DEV_DEBUG,
-			     "orangefs_devreq_ioctl: got PVFS_DEV_REMOUNT_ALL\n");
+			     "orangefs_devreq_ioctl: got ORANGEFS_DEV_REMOUNT_ALL\n");
 
 		/*
 		 * remount all mounted orangefs volumes to regain the lost
@@ -690,7 +690,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 		mutex_unlock(&request_mutex);
 		return ret;
 
-	case PVFS_DEV_UPSTREAM:
+	case ORANGEFS_DEV_UPSTREAM:
 		ret = copy_to_user((void __user *)arg,
 				    &upstream_kmod,
 				    sizeof(upstream_kmod));
@@ -700,7 +700,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 		else
 			return ret;
 
-	case PVFS_DEV_CLIENT_MASK:
+	case ORANGEFS_DEV_CLIENT_MASK:
 		ret = copy_from_user(&mask2_info,
 				     (void __user *)arg,
 				     sizeof(struct dev_mask2_info_s));
@@ -719,13 +719,13 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 
 		return ret;
 
-	case PVFS_DEV_CLIENT_STRING:
+	case ORANGEFS_DEV_CLIENT_STRING:
 		ret = copy_from_user(&client_debug_array_string,
 				     (void __user *)arg,
 				     ORANGEFS_MAX_DEBUG_STRING_LEN);
 		if (ret != 0) {
 			pr_info("%s: "
-				"PVFS_DEV_CLIENT_STRING: copy_from_user failed"
+				"ORANGEFS_DEV_CLIENT_STRING: copy_from_user failed"
 				"\n",
 				__func__);
 			return -EIO;
@@ -779,7 +779,7 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 
 		return ret;
 
-	case PVFS_DEV_DEBUG:
+	case ORANGEFS_DEV_DEBUG:
 		ret = copy_from_user(&mask_info,
 				     (void __user *)arg,
 				     sizeof(mask_info));
@@ -794,21 +794,21 @@ static long dispatch_ioctl_command(unsigned int command, unsigned long arg)
 				 * the kernel debug mask was set when the
 				 * kernel module was loaded; don't override
 				 * it if the client-core was started without
-				 * a value for PVFS2_KMODMASK.
+				 * a value for ORANGEFS_KMODMASK.
 				 */
 				return 0;
 			}
 			debug_mask_to_string(&mask_info.mask_value,
 					     mask_info.mask_type);
 			gossip_debug_mask = mask_info.mask_value;
-			pr_info("PVFS: kernel debug mask has been modified to "
+			pr_info("ORANGEFS: kernel debug mask has been modified to "
 				":%s: :%llx:\n",
 				kernel_debug_string,
 				(unsigned long long)gossip_debug_mask);
 		} else if (mask_info.mask_type == CLIENT_MASK) {
 			debug_mask_to_string(&mask_info.mask_value,
 					     mask_info.mask_type);
-			pr_info("PVFS: client debug mask has been modified to"
+			pr_info("ORANGEFS: client debug mask has been modified to"
 				":%s: :%llx:\n",
 				client_debug_string,
 				llu(mask_info.mask_value));
@@ -840,7 +840,7 @@ static long orangefs_devreq_ioctl(struct file *file,
 
 #ifdef CONFIG_COMPAT		/* CONFIG_COMPAT is in .config */
 
-/*  Compat structure for the PVFS_DEV_MAP ioctl */
+/*  Compat structure for the ORANGEFS_DEV_MAP ioctl */
 struct ORANGEFS_dev_map_desc32 {
 	compat_uptr_t ptr;
 	__s32 total_size;
@@ -893,7 +893,7 @@ static long orangefs_devreq_compat_ioctl(struct file *filp, unsigned int cmd,
 	ret = check_ioctl_command(cmd);
 	if (ret < 0)
 		return ret;
-	if (cmd == PVFS_DEV_MAP) {
+	if (cmd == ORANGEFS_DEV_MAP) {
 		/*
 		 * convert the arguments to what we expect internally
 		 * in kernel space
@@ -945,30 +945,30 @@ int orangefs_dev_init(void)
 
 	/* register orangefs-req device  */
 	orangefs_dev_major = register_chrdev(0,
-					  PVFS2_REQDEVICE_NAME,
+					  ORANGEFS_REQDEVICE_NAME,
 					  &orangefs_devreq_file_operations);
 	if (orangefs_dev_major < 0) {
 		gossip_debug(GOSSIP_DEV_DEBUG,
 			     "Failed to register /dev/%s (error %d)\n",
-			     PVFS2_REQDEVICE_NAME, orangefs_dev_major);
+			     ORANGEFS_REQDEVICE_NAME, orangefs_dev_major);
 		orangefs_ioctl32_cleanup();
 		return orangefs_dev_major;
 	}
 
 	gossip_debug(GOSSIP_DEV_DEBUG,
 		     "*** /dev/%s character device registered ***\n",
-		     PVFS2_REQDEVICE_NAME);
+		     ORANGEFS_REQDEVICE_NAME);
 	gossip_debug(GOSSIP_DEV_DEBUG, "'mknod /dev/%s c %d 0'.\n",
-		     PVFS2_REQDEVICE_NAME, orangefs_dev_major);
+		     ORANGEFS_REQDEVICE_NAME, orangefs_dev_major);
 	return 0;
 }
 
 void orangefs_dev_cleanup(void)
 {
-	unregister_chrdev(orangefs_dev_major, PVFS2_REQDEVICE_NAME);
+	unregister_chrdev(orangefs_dev_major, ORANGEFS_REQDEVICE_NAME);
 	gossip_debug(GOSSIP_DEV_DEBUG,
 		     "*** /dev/%s character device unregistered ***\n",
-		     PVFS2_REQDEVICE_NAME);
+		     ORANGEFS_REQDEVICE_NAME);
 	/* unregister the ioctl32 sub-system */
 	orangefs_ioctl32_cleanup();
 }

@@ -65,9 +65,9 @@
 
 #define PVFS2_DEFAULT_SLOT_TIMEOUT_SECS     900	/* 15 minutes */
 
-#define PVFS2_REQDEVICE_NAME          "pvfs2-req"
+#define ORANGEFS_REQDEVICE_NAME          "pvfs2-req"
 
-#define PVFS2_DEVREQ_MAGIC             0x20030529
+#define ORANGEFS_DEVREQ_MAGIC             0x20030529
 #define PVFS2_LINK_MAX                 0x000000FF
 #define ORANGEFS_PURGE_RETRY_COUNT     0x00000005
 #define ORANGEFS_SEEK_END              0x00000002
