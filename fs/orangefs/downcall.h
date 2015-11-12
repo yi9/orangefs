@@ -69,7 +69,7 @@ struct pvfs2_fs_mount_response {
 };
 
 /* the getxattr response is the attribute value */
-struct pvfs2_getxattr_response {
+struct orangefs_getxattr_response {
 	__s32 val_sz;
 	__s32 __pad1;
 	char val[PVFS_MAX_XATTR_VALUELEN];
@@ -119,7 +119,7 @@ struct orangefs_downcall_s {
 		struct pvfs2_mkdir_response mkdir;
 		struct pvfs2_statfs_response statfs;
 		struct pvfs2_fs_mount_response fs_mount;
-		struct pvfs2_getxattr_response getxattr;
+		struct orangefs_getxattr_response getxattr;
 		struct pvfs2_listxattr_response listxattr;
 		struct pvfs2_param_response param;
 		struct pvfs2_perf_count_response perf_count;

@@ -113,7 +113,7 @@ sizeof(__u64) + sizeof(struct orangefs_downcall_s))
  * purged   - op has to start a timer since client-core
  *            exited uncleanly before servicing op
  */
-enum pvfs2_vfs_op_states {
+enum orangefs_vfs_op_states {
 	OP_VFS_STATE_UNKNOWN = 0,
 	OP_VFS_STATE_WAITING = 1,
 	OP_VFS_STATE_INPROGR = 2,
@@ -262,7 +262,7 @@ struct xtvec {
  * pvfs2 data structures
  */
 struct orangefs_kernel_op_s {
-	enum pvfs2_vfs_op_states op_state;
+	enum orangefs_vfs_op_states op_state;
 	__u64 tag;
 
 	/*
@@ -417,14 +417,14 @@ struct orangefs_kiocb_s {
 	int needs_cleanup;
 };
 
-struct pvfs2_stats {
+struct orangefs_stats {
 	unsigned long cache_hits;
 	unsigned long cache_misses;
 	unsigned long reads;
 	unsigned long writes;
 };
 
-extern struct pvfs2_stats g_orangefs_stats;
+extern struct orangefs_stats g_orangefs_stats;
 
 /*
  * NOTE: See Documentation/filesystems/porting for information
@@ -568,7 +568,7 @@ void fsid_key_table_finalize(void);
 /*
  * defined in inode.c
  */
-__u32 convert_to_pvfs2_mask(unsigned long lite_mask);
+__u32 orangefs_to_pvfs2_mask(unsigned long lite_mask);
 struct inode *orangefs_new_inode(struct super_block *sb,
 			      struct inode *dir,
 			      int mode,
@@ -584,13 +584,13 @@ int orangefs_getattr(struct vfsmount *mnt,
 /*
  * defined in xattr.c
  */
-int pvfs2_setxattr(struct dentry *dentry,
+int orangefs_setxattr(struct dentry *dentry,
 		   const char *name,
 		   const void *value,
 		   size_t size,
 		   int flags);
 
-ssize_t pvfs2_getxattr(struct dentry *dentry,
+ssize_t orangefs_getxattr(struct dentry *dentry,
 		       const char *name,
 		       void *buffer,
 		       size_t size);
@@ -672,7 +672,7 @@ extern spinlock_t htable_ops_in_progress_lock;
 extern int hash_table_size;
 
 extern const struct address_space_operations orangefs_address_operations;
-extern struct backing_dev_info pvfs2_backing_dev_info;
+extern struct backing_dev_info orangefs_backing_dev_info;
 extern struct inode_operations orangefs_file_inode_operations;
 extern const struct file_operations orangefs_file_operations;
 extern struct inode_operations orangefs_symlink_inode_operations;
@@ -829,18 +829,18 @@ do {									\
 	sys_attr.mask = ORANGEFS_ATTR_SYS_ALL_SETABLE;			\
 } while (0)
 
-#define pvfs2_inode_lock(__i)  mutex_lock(&(__i)->i_mutex)
+#define orangefs_inode_lock(__i)  mutex_lock(&(__i)->i_mutex)
 
-#define pvfs2_inode_unlock(__i) mutex_unlock(&(__i)->i_mutex)
+#define orangefs_inode_unlock(__i) mutex_unlock(&(__i)->i_mutex)
 
 static inline void orangefs_i_size_write(struct inode *inode, loff_t i_size)
 {
 #if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
-	pvfs2_inode_lock(inode);
+	ornagefs_inode_lock(inode);
 #endif
 	i_size_write(inode, i_size);
 #if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
-	pvfs2_inode_unlock(inode);
+	orangefs_inode_unlock(inode);
 #endif
 }
 

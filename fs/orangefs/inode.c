@@ -141,7 +141,7 @@ static int orangefs_releasepage(struct page *page, gfp_t foo)
  *}
  */
 
-struct backing_dev_info pvfs2_backing_dev_info = {
+struct backing_dev_info orangefs_backing_dev_info = {
 	.name = "orangefs",
 	.ra_pages = 0,
 	.capabilities = BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_WRITEBACK,

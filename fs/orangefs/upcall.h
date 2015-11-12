@@ -120,14 +120,14 @@ struct pvfs2_fs_umount_request_s {
 	char orangefs_config_server[ORANGEFS_MAX_SERVER_ADDR_LEN];
 };
 
-struct pvfs2_getxattr_request_s {
+struct orangefs_getxattr_request_s {
 	struct orangefs_object_kref refn;
 	__s32 key_sz;
 	__s32 __pad1;
 	char key[PVFS_MAX_XATTR_NAMELEN];
 };
 
-struct pvfs2_setxattr_request_s {
+struct orangefs_setxattr_request_s {
 	struct orangefs_object_kref refn;
 	struct PVFS_keyval_pair keyval;
 	__s32 flags;
@@ -240,8 +240,8 @@ struct orangefs_upcall_s {
 		struct pvfs2_mmap_ra_cache_flush_request_s ra_cache_flush;
 		struct pvfs2_fs_mount_request_s fs_mount;
 		struct pvfs2_fs_umount_request_s fs_umount;
-		struct pvfs2_getxattr_request_s getxattr;
-		struct pvfs2_setxattr_request_s setxattr;
+		struct orangefs_getxattr_request_s getxattr;
+		struct orangefs_setxattr_request_s setxattr;
 		struct pvfs2_listxattr_request_s listxattr;
 		struct pvfs2_removexattr_request_s removexattr;
 		struct pvfs2_op_cancel_s cancel;

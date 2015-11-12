@@ -36,7 +36,7 @@ struct dentry *client_debug_dentry;
 struct dentry *debug_dir;
 int client_verbose_index;
 int client_all_index;
-struct pvfs2_stats g_orangefs_stats;
+struct orangefs_stats g_orangefs_stats;
 
 /* the size of the hash tables for ops in progress */
 int hash_table_size = 509;
@@ -124,7 +124,7 @@ static int __init pvfs2_init(void)
 	       kernel_debug_string,
 	       (unsigned long long)gossip_debug_mask);
 
-	ret = bdi_init(&pvfs2_backing_dev_info);
+	ret = bdi_init(&orangefs_backing_dev_info);
 
 	if (ret)
 		return ret;
@@ -230,7 +230,7 @@ cleanup_op:
 	op_cache_finalize();
 
 err:
-	bdi_destroy(&pvfs2_backing_dev_info);
+	bdi_destroy(&orangefs_backing_dev_info);
 
 out:
 	return ret;
@@ -277,7 +277,7 @@ static void __exit pvfs2_exit(void)
 
 	kfree(htable_ops_in_progress);
 
-	bdi_destroy(&pvfs2_backing_dev_info);
+	bdi_destroy(&orangefs_backing_dev_info);
 
 	pr_info("pvfs2: module version %s unloaded\n", PVFS2_VERSION);
 }
