@@ -104,7 +104,7 @@ sizeof(__u64) + sizeof(struct orangefs_downcall_s))
 			MAX_DEV_REQ_DOWNSIZE))
 
 /*
- * valid pvfs2 kernel operation states
+ * valid orangefs kernel operation states
  *
  * unknown  - op was just initialized
  * waiting  - op is on request_list (upward bound)
@@ -172,7 +172,7 @@ struct client_debug_mask {
 };
 
 /*
- * pvfs2 kernel memory related flags
+ * orangefs kernel memory related flags
  */
 
 #if ((defined ORANGEFS_KERNEL_DEBUG) && (defined CONFIG_DEBUG_SLAB))
@@ -187,7 +187,7 @@ struct client_debug_mask {
 #define orangefs_kmap(page) kmap(page)
 #define orangefs_kunmap(page) kunmap(page)
 
-/* pvfs2 xattr and acl related defines */
+/* orangefs xattr and acl related defines */
 #define PVFS2_XATTR_INDEX_POSIX_ACL_ACCESS  1
 #define PVFS2_XATTR_INDEX_POSIX_ACL_DEFAULT 2
 #define PVFS2_XATTR_INDEX_TRUSTED           3
@@ -207,11 +207,11 @@ struct client_debug_mask {
 #define PVFS2_XATTR_NAME_TRUSTED_PREFIX "trusted."
 #define PVFS2_XATTR_NAME_DEFAULT_PREFIX ""
 
-/* these functions are defined in pvfs2-utils.c */
+/* these functions are defined in orangefs-utils.c */
 int orangefs_prepare_cdm_array(char *debug_array_string);
 int orangefs_prepare_debugfs_help_string(int);
 
-/* defined in pvfs2-debugfs.c */
+/* defined in orangefs-debugfs.c */
 int orangefs_client_debug_init(void);
 
 void debug_string_to_mask(char *, void *, int);
@@ -224,7 +224,7 @@ void do_c_string(void *, int);
 int check_amalgam_keyword(void *, int);
 int keyword_is_amalgam(char *);
 
-/*these variables are defined in pvfs2-mod.c */
+/*these variables are defined in orangefs-mod.c */
 extern char kernel_debug_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
 extern char client_debug_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
 extern char client_debug_array_string[ORANGEFS_MAX_DEBUG_STRING_LEN];
@@ -259,7 +259,7 @@ struct xtvec {
 };
 
 /*
- * pvfs2 data structures
+ * orangefs data structures
  */
 struct orangefs_kernel_op_s {
 	enum orangefs_vfs_op_states op_state;
@@ -307,14 +307,14 @@ struct orangefs_kernel_op_s {
 	struct list_head list;
 };
 
-/* per inode private pvfs2 info */
+/* per inode private orangefs info */
 struct orangefs_inode_s {
 	struct orangefs_object_kref refn;
 	char link_target[ORANGEFS_NAME_MAX];
 	__s64 blksize;
 	/*
 	 * Reading/Writing Extended attributes need to acquire the appropriate
-	 * reader/writer semaphore on the pvfs2_inode_s structure.
+	 * reader/writer semaphore on the orangefs_inode_s structure.
 	 */
 	struct rw_semaphore xattr_sem;
 
@@ -327,7 +327,7 @@ struct orangefs_inode_s {
 	 */
 	unsigned long pinode_flags;
 
-	/* All allocated pvfs2_inode_s objects are chained to a list */
+	/* All allocated orangefs_inode_s objects are chained to a list */
 	struct list_head list;
 };
 
@@ -352,7 +352,7 @@ struct orangefs_inode_s {
 #define SetModeFlag(pinode)   set_bit(P_MODE_FLAG, &(pinode)->pinode_flags)
 #define ModeFlag(pinode)      test_bit(P_MODE_FLAG, &(pinode)->pinode_flags)
 
-/* per superblock private pvfs2 info */
+/* per superblock private orangefs info */
 struct orangefs_sb_info_s {
 	struct orangefs_khandle root_khandle;
 	__s32 fs_id;
@@ -395,7 +395,7 @@ struct orangefs_kiocb_s {
 	struct orangefs_bufmap *bufmap;
 	int buffer_index;
 
-	/* pvfs2 kernel operation type */
+	/* orangefs kernel operation type */
 	struct orangefs_kernel_op_s *op;
 
 	/* The user space buffers from/to which I/O is being staged */
@@ -516,7 +516,7 @@ static inline int match_handle(struct orangefs_khandle resp_handle,
 }
 
 /*
- * defined in pvfs2-cache.c
+ * defined in orangefs-cache.c
  */
 int op_cache_initialize(void);
 int op_cache_finalize(void);
@@ -539,7 +539,7 @@ struct orangefs_kiocb_s *kiocb_alloc(void);
 void kiocb_release(struct orangefs_kiocb_s *ptr);
 
 /*
- * defined in pvfs2-mod.c
+ * defined in orangefs-mod.c
  */
 void purge_inprogress_ops(void);
 
@@ -568,7 +568,7 @@ void fsid_key_table_finalize(void);
 /*
  * defined in inode.c
  */
-__u32 orangefs_to_pvfs2_mask(unsigned long lite_mask);
+__u32 convert_to_orangefs_mask(unsigned long lite_mask);
 struct inode *orangefs_new_inode(struct super_block *sb,
 			      struct inode *dir,
 			      int mode,
@@ -610,7 +610,7 @@ ssize_t orangefs_inode_read(struct inode *inode,
 			 loff_t readahead_size);
 
 /*
- * defined in devpvfs2-req.c
+ * defined in devorangefs-req.c
  */
 int orangefs_dev_init(void);
 void orangefs_dev_cleanup(void);
@@ -618,7 +618,7 @@ int is_daemon_in_service(void);
 int fs_mount_pending(__s32 fsid);
 
 /*
- * defined in pvfs2-utils.c
+ * defined in orangefs-utils.c
  */
 __s32 fsid_of_op(struct orangefs_kernel_op_s *op);
 
@@ -758,7 +758,7 @@ int service_operation(struct orangefs_kernel_op_s *op,
  * sent and have handle_error
  * take care of this situation as well..
  *
- * if a pvfs2 sysint level error occured and i/o has been completed,
+ * if a orangefs sysint level error occured and i/o has been completed,
  * there is no need to cancel the operation, as the user has finished
  * using the bufmap page and so there is no danger in this case.  in
  * this case, we wake up the device normally so that it may free the
@@ -787,7 +787,7 @@ do {								\
 #define add_orangefs_sb(sb)						\
 do {									\
 	gossip_debug(GOSSIP_SUPER_DEBUG,				\
-		     "Adding SB %p to pvfs2 superblocks\n",		\
+		     "Adding SB %p to orangefs superblocks\n",		\
 		     ORANGEFS_SB(sb));					\
 	spin_lock(&orangefs_superblocks_lock);				\
 	list_add_tail(&ORANGEFS_SB(sb)->list, &orangefs_superblocks);		\
@@ -807,7 +807,7 @@ do {									\
 				      list);				\
 		if (orangefs_sb && (orangefs_sb->sb == sb)) {			\
 			gossip_debug(GOSSIP_SUPER_DEBUG,		\
-			    "Removing SB %p from pvfs2 superblocks\n",	\
+			    "Removing SB %p from orangefs superblocks\n",	\
 			orangefs_sb);					\
 			list_del(&orangefs_sb->list);			\
 			break;						\
