@@ -45,8 +45,8 @@ static ulong module_parm_debug_mask;
 __u64 gossip_debug_mask;
 struct client_debug_mask client_debug_mask = { NULL, 0, 0 };
 unsigned int kernel_mask_set_mod_init; /* implicitly false */
-int op_timeout_secs = PVFS2_DEFAULT_OP_TIMEOUT_SECS;
-int slot_timeout_secs = PVFS2_DEFAULT_SLOT_TIMEOUT_SECS;
+int op_timeout_secs = ORANGEFS_DEFAULT_OP_TIMEOUT_SECS;
+int slot_timeout_secs = ORANGEFS_DEFAULT_SLOT_TIMEOUT_SECS;
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("PVFS2 Development Team");

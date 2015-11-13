@@ -55,7 +55,7 @@ struct orangefs_object_kref {
  * compare 2 khandles assumes little endian thus from large address to
  * small address
  */
-static inline int PVFS_khandle_cmp(const struct orangefs_khandle *kh1,
+static inline int ORANGEFS_khandle_cmp(const struct orangefs_khandle *kh1,
 				   const struct orangefs_khandle *kh2)
 {
 	int i;

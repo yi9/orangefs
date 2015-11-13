@@ -5,18 +5,18 @@
  */
 
 /*
- *  The PVFS2 Linux kernel support allows PVFS2 volumes to be mounted and
+ *  The ORANGEFS Linux kernel support allows ORANGEFS volumes to be mounted and
  *  accessed through the Linux VFS (i.e. using standard I/O system calls).
  *  This support is only needed on clients that wish to mount the file system.
  *
  */
 
 /*
- *  Declarations and macros for the PVFS2 Linux kernel support.
+ *  Declarations and macros for the ORANGEFS Linux kernel support.
  */
 
-#ifndef __PVFS2KERNEL_H
-#define __PVFS2KERNEL_H
+#ifndef __ORANGEFSKERNEL_H
+#define __ORANGEFSKERNEL_H
 
 #include <linux/kernel.h>
 #include <linux/moduleparam.h>
@@ -56,24 +56,24 @@
 #include "pvfs2-dev-proto.h"
 
 #ifdef ORANGEFS_KERNEL_DEBUG
-#define PVFS2_DEFAULT_OP_TIMEOUT_SECS       10
+#define ORANGEFS_DEFAULT_OP_TIMEOUT_SECS       10
 #else
-#define PVFS2_DEFAULT_OP_TIMEOUT_SECS       20
+#define ORANGEFS_DEFAULT_OP_TIMEOUT_SECS       20
 #endif
 
 #define ORANGEFS_BUFMAP_WAIT_TIMEOUT_SECS   30
 
-#define PVFS2_DEFAULT_SLOT_TIMEOUT_SECS     900	/* 15 minutes */
+#define ORANGEFS_DEFAULT_SLOT_TIMEOUT_SECS     900	/* 15 minutes */
 
 #define ORANGEFS_REQDEVICE_NAME          "pvfs2-req"
 
 #define ORANGEFS_DEVREQ_MAGIC             0x20030529
-#define PVFS2_LINK_MAX                 0x000000FF
+#define ORANGEFS_LINK_MAX                 0x000000FF
 #define ORANGEFS_PURGE_RETRY_COUNT     0x00000005
 #define ORANGEFS_SEEK_END              0x00000002
-#define PVFS2_MAX_NUM_OPTIONS          0x00000004
-#define PVFS2_MAX_MOUNT_OPT_LEN        0x00000080
-#define PVFS2_MAX_FSKEY_LEN            64
+#define ORANGEFS_MAX_NUM_OPTIONS          0x00000004
+#define ORANGEFS_MAX_MOUNT_OPT_LEN        0x00000080
+#define ORANGEFS_MAX_FSKEY_LEN            64
 
 #define MAX_DEV_REQ_UPSIZE (2*sizeof(__s32) +   \
 sizeof(__u64) + sizeof(struct orangefs_upcall_s))
@@ -156,9 +156,9 @@ enum orangefs_vfs_op_states {
 /*
  * Defines for controlling whether I/O upcalls are for async or sync operations
  */
-enum PVFS_async_io_type {
+enum ORANGEFS_async_io_type {
 	ORANGEFS_VFS_SYNC_IO = 0,
-	PVFS_VFS_ASYNC_IO = 1,
+	ORANGEFS_VFS_ASYNC_IO = 1,
 };
 
 /*
@@ -188,10 +188,10 @@ struct client_debug_mask {
 #define orangefs_kunmap(page) kunmap(page)
 
 /* orangefs xattr and acl related defines */
-#define PVFS2_XATTR_INDEX_POSIX_ACL_ACCESS  1
-#define PVFS2_XATTR_INDEX_POSIX_ACL_DEFAULT 2
-#define PVFS2_XATTR_INDEX_TRUSTED           3
-#define PVFS2_XATTR_INDEX_DEFAULT           4
+#define ORANGEFS_XATTR_INDEX_POSIX_ACL_ACCESS  1
+#define ORANGEFS_XATTR_INDEX_POSIX_ACL_DEFAULT 2
+#define ORANGEFS_XATTR_INDEX_TRUSTED           3
+#define ORANGEFS_XATTR_INDEX_DEFAULT           4
 
 #if 0
 #ifndef POSIX_ACL_XATTR_ACCESS
@@ -204,8 +204,8 @@ struct client_debug_mask {
 
 #define ORANGEFS_XATTR_NAME_ACL_ACCESS  POSIX_ACL_XATTR_ACCESS
 #define ORANGEFS_XATTR_NAME_ACL_DEFAULT POSIX_ACL_XATTR_DEFAULT
-#define PVFS2_XATTR_NAME_TRUSTED_PREFIX "trusted."
-#define PVFS2_XATTR_NAME_DEFAULT_PREFIX ""
+#define ORANGEFS_XATTR_NAME_TRUSTED_PREFIX "trusted."
+#define ORANGEFS_XATTR_NAME_DEFAULT_PREFIX ""
 
 /* these functions are defined in orangefs-utils.c */
 int orangefs_prepare_cdm_array(char *debug_array_string);
@@ -493,7 +493,7 @@ static inline int is_root_handle(struct inode *inode)
 		     &ORANGEFS_SB(inode->i_sb)->root_khandle,
 		     get_khandle_from_ino(inode));
 
-	if (PVFS_khandle_cmp(&(ORANGEFS_SB(inode->i_sb)->root_khandle),
+	if (ORANGEFS_khandle_cmp(&(ORANGEFS_SB(inode->i_sb)->root_khandle),
 			     get_khandle_from_ino(inode)))
 		return 0;
 	else
@@ -509,7 +509,7 @@ static inline int match_handle(struct orangefs_khandle resp_handle,
 		     &resp_handle,
 		     get_khandle_from_ino(inode));
 
-	if (PVFS_khandle_cmp(&resp_handle, get_khandle_from_ino(inode)))
+	if (ORANGEFS_khandle_cmp(&resp_handle, get_khandle_from_ino(inode)))
 		return 0;
 	else
 		return 1;
@@ -855,4 +855,4 @@ static inline unsigned int diff(struct timeval *end, struct timeval *begin)
 	return (end->tv_sec * 1000000) + end->tv_usec;
 }
 
-#endif /* __PVFS2KERNEL_H */
+#endif /* __ORANGEFSKERNEL_H */

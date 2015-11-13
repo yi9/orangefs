@@ -455,7 +455,7 @@ int orangefs_xattr_set_default(struct dentry *dentry,
 			    int handler_flags)
 {
 	return orangefs_inode_setxattr(dentry->d_inode,
-				    PVFS2_XATTR_NAME_DEFAULT_PREFIX,
+				    ORANGEFS_XATTR_NAME_DEFAULT_PREFIX,
 				    name,
 				    buffer,
 				    size,
@@ -469,7 +469,7 @@ int orangefs_xattr_get_default(struct dentry *dentry,
 			    int handler_flags)
 {
 	return orangefs_inode_getxattr(dentry->d_inode,
-				    PVFS2_XATTR_NAME_DEFAULT_PREFIX,
+				    ORANGEFS_XATTR_NAME_DEFAULT_PREFIX,
 				    name,
 				    buffer,
 				    size);
@@ -484,7 +484,7 @@ static int orangefs_xattr_set_trusted(struct dentry *dentry,
 			    int handler_flags)
 {
 	return orangefs_inode_setxattr(dentry->d_inode,
-				    PVFS2_XATTR_NAME_TRUSTED_PREFIX,
+				    ORANGEFS_XATTR_NAME_TRUSTED_PREFIX,
 				    name,
 				    buffer,
 				    size,
@@ -498,14 +498,14 @@ static int orangefs_xattr_get_trusted(struct dentry *dentry,
 			    int handler_flags)
 {
 	return orangefs_inode_getxattr(dentry->d_inode,
-				    PVFS2_XATTR_NAME_TRUSTED_PREFIX,
+				    ORANGEFS_XATTR_NAME_TRUSTED_PREFIX,
 				    name,
 				    buffer,
 				    size);
 }
 
 static struct xattr_handler orangefs_xattr_trusted_handler = {
-	.prefix = PVFS2_XATTR_NAME_TRUSTED_PREFIX,
+	.prefix = ORANGEFS_XATTR_NAME_TRUSTED_PREFIX,
 	.get = orangefs_xattr_get_trusted,
 	.set = orangefs_xattr_set_trusted,
 };
@@ -516,7 +516,7 @@ static struct xattr_handler orangefs_xattr_default_handler = {
 	 * so that all un-prefixed xattrs keys get caught
 	 * here!
 	 */
-	.prefix = PVFS2_XATTR_NAME_DEFAULT_PREFIX,
+	.prefix = ORANGEFS_XATTR_NAME_DEFAULT_PREFIX,
 	.get = orangefs_xattr_get_default,
 	.set = orangefs_xattr_set_default,
 };

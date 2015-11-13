@@ -373,7 +373,7 @@ static int orangefs_test_inode(struct inode *inode, void *data)
 	struct orangefs_inode_s *orangefs_inode = NULL;
 
 	orangefs_inode = ORANGEFS_I(inode);
-	return (!PVFS_khandle_cmp(&(orangefs_inode->refn.khandle), &(ref->khandle))
+	return (!ORANGEFS_khandle_cmp(&(orangefs_inode->refn.khandle), &(ref->khandle))
 		&& orangefs_inode->refn.fs_id == ref->fs_id);
 }
 
