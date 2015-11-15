@@ -51,14 +51,14 @@ int slot_timeout_secs = ORANGEFS_DEFAULT_SLOT_TIMEOUT_SECS;
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("PVFS2 Development Team");
 MODULE_DESCRIPTION("The Linux Kernel VFS interface to PVFS2");
-MODULE_PARM_DESC(module_parm_debug_mask, "debugging level (see pvfs2-debug.h for values)");
+MODULE_PARM_DESC(module_parm_debug_mask, "debugging level (see orangefs-debug.h for values)");
 MODULE_PARM_DESC(op_timeout_secs, "Operation timeout in seconds");
 MODULE_PARM_DESC(slot_timeout_secs, "Slot timeout in seconds");
 MODULE_PARM_DESC(hash_table_size,
 		 "size of hash table for operations in progress");
 
-static struct file_system_type pvfs2_fs_type = {
-	.name = "pvfs2",
+static struct file_system_type orangefs_fs_type = {
+	.name = "orangefs",
 	.mount = orangefs_mount,
 	.kill_sb = orangefs_kill_sb,
 	.owner = THIS_MODULE,
@@ -93,7 +93,7 @@ DEFINE_SPINLOCK(orangefs_request_list_lock);
 /* used for incoming request notification */
 DECLARE_WAIT_QUEUE_HEAD(orangefs_request_list_waitq);
 
-static int __init pvfs2_init(void)
+static int __init orangefs_init(void)
 {
 	int ret = -1;
 	__u32 i = 0;
@@ -112,7 +112,7 @@ static int __init pvfs2_init(void)
 
 	/*
 	 * if the mask has a non-zero value, then indicate that the mask
-	 * was set when the kernel module was loaded.  The pvfs2 dev ioctl
+	 * was set when the kernel module was loaded.  The orangefs dev ioctl
 	 * command will look at this boolean to determine if the kernel's
 	 * debug mask should be overwritten when the client-core is started.
 	 */
@@ -120,7 +120,7 @@ static int __init pvfs2_init(void)
 		kernel_mask_set_mod_init = true;
 
 	/* print information message to the system log */
-	pr_info("pvfs2: pvfs2_init called with debug mask: :%s: :%llx:\n",
+	pr_info("orangefs: orangefs_init called with debug mask: :%s: :%llx:\n",
 	       kernel_debug_string,
 	       (unsigned long long)gossip_debug_mask);
 
@@ -155,7 +155,7 @@ static int __init pvfs2_init(void)
 	/* Initialize the pvfsdev subsystem. */
 	ret = orangefs_dev_init();
 	if (ret < 0) {
-		gossip_err("pvfs2: could not initialize device subsystem %d!\n",
+		gossip_err("orangefs: could not initialize device subsystem %d!\n",
 			   ret);
 		goto cleanup_kiocb;
 	}
@@ -201,9 +201,9 @@ static int __init pvfs2_init(void)
 	orangefs_kernel_debug_init();
 	orangefs_sysfs_init();
 
-	ret = register_filesystem(&pvfs2_fs_type);
+	ret = register_filesystem(&orangefs_fs_type);
 	if (ret == 0) {
-		pr_info("pvfs2: module version %s loaded\n", PVFS2_VERSION);
+		pr_info("orangefs: module version %s loaded\n", PVFS2_VERSION);
 		return 0;
 	}
 
@@ -236,14 +236,14 @@ out:
 	return ret;
 }
 
-static void __exit pvfs2_exit(void)
+static void __exit orangefs_exit(void)
 {
 	int i = 0;
 	struct orangefs_kernel_op_s *cur_op = NULL;
 
-	gossip_debug(GOSSIP_INIT_DEBUG, "pvfs2: pvfs2_exit called\n");
+	gossip_debug(GOSSIP_INIT_DEBUG, "orangefs: orangefs_exit called\n");
 
-	unregister_filesystem(&pvfs2_fs_type);
+	unregister_filesystem(&orangefs_fs_type);
 	orangefs_debugfs_cleanup();
 	orangefs_sysfs_exit();
 	fsid_key_table_finalize();
@@ -279,7 +279,7 @@ static void __exit pvfs2_exit(void)
 
 	bdi_destroy(&orangefs_backing_dev_info);
 
-	pr_info("pvfs2: module version %s unloaded\n", PVFS2_VERSION);
+	pr_info("orangefs: module version %s unloaded\n", PVFS2_VERSION);
 }
 
 /*
@@ -300,7 +300,7 @@ void purge_inprogress_ops(void)
 					 list) {
 			spin_lock(&op->lock);
 			gossip_debug(GOSSIP_INIT_DEBUG,
-				"pvfs2-client-core: purging in-progress op tag "
+				"orangefs-client-core: purging in-progress op tag "
 				"%llu %s\n",
 				llu(op->tag),
 				get_opname_string(op));
@@ -311,5 +311,5 @@ void purge_inprogress_ops(void)
 	}
 }
 
-module_init(pvfs2_init);
-module_exit(pvfs2_exit);
+module_init(orangefs_init);
+module_exit(orangefs_exit);
