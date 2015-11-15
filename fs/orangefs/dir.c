@@ -128,7 +128,7 @@ static int orangefs_readdir(struct file *file, struct dir_context *ctx)
 	pos = (__u64) ctx->pos;
 
 	/* are we done? */
-	if (pos == PVFS_READDIR_END) {
+	if (pos == ORANGEFS_READDIR_END) {
 		gossip_debug(GOSSIP_DIR_DEBUG,
 			     "Skipping to termination path\n");
 		return 0;
@@ -251,11 +251,11 @@ get_new_buffer_index:
 	}
 
 	/*
-	 * we stored PVFS_ITERATE_NEXT in ctx->pos last time around
+	 * we stored ORANGEFS_ITERATE_NEXT in ctx->pos last time around
 	 * to prevent "finding" dot and dot-dot on any iteration
 	 * other than the first.
 	 */
-	if (ctx->pos == PVFS_ITERATE_NEXT)
+	if (ctx->pos == ORANGEFS_ITERATE_NEXT)
 		ctx->pos = 0;
 
 	for (i = ctx->pos;
@@ -295,17 +295,17 @@ get_new_buffer_index:
 	 */
 	if (ret) {
 		*ptoken = rhandle.readdir_response.token;
-		ctx->pos = PVFS_ITERATE_NEXT;
+		ctx->pos = ORANGEFS_ITERATE_NEXT;
 	}
 
 	/*
 	 * Did we hit the end of the directory?
 	 */
-	if (rhandle.readdir_response.token == PVFS_READDIR_END &&
+	if (rhandle.readdir_response.token == ORANGEFS_READDIR_END &&
 	    !buffer_full) {
 		gossip_debug(GOSSIP_DIR_DEBUG,
-		"End of dir detected; setting ctx->pos to PVFS_READDIR_END.\n");
-		ctx->pos = PVFS_READDIR_END;
+		"End of dir detected; setting ctx->pos to ORANGEFS_READDIR_END.\n");
+		ctx->pos = ORANGEFS_READDIR_END;
 	}
 
 out_destroy_handle:
@@ -325,7 +325,7 @@ static int orangefs_dir_open(struct inode *inode, struct file *file)
 		return -ENOMEM;
 
 	ptoken = file->private_data;
-	*ptoken = PVFS_READDIR_START;
+	*ptoken = ORANGEFS_READDIR_START;
 	return 0;
 }
 

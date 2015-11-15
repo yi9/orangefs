@@ -41,10 +41,10 @@ static inline int convert_to_internal_xattr_flags(int setxattr_flags)
 
 	if (setxattr_flags & XATTR_REPLACE) {
 		/* Attribute must exist! */
-		internal_flag = PVFS_XATTR_REPLACE;
+		internal_flag = ORANGEFS_XATTR_REPLACE;
 	} else if (setxattr_flags & XATTR_CREATE) {
 		/* Attribute must not exist */
-		internal_flag = PVFS_XATTR_CREATE;
+		internal_flag = ORANGEFS_XATTR_CREATE;
 	}
 	return internal_flag;
 }
@@ -341,7 +341,7 @@ ssize_t orangefs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 	struct inode *inode = dentry->d_inode;
 	struct orangefs_inode_s *orangefs_inode = ORANGEFS_I(inode);
 	struct orangefs_kernel_op_s *new_op;
-	__u64 token = PVFS_ITERATE_START;
+	__u64 token = ORANGEFS_ITERATE_START;
 	ssize_t ret = -ENOMEM;
 	ssize_t total = 0;
 	ssize_t length = 0;
@@ -429,7 +429,7 @@ try_again:
 	 * fetching more keys!
 	 */
 	token = new_op->downcall.resp.listxattr.token;
-	if (token != PVFS_ITERATE_END)
+	if (token != ORANGEFS_ITERATE_END)
 		goto try_again;
 
 done:

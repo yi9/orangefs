@@ -24,9 +24,9 @@ extern int cdm_element_count;
 #define ORANGEFS_ALL "all"
 
 /* pvfs2-config.h ***********************************************************/
-#define PVFS2_VERSION_MAJOR 2
-#define PVFS2_VERSION_MINOR 9
-#define PVFS2_VERSION_SUB 0
+#define ORANGEFS_VERSION_MAJOR 2
+#define ORANGEFS_VERSION_MINOR 9
+#define ORANGEFS_VERSION_SUB 0
 
 /* khandle stuff  ***********************************************************/
 
@@ -88,34 +88,34 @@ static inline void ORANGEFS_khandle_from(struct orangefs_khandle *kh,
 }
 
 /* pvfs2-types.h ************************************************************/
-typedef __u32 PVFS_uid;
-typedef __u32 PVFS_gid;
-typedef __s32 PVFS_fs_id;
-typedef __u32 PVFS_permissions;
-typedef __u64 PVFS_time;
-typedef __s64 PVFS_size;
-typedef __u64 PVFS_flags;
-typedef __u64 PVFS_ds_position;
-typedef __s32 PVFS_error;
-typedef __s64 PVFS_offset;
+typedef __u32 ORANGEFS_uid;
+typedef __u32 ORANGEFS_gid;
+typedef __s32 ORANGEFS_fs_id;
+typedef __u32 ORANGEFS_permissions;
+typedef __u64 ORANGEFS_time;
+typedef __s64 ORANGEFS_size;
+typedef __u64 ORANGEFS_flags;
+typedef __u64 ORANGEFS_ds_position;
+typedef __s32 ORANGEFS_error;
+typedef __s64 ORANGEFS_offset;
 
 #define ORANGEFS_SUPER_MAGIC 0x20030528
 
 /*
- * PVFS2 error codes are a signed 32-bit integer. Error codes are negative, but
+ * ORANGEFS error codes are a signed 32-bit integer. Error codes are negative, but
  * the sign is stripped before decoding.
  */
 
 /* Bit 31 is not used since it is the sign. */
 
 /*
- * Bit 30 specifies that this is a PVFS2 error. A PVFS2 error is either an
- * encoded errno value or a PVFS2 protocol error.
+ * Bit 30 specifies that this is a ORANGEFS error. A ORANGEFS error is either an
+ * encoded errno value or a ORANGEFS protocol error.
  */
 #define ORANGEFS_ERROR_BIT (1 << 30)
 
 /*
- * Bit 29 specifies that this is a PVFS2 protocol error and not an encoded
+ * Bit 29 specifies that this is a ORANGEFS protocol error and not an encoded
  * errno value.
  */
 #define ORANGEFS_NON_ERRNO_ERROR_BIT (1 << 29)
@@ -132,16 +132,16 @@ typedef __s64 PVFS_offset;
 
 /* Encoded errno values are decoded by PINT_errno_mapping in pvfs2-utils.c. */
 
-/* Our own PVFS2 protocol error codes. */
-#define PVFS_ECANCEL    (1|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_EDEVINIT   (2|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_EDETAIL    (3|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_EHOSTNTFD  (4|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_EADDRNTFD  (5|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_ENORECVR   (6|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_ETRYAGAIN  (7|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_ENOTPVFS   (8|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
-#define PVFS_ESECURITY  (9|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+/* Our own ORANGEFS protocol error codes. */
+#define ORANGEFS_ECANCEL    (1|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_EDEVINIT   (2|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_EDETAIL    (3|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_EHOSTNTFD  (4|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_EADDRNTFD  (5|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_ENORECVR   (6|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_ETRYAGAIN  (7|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_ENOTPVFS   (8|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
+#define ORANGEFS_ESECURITY  (9|ORANGEFS_NON_ERRNO_ERROR_BIT|ORANGEFS_ERROR_BIT)
 
 /* permission bits */
 #define ORANGEFS_O_EXECUTE (1 << 0)
@@ -159,11 +159,11 @@ typedef __s64 PVFS_offset;
 
 /* definition taken from stdint.h */
 #define INT32_MAX (2147483647)
-#define PVFS_ITERATE_START    (INT32_MAX - 1)
-#define PVFS_ITERATE_END      (INT32_MAX - 2)
-#define PVFS_ITERATE_NEXT     (INT32_MAX - 3)
-#define PVFS_READDIR_START PVFS_ITERATE_START
-#define PVFS_READDIR_END   PVFS_ITERATE_END
+#define ORANGEFS_ITERATE_START    (INT32_MAX - 1)
+#define ORANGEFS_ITERATE_END      (INT32_MAX - 2)
+#define ORANGEFS_ITERATE_NEXT     (INT32_MAX - 3)
+#define ORANGEFS_READDIR_START ORANGEFS_ITERATE_START
+#define ORANGEFS_READDIR_END   ORANGEFS_ITERATE_END
 #define ORANGEFS_IMMUTABLE_FL FS_IMMUTABLE_FL
 #define ORANGEFS_APPEND_FL    FS_APPEND_FL
 #define ORANGEFS_NOATIME_FL   FS_NOATIME_FL
@@ -180,12 +180,12 @@ typedef __s64 PVFS_offset;
 #define ORANGEFS_ATTR_SYS_ATIME_SET             (1 << 7)
 #define ORANGEFS_ATTR_SYS_MTIME_SET             (1 << 8)
 #define ORANGEFS_ATTR_SYS_SIZE                  (1 << 20)
-#define PVFS_ATTR_SYS_LNK_TARGET            (1 << 24)
-#define PVFS_ATTR_SYS_DFILE_COUNT           (1 << 25)
-#define PVFS_ATTR_SYS_DIRENT_COUNT          (1 << 26)
-#define PVFS_ATTR_SYS_BLKSIZE               (1 << 28)
-#define PVFS_ATTR_SYS_MIRROR_COPIES_COUNT   (1 << 29)
-#define PVFS_ATTR_SYS_COMMON_ALL	\
+#define ORANGEFS_ATTR_SYS_LNK_TARGET            (1 << 24)
+#define ORANGEFS_ATTR_SYS_DFILE_COUNT           (1 << 25)
+#define ORANGEFS_ATTR_SYS_DIRENT_COUNT          (1 << 26)
+#define ORANGEFS_ATTR_SYS_BLKSIZE               (1 << 28)
+#define ORANGEFS_ATTR_SYS_MIRROR_COPIES_COUNT   (1 << 29)
+#define ORANGEFS_ATTR_SYS_COMMON_ALL	\
 	(ORANGEFS_ATTR_SYS_UID	|	\
 	 ORANGEFS_ATTR_SYS_GID	|	\
 	 ORANGEFS_ATTR_SYS_PERM	|	\
@@ -195,18 +195,18 @@ typedef __s64 PVFS_offset;
 	 ORANGEFS_ATTR_SYS_TYPE)
 
 #define ORANGEFS_ATTR_SYS_ALL_SETABLE		\
-(PVFS_ATTR_SYS_COMMON_ALL-ORANGEFS_ATTR_SYS_TYPE)
+(ORANGEFS_ATTR_SYS_COMMON_ALL-ORANGEFS_ATTR_SYS_TYPE)
 
 #define ORANGEFS_ATTR_SYS_ALL_NOHINT			\
-	(PVFS_ATTR_SYS_COMMON_ALL		|	\
+	(ORANGEFS_ATTR_SYS_COMMON_ALL		|	\
 	 ORANGEFS_ATTR_SYS_SIZE			|	\
-	 PVFS_ATTR_SYS_LNK_TARGET		|	\
-	 PVFS_ATTR_SYS_DFILE_COUNT		|	\
-	 PVFS_ATTR_SYS_MIRROR_COPIES_COUNT	|	\
-	 PVFS_ATTR_SYS_DIRENT_COUNT		|	\
-	 PVFS_ATTR_SYS_BLKSIZE)
-#define PVFS_XATTR_REPLACE 0x2
-#define PVFS_XATTR_CREATE  0x1
+	 ORANGEFS_ATTR_SYS_LNK_TARGET		|	\
+	 ORANGEFS_ATTR_SYS_DFILE_COUNT		|	\
+	 ORANGEFS_ATTR_SYS_MIRROR_COPIES_COUNT	|	\
+	 ORANGEFS_ATTR_SYS_DIRENT_COUNT		|	\
+	 ORANGEFS_ATTR_SYS_BLKSIZE)
+#define ORANGEFS_XATTR_REPLACE 0x2
+#define ORANGEFS_XATTR_CREATE  0x1
 #define ORANGEFS_MAX_SERVER_ADDR_LEN 256
 #define ORANGEFS_NAME_MAX                256
 /*
@@ -229,7 +229,7 @@ typedef __s64 PVFS_offset;
 					 * defined by <linux/xattr.h>
 					 */
 /*
- * PVFS I/O operation types, used in both system and server interfaces.
+ * ORANGEFS I/O operation types, used in both system and server interfaces.
  */
 enum ORANGEFS_io_type {
 	ORANGEFS_IO_READ = 1,
@@ -252,10 +252,10 @@ enum pvfs2_ds_type {
 };
 
 /*
- * PVFS_certificate simply stores a buffer with the buffer size.
+ * ORANGEFS_certificate simply stores a buffer with the buffer size.
  * The buffer can be converted to an OpenSSL X509 struct for use.
  */
-struct PVFS_certificate {
+struct ORANGEFS_certificate {
 	__u32 buf_size;
 	unsigned char *buf;
 };
@@ -264,7 +264,7 @@ struct PVFS_certificate {
  * A credential identifies a user and is signed by the client/user
  * private key.
  */
-struct PVFS_credential {
+struct ORANGEFS_credential {
 	__u32 userid;	/* user id */
 	__u32 num_groups;	/* length of group_array */
 	__u32 *group_array;	/* groups for which the user is a member */
@@ -272,13 +272,13 @@ struct PVFS_credential {
 	__u64 timeout;	/* seconds after epoch to time out */
 	__u32 sig_size;	/* length of the signature in bytes */
 	unsigned char *signature;	/* digital signature */
-	struct PVFS_certificate certificate;	/* user certificate buffer */
+	struct ORANGEFS_certificate certificate;	/* user certificate buffer */
 };
-#define extra_size_PVFS_credential (PVFS_REQ_LIMIT_GROUPS	*	\
+#define extra_size_ORANGEFS_credential (ORANGEFS_REQ_LIMIT_GROUPS	*	\
 				    sizeof(__u32)		+	\
-				    PVFS_REQ_LIMIT_ISSUER	+	\
-				    PVFS_REQ_LIMIT_SIGNATURE	+	\
-				    extra_size_PVFS_certificate)
+				    ORANGEFS_REQ_LIMIT_ISSUER	+	\
+				    ORANGEFS_REQ_LIMIT_SIGNATURE	+	\
+				    extra_size_ORANGEFS_certificate)
 
 /* This structure is used by the VFS-client interaction alone */
 struct ORANGEFS_keyval_pair {
@@ -330,7 +330,7 @@ struct ORANGEFS_sys_attr_s {
 };
 
 #define ORANGEFS_LOOKUP_LINK_NO_FOLLOW 0
-#define PVFS2_LOOKUP_LINK_FOLLOW    1
+#define ORANGEFS_LOOKUP_LINK_FOLLOW    1
 
 /* pint-dev.h ***************************************************************/
 

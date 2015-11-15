@@ -132,7 +132,7 @@ static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
 		     &new_op->upcall.req.lookup.parent_refn.khandle,
 		     new_op->upcall.req.lookup.parent_refn.fs_id,
 		     ((new_op->upcall.req.lookup.sym_follow ==
-		       PVFS2_LOOKUP_LINK_FOLLOW) ? "yes" : "no"));
+		       ORANGEFS_LOOKUP_LINK_FOLLOW) ? "yes" : "no"));
 
 	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
 

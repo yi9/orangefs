@@ -710,7 +710,7 @@ int orangefs_normalize_to_errno(__s32 error_code)
 	if ((-error_code) & ORANGEFS_NON_ERRNO_ERROR_BIT) {
 		if (((-error_code) &
 		    (ORANGEFS_ERROR_NUMBER_BITS|ORANGEFS_NON_ERRNO_ERROR_BIT|
-		    ORANGEFS_ERROR_BIT)) == PVFS_ECANCEL) {
+		    ORANGEFS_ERROR_BIT)) == ORANGEFS_ECANCEL) {
 			/*
 			 * cancellation error codes generally correspond to
 			 * a timeout from the client's perspective
