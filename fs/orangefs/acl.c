@@ -34,7 +34,7 @@ struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 	 * orangefs_inode_getxattr() to probe the length of the value, but
 	 * I don't do that for now.
 	 */
-	value = kmalloc(PVFS_MAX_XATTR_VALUELEN, GFP_KERNEL);
+	value = kmalloc(ORANGEFS_MAX_XATTR_VALUELEN, GFP_KERNEL);
 	if (value == NULL)
 		return ERR_PTR(-ENOMEM);
 
@@ -47,7 +47,7 @@ struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
 				   "",
 				   key,
 				   value,
-				   PVFS_MAX_XATTR_VALUELEN);
+				   ORANGEFS_MAX_XATTR_VALUELEN);
 	/* if the key exists, convert it to an in-memory rep */
 	if (ret > 0) {
 		acl = posix_acl_from_xattr(&init_user_ns, value, ret);

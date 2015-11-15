@@ -77,7 +77,7 @@ ssize_t orangefs_inode_getxattr(struct inode *inode, const char *prefix,
 		gossip_err("orangefs_inode_getxattr: bogus NULL pointers\n");
 		return -EINVAL;
 	}
-	if ((strlen(name) + strlen(prefix)) >= PVFS_MAX_XATTR_NAMELEN) {
+	if ((strlen(name) + strlen(prefix)) >= ORANGEFS_MAX_XATTR_NAMELEN) {
 		gossip_err("Invalid key length (%d)\n",
 			   (int)(strlen(name) + strlen(prefix)));
 		return -EINVAL;
@@ -102,7 +102,7 @@ ssize_t orangefs_inode_getxattr(struct inode *inode, const char *prefix,
 
 	new_op->upcall.req.getxattr.refn = orangefs_inode->refn;
 	ret = snprintf((char *)new_op->upcall.req.getxattr.key,
-		       PVFS_MAX_XATTR_NAMELEN, "%s%s", prefix, name);
+		       ORANGEFS_MAX_XATTR_NAMELEN, "%s%s", prefix, name);
 
 	/*
 	 * NOTE: Although keys are meant to be NULL terminated textual
@@ -188,7 +188,7 @@ static int orangefs_inode_removexattr(struct inode *inode,
 	 * length just in case we change this later on...
 	 */
 	ret = snprintf((char *)new_op->upcall.req.removexattr.key,
-		       PVFS_MAX_XATTR_NAMELEN,
+		       ORANGEFS_MAX_XATTR_NAMELEN,
 		       "%s%s",
 		       (prefix ? prefix : ""),
 		       name);
@@ -240,7 +240,7 @@ int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 		     __func__, prefix, name, size);
 
 	if (size < 0 ||
-	    size >= PVFS_MAX_XATTR_VALUELEN ||
+	    size >= ORANGEFS_MAX_XATTR_VALUELEN ||
 	    flags < 0) {
 		gossip_err("orangefs_inode_setxattr: bogus values of size(%d), flags(%d)\n",
 			   (int)size,
@@ -257,14 +257,14 @@ int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 	internal_flag = convert_to_internal_xattr_flags(flags);
 
 	if (prefix) {
-		if (strlen(name) + strlen(prefix) >= PVFS_MAX_XATTR_NAMELEN) {
+		if (strlen(name) + strlen(prefix) >= ORANGEFS_MAX_XATTR_NAMELEN) {
 			gossip_err
 			    ("orangefs_inode_setxattr: bogus key size (%d)\n",
 			     (int)(strlen(name) + strlen(prefix)));
 			return -EINVAL;
 		}
 	} else {
-		if (strlen(name) >= PVFS_MAX_XATTR_NAMELEN) {
+		if (strlen(name) >= ORANGEFS_MAX_XATTR_NAMELEN) {
 			gossip_err
 			    ("orangefs_inode_setxattr: bogus key size (%d)\n",
 			     (int)(strlen(name)));
@@ -300,7 +300,7 @@ int orangefs_inode_setxattr(struct inode *inode, const char *prefix,
 	 * case we change this later on...
 	 */
 	ret = snprintf((char *)new_op->upcall.req.setxattr.keyval.key,
-		       PVFS_MAX_XATTR_NAMELEN,
+		       ORANGEFS_MAX_XATTR_NAMELEN,
 		       "%s%s",
 		       prefix, name);
 	new_op->upcall.req.setxattr.keyval.key_sz = ret + 1;
@@ -371,7 +371,7 @@ try_again:
 	new_op->upcall.req.listxattr.refn = orangefs_inode->refn;
 	new_op->upcall.req.listxattr.token = token;
 	new_op->upcall.req.listxattr.requested_count =
-	    (size == 0) ? 0 : PVFS_MAX_XATTR_LISTLEN;
+	    (size == 0) ? 0 : ORANGEFS_MAX_XATTR_LISTLEN;
 	ret = service_operation(new_op, __func__,
 				get_interruptible_flag(inode));
 	if (ret != 0)
@@ -384,7 +384,7 @@ try_again:
 		 * up allocating memory rather than us...
 		 */
 		total = new_op->downcall.resp.listxattr.returned_count *
-			PVFS_MAX_XATTR_NAMELEN;
+			ORANGEFS_MAX_XATTR_NAMELEN;
 		goto done;
 	}
 

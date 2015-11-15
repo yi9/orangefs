@@ -218,14 +218,14 @@ typedef __s64 PVFS_offset;
  * ORANGEFS_NAME_MAX, which it was the same value as, but no reason to let it
  * break if that changes in the future.
  */
-#define PVFS_MAX_XATTR_NAMELEN   ORANGEFS_NAME_MAX	/* Not the same as
+#define ORANGEFS_MAX_XATTR_NAMELEN   ORANGEFS_NAME_MAX	/* Not the same as
 						 * XATTR_NAME_MAX defined
 						 * by <linux/xattr.h>
 						 */
-#define PVFS_MAX_XATTR_VALUELEN  8192	/* Not the same as XATTR_SIZE_MAX
+#define ORANGEFS_MAX_XATTR_VALUELEN  8192	/* Not the same as XATTR_SIZE_MAX
 					 * defined by <linux/xattr.h>
 					 */
-#define PVFS_MAX_XATTR_LISTLEN   16	/* Not the same as XATTR_LIST_MAX
+#define ORANGEFS_MAX_XATTR_LISTLEN   16	/* Not the same as XATTR_LIST_MAX
 					 * defined by <linux/xattr.h>
 					 */
 /*
@@ -282,10 +282,10 @@ struct PVFS_credential {
 
 /* This structure is used by the VFS-client interaction alone */
 struct PVFS_keyval_pair {
-	char key[PVFS_MAX_XATTR_NAMELEN];
+	char key[ORANGEFS_MAX_XATTR_NAMELEN];
 	__s32 key_sz;	/* __s32 for portable, fixed-size structures */
 	__s32 val_sz;
-	char val[PVFS_MAX_XATTR_VALUELEN];
+	char val[ORANGEFS_MAX_XATTR_VALUELEN];
 };
 
 /* pvfs2-sysint.h ***********************************************************/

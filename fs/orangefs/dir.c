@@ -26,14 +26,14 @@ static long decode_dirents(char *ptr, struct orangefs_readdir_response_s *readdi
 	char **pptr = &buf;
 
 	readdir->token = rd->token;
-	readdir->pvfs_dirent_outcount = rd->pvfs_dirent_outcount;
-	readdir->dirent_array = kmalloc(readdir->pvfs_dirent_outcount *
+	readdir->orangefs_dirent_outcount = rd->orangefs_dirent_outcount;
+	readdir->dirent_array = kmalloc(readdir->orangefs_dirent_outcount *
 					sizeof(*readdir->dirent_array),
 					GFP_KERNEL);
 	if (readdir->dirent_array == NULL)
 		return -ENOMEM;
 	*pptr += offsetof(struct orangefs_readdir_response_s, dirent_array);
-	for (i = 0; i < readdir->pvfs_dirent_outcount; i++) {
+	for (i = 0; i < readdir->orangefs_dirent_outcount; i++) {
 		dec_string(pptr, &readdir->dirent_array[i].d_name,
 			   &readdir->dirent_array[i].d_length);
 		readdir->dirent_array[i].khandle =
@@ -259,7 +259,7 @@ get_new_buffer_index:
 		ctx->pos = 0;
 
 	for (i = ctx->pos;
-	     i < rhandle.readdir_response.pvfs_dirent_outcount;
+	     i < rhandle.readdir_response.orangefs_dirent_outcount;
 	     i++) {
 		len = rhandle.readdir_response.dirent_array[i].d_length;
 		current_entry = rhandle.readdir_response.dirent_array[i].d_name;

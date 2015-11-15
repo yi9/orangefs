@@ -124,7 +124,7 @@ struct orangefs_getxattr_request_s {
 	struct orangefs_object_kref refn;
 	__s32 key_sz;
 	__s32 __pad1;
-	char key[PVFS_MAX_XATTR_NAMELEN];
+	char key[ORANGEFS_MAX_XATTR_NAMELEN];
 };
 
 struct orangefs_setxattr_request_s {
@@ -145,7 +145,7 @@ struct pvfs2_removexattr_request_s {
 	struct orangefs_object_kref refn;
 	__s32 key_sz;
 	__s32 __pad1;
-	char key[PVFS_MAX_XATTR_NAMELEN];
+	char key[ORANGEFS_MAX_XATTR_NAMELEN];
 };
 
 struct pvfs2_op_cancel_s {
