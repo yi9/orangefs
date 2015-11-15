@@ -12,7 +12,7 @@
  * 32-64 bit interaction issues between
  * client-core and device
  */
-struct pvfs2_io_request_s {
+struct orangefs_io_request_s {
 	__s32 async_vfs_io;
 	__s32 buf_index;
 	__s32 count;
@@ -23,7 +23,7 @@ struct pvfs2_io_request_s {
 	__s32 readahead_size;
 };
 
-struct pvfs2_iox_request_s {
+struct orangefs_iox_request_s {
 	__s32 buf_index;
 	__s32 count;
 	struct orangefs_object_kref refn;
@@ -31,56 +31,56 @@ struct pvfs2_iox_request_s {
 	__s32 __pad1;
 };
 
-struct pvfs2_lookup_request_s {
+struct orangefs_lookup_request_s {
 	__s32 sym_follow;
 	__s32 __pad1;
 	struct orangefs_object_kref parent_refn;
 	char d_name[ORANGEFS_NAME_LEN];
 };
 
-struct pvfs2_create_request_s {
+struct orangefs_create_request_s {
 	struct orangefs_object_kref parent_refn;
 	struct ORANGEFS_sys_attr_s attributes;
 	char d_name[ORANGEFS_NAME_LEN];
 };
 
-struct pvfs2_symlink_request_s {
+struct orangefs_symlink_request_s {
 	struct orangefs_object_kref parent_refn;
 	struct ORANGEFS_sys_attr_s attributes;
 	char entry_name[ORANGEFS_NAME_LEN];
 	char target[ORANGEFS_NAME_LEN];
 };
 
-struct pvfs2_getattr_request_s {
+struct orangefs_getattr_request_s {
 	struct orangefs_object_kref refn;
 	__u32 mask;
 	__u32 __pad1;
 };
 
-struct pvfs2_setattr_request_s {
+struct orangefs_setattr_request_s {
 	struct orangefs_object_kref refn;
 	struct ORANGEFS_sys_attr_s attributes;
 };
 
-struct pvfs2_remove_request_s {
+struct orangefs_remove_request_s {
 	struct orangefs_object_kref parent_refn;
 	char d_name[ORANGEFS_NAME_LEN];
 };
 
-struct pvfs2_mkdir_request_s {
+struct orangefs_mkdir_request_s {
 	struct orangefs_object_kref parent_refn;
 	struct ORANGEFS_sys_attr_s attributes;
 	char d_name[ORANGEFS_NAME_LEN];
 };
 
-struct pvfs2_readdir_request_s {
+struct orangefs_readdir_request_s {
 	struct orangefs_object_kref refn;
 	__u64 token;
 	__s32 max_dirent_count;
 	__s32 buf_index;
 };
 
-struct pvfs2_readdirplus_request_s {
+struct orangefs_readdirplus_request_s {
 	struct orangefs_object_kref refn;
 	__u64 token;
 	__s32 max_dirent_count;
@@ -89,32 +89,32 @@ struct pvfs2_readdirplus_request_s {
 	__s32 __pad1;
 };
 
-struct pvfs2_rename_request_s {
+struct orangefs_rename_request_s {
 	struct orangefs_object_kref old_parent_refn;
 	struct orangefs_object_kref new_parent_refn;
 	char d_old_name[ORANGEFS_NAME_LEN];
 	char d_new_name[ORANGEFS_NAME_LEN];
 };
 
-struct pvfs2_statfs_request_s {
+struct orangefs_statfs_request_s {
 	__s32 fs_id;
 	__s32 __pad1;
 };
 
-struct pvfs2_truncate_request_s {
+struct orangefs_truncate_request_s {
 	struct orangefs_object_kref refn;
 	__s64 size;
 };
 
-struct pvfs2_mmap_ra_cache_flush_request_s {
+struct orangefs_mmap_ra_cache_flush_request_s {
 	struct orangefs_object_kref refn;
 };
 
-struct pvfs2_fs_mount_request_s {
+struct orangefs_fs_mount_request_s {
 	char orangefs_config_server[ORANGEFS_MAX_SERVER_ADDR_LEN];
 };
 
-struct pvfs2_fs_umount_request_s {
+struct orangefs_fs_umount_request_s {
 	__s32 id;
 	__s32 fs_id;
 	char orangefs_config_server[ORANGEFS_MAX_SERVER_ADDR_LEN];
@@ -134,34 +134,34 @@ struct orangefs_setxattr_request_s {
 	__s32 __pad1;
 };
 
-struct pvfs2_listxattr_request_s {
+struct orangefs_listxattr_request_s {
 	struct orangefs_object_kref refn;
 	__s32 requested_count;
 	__s32 __pad1;
 	__u64 token;
 };
 
-struct pvfs2_removexattr_request_s {
+struct orangefs_removexattr_request_s {
 	struct orangefs_object_kref refn;
 	__s32 key_sz;
 	__s32 __pad1;
 	char key[ORANGEFS_MAX_XATTR_NAMELEN];
 };
 
-struct pvfs2_op_cancel_s {
+struct orangefs_op_cancel_s {
 	__u64 op_tag;
 };
 
-struct pvfs2_fsync_request_s {
+struct orangefs_fsync_request_s {
 	struct orangefs_object_kref refn;
 };
 
-enum pvfs2_param_request_type {
+enum orangefs_param_request_type {
 	ORANGEFS_PARAM_REQUEST_SET = 1,
 	ORANGEFS_PARAM_REQUEST_GET = 2
 };
 
-enum pvfs2_param_request_op {
+enum orangefs_param_request_op {
 	ORANGEFS_PARAM_REQUEST_OP_ACACHE_TIMEOUT_MSECS = 1,
 	ORANGEFS_PARAM_REQUEST_OP_ACACHE_HARD_LIMIT = 2,
 	ORANGEFS_PARAM_REQUEST_OP_ACACHE_SOFT_LIMIT = 3,
@@ -189,25 +189,25 @@ enum pvfs2_param_request_op {
 	ORANGEFS_PARAM_REQUEST_OP_TWO_MASK_VALUES = 25,
 };
 
-struct pvfs2_param_request_s {
-	enum pvfs2_param_request_type type;
-	enum pvfs2_param_request_op op;
+struct orangefs_param_request_s {
+	enum orangefs_param_request_type type;
+	enum orangefs_param_request_op op;
 	__s64 value;
 	char s_value[ORANGEFS_MAX_DEBUG_STRING_LEN];
 };
 
-enum pvfs2_perf_count_request_type {
+enum orangefs_perf_count_request_type {
 	ORANGEFS_PERF_COUNT_REQUEST_ACACHE = 1,
 	ORANGEFS_PERF_COUNT_REQUEST_NCACHE = 2,
 	ORANGEFS_PERF_COUNT_REQUEST_CAPCACHE = 3,
 };
 
-struct pvfs2_perf_count_request_s {
-	enum pvfs2_perf_count_request_type type;
+struct orangefs_perf_count_request_s {
+	enum orangefs_perf_count_request_type type;
 	__s32 __pad1;
 };
 
-struct pvfs2_fs_key_request_s {
+struct orangefs_fs_key_request_s {
 	__s32 fsid;
 	__s32 __pad1;
 };
@@ -223,32 +223,32 @@ struct orangefs_upcall_s {
 	char *trailer_buf;
 
 	union {
-		struct pvfs2_io_request_s io;
-		struct pvfs2_iox_request_s iox;
-		struct pvfs2_lookup_request_s lookup;
-		struct pvfs2_create_request_s create;
-		struct pvfs2_symlink_request_s sym;
-		struct pvfs2_getattr_request_s getattr;
-		struct pvfs2_setattr_request_s setattr;
-		struct pvfs2_remove_request_s remove;
-		struct pvfs2_mkdir_request_s mkdir;
-		struct pvfs2_readdir_request_s readdir;
-		struct pvfs2_readdirplus_request_s readdirplus;
-		struct pvfs2_rename_request_s rename;
-		struct pvfs2_statfs_request_s statfs;
-		struct pvfs2_truncate_request_s truncate;
-		struct pvfs2_mmap_ra_cache_flush_request_s ra_cache_flush;
-		struct pvfs2_fs_mount_request_s fs_mount;
-		struct pvfs2_fs_umount_request_s fs_umount;
+		struct orangefs_io_request_s io;
+		struct orangefs_iox_request_s iox;
+		struct orangefs_lookup_request_s lookup;
+		struct orangefs_create_request_s create;
+		struct orangefs_symlink_request_s sym;
+		struct orangefs_getattr_request_s getattr;
+		struct orangefs_setattr_request_s setattr;
+		struct orangefs_remove_request_s remove;
+		struct orangefs_mkdir_request_s mkdir;
+		struct orangefs_readdir_request_s readdir;
+		struct orangefs_readdirplus_request_s readdirplus;
+		struct orangefs_rename_request_s rename;
+		struct orangefs_statfs_request_s statfs;
+		struct orangefs_truncate_request_s truncate;
+		struct orangefs_mmap_ra_cache_flush_request_s ra_cache_flush;
+		struct orangefs_fs_mount_request_s fs_mount;
+		struct orangefs_fs_umount_request_s fs_umount;
 		struct orangefs_getxattr_request_s getxattr;
 		struct orangefs_setxattr_request_s setxattr;
-		struct pvfs2_listxattr_request_s listxattr;
-		struct pvfs2_removexattr_request_s removexattr;
-		struct pvfs2_op_cancel_s cancel;
-		struct pvfs2_fsync_request_s fsync;
-		struct pvfs2_param_request_s param;
-		struct pvfs2_perf_count_request_s perf_count;
-		struct pvfs2_fs_key_request_s fs_key;
+		struct orangefs_listxattr_request_s listxattr;
+		struct orangefs_removexattr_request_s removexattr;
+		struct orangefs_op_cancel_s cancel;
+		struct orangefs_fsync_request_s fsync;
+		struct orangefs_param_request_s param;
+		struct orangefs_perf_count_request_s perf_count;
+		struct orangefs_fs_key_request_s fs_key;
 	} req;
 };
 
