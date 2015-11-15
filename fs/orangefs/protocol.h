@@ -281,7 +281,7 @@ struct PVFS_credential {
 				    extra_size_PVFS_certificate)
 
 /* This structure is used by the VFS-client interaction alone */
-struct PVFS_keyval_pair {
+struct ORANGEFS_keyval_pair {
 	char key[ORANGEFS_MAX_XATTR_NAMELEN];
 	__s32 key_sz;	/* __s32 for portable, fixed-size structures */
 	__s32 val_sz;
