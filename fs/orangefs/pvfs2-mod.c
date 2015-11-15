@@ -49,8 +49,8 @@ int op_timeout_secs = ORANGEFS_DEFAULT_OP_TIMEOUT_SECS;
 int slot_timeout_secs = ORANGEFS_DEFAULT_SLOT_TIMEOUT_SECS;
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("PVFS2 Development Team");
-MODULE_DESCRIPTION("The Linux Kernel VFS interface to PVFS2");
+MODULE_AUTHOR("ORANGEFS Development Team");
+MODULE_DESCRIPTION("The Linux Kernel VFS interface to ORANGEFS");
 MODULE_PARM_DESC(module_parm_debug_mask, "debugging level (see orangefs-debug.h for values)");
 MODULE_PARM_DESC(op_timeout_secs, "Operation timeout in seconds");
 MODULE_PARM_DESC(slot_timeout_secs, "Slot timeout in seconds");
