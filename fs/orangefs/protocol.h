@@ -241,7 +241,7 @@ enum ORANGEFS_io_type {
  * batch and low threshold sizes may need to be modified  to reflect this
  * change.
  */
-enum pvfs2_ds_type {
+enum orangefs_ds_type {
 	ORANGEFS_TYPE_NONE = 0,
 	ORANGEFS_TYPE_METAFILE = (1 << 0),
 	ORANGEFS_TYPE_DATAFILE = (1 << 1),
@@ -323,7 +323,7 @@ struct ORANGEFS_sys_attr_s {
 	char *dist_params;
 
 	__s64 dirent_count;
-	enum pvfs2_ds_type objtype;
+	enum orangefs_ds_type objtype;
 	__u64 flags;
 	__u32 mask;
 	__s64 blksize;
