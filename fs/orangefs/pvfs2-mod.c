@@ -12,9 +12,9 @@
 #include "pvfs2-debugfs.h"
 #include "pvfs2-sysfs.h"
 
-/* PVFS2_VERSION is a ./configure define */
-#ifndef PVFS2_VERSION
-#define PVFS2_VERSION "Unknown"
+/* ORANGEFS_VERSION is a ./configure define */
+#ifndef ORANGEFS_VERSION
+#define ORANGEFS_VERSION "Unknown"
 #endif
 
 /*
@@ -203,7 +203,7 @@ static int __init orangefs_init(void)
 
 	ret = register_filesystem(&orangefs_fs_type);
 	if (ret == 0) {
-		pr_info("orangefs: module version %s loaded\n", PVFS2_VERSION);
+		pr_info("orangefs: module version %s loaded\n", ORANGEFS_VERSION);
 		return 0;
 	}
 
@@ -279,7 +279,7 @@ static void __exit orangefs_exit(void)
 
 	bdi_destroy(&orangefs_backing_dev_info);
 
-	pr_info("orangefs: module version %s unloaded\n", PVFS2_VERSION);
+	pr_info("orangefs: module version %s unloaded\n", ORANGEFS_VERSION);
 }
 
 /*
