@@ -490,7 +490,7 @@ static ssize_t do_readv_writev(enum ORANGEFS_io_type type, struct file *file,
 	 */
 
 	gossip_debug(GOSSIP_FILE_DEBUG,
-		     "%s: pvfs_bufmap_size:%d\n",
+		     "%s: orangefs_bufmap_size:%d\n",
 		     __func__,
 		     orangefs_bufmap_size_query());
 
@@ -801,7 +801,7 @@ static long orangefs_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 	if (cmd == FS_IOC_GETFLAGS) {
 		val = 0;
 		ret = orangefs_xattr_get_default(file->f_path.dentry,
-					      "user.pvfs2.meta_hint",
+					      "user.orangefs.meta_hint",
 					      &val,
 					      sizeof(val),
 					      0);
@@ -835,7 +835,7 @@ static long orangefs_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 			     "orangefs_ioctl: FS_IOC_SETFLAGS: %llu\n",
 			     (unsigned long long)val);
 		ret = orangefs_xattr_set_default(file->f_path.dentry,
-					      "user.pvfs2.meta_hint",
+					      "user.orangefs.meta_hint",
 					      &val,
 					      sizeof(val),
 					      0,
