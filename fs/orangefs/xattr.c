@@ -15,7 +15,7 @@
 #include <linux/xattr.h>
 
 
-#define SYSTEM_ORANGEFS_KEY "system.pvfs2."
+#define SYSTEM_ORANGEFS_KEY "system.orangefs."
 #define SYSTEM_ORANGEFS_KEY_LEN 13
 
 /*
